@@ -1,0 +1,284 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  Heart, ShoppingBag, ChevronRight, ShoppingBasket, Utensils, Baby, Users, 
+  Plus, Minus, X, CheckCircle2, ChefHat, User, Mail, Lock, LogOut, 
+  Sparkles, MessageSquareHeart, BookOpen, Share2, Menu, Settings, 
+  History, ShieldCheck, HelpCircle, Bell, Sparkle, Wand2, Loader2, SendHorizontal
+} from 'lucide-react';
+
+/**
+ * แก้ไขข้อผิดพลาด [empty-import-meta]: 
+ * เนื่องจากสภาพแวดล้อมเป้าหมายเป็น es2015 ซึ่งไม่รองรับ import.meta โดยตรง
+ * เราจะใช้การตรวจสอบประเภทเพื่อให้ปลอดภัยต่อการรัน (Safe Check)
+ */
+const getApiKey = () => {
+  try {
+    // พยายามดึงค่าจาก Environment Variable ของ Vite
+    return import.meta.env.VITE_GEMINI_API_KEY || "";
+  } catch (e) {
+    // หากไม่รองรับ ให้คืนค่าว่างเพื่อป้องกันแอปพัง
+    return "";
+  }
+};
+
+const apiKey = getApiKey();
+
+const CATEGORIES = [
+  { id: 'dishes', name: 'กับข้าว', icon: <ChefHat className="text-rose-500" />, color: 'bg-rose-50' },
+  { id: 'milk', name: 'อาหารเรียกนม', icon: <Heart className="text-pink-500" />, color: 'bg-pink-50' },
+  { id: 'cleaning', name: 'ทำความสะอาด', icon: <Sparkle className="text-blue-500" />, color: 'bg-blue-50' },
+  { id: 'concierge', name: 'ฝากซื้อของ', icon: <ShoppingBasket className="text-orange-500" />, color: 'bg-orange-50' },
+  { id: 'lowcarb', name: 'อาหารแป้งต่ำ', icon: <Utensils className="text-emerald-500" />, color: 'bg-emerald-50' },
+  { id: 'family', name: 'ข้าวกล่องครอบครัว', icon: <Users className="text-blue-500" />, color: 'bg-blue-50' },
+];
+
+const PRODUCTS = [
+  { id: 6, cat: 'dishes', name: 'ต้มจืดตำลึงหมูสับ', price: 120, img: '🥣' },
+  { id: 1, cat: 'milk', name: 'แกงเลียงกุ้งสดออร์แกนิค', price: 180, img: '🍲' },
+  { id: 9, cat: 'cleaning', name: 'แม่บ้านทำความสะอาด (2 ชม.)', price: 550, img: '🧹' },
+  { id: 12, cat: 'concierge', name: 'ฝากซื้อของซุปเปอร์', price: 100, img: '🛒' },
+];
+
+async function callGemini(prompt, systemInstruction = "") {
+  if (!apiKey) {
+    console.error("API Key is missing. Please set VITE_GEMINI_API_KEY in your environment.");
+    return "กรุณาตั้งค่า API Key ก่อนใช้งานค่ะ (ตรวจสอบไฟล์ .env หรือการตั้งค่าบน Hosting)";
+  }
+
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+  const payload = {
+    contents: [{ parts: [{ text: prompt }] }],
+    systemInstruction: systemInstruction ? { parts: [{ text: systemInstruction }] } : undefined
+  };
+
+  // Exponential Backoff Implementation
+  for (let i = 0; i < 5; i++) {
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!response.ok) throw new Error('API Error');
+      const data = await response.json();
+      return data.candidates?.[0]?.content?.parts?.[0]?.text;
+    } catch (error) {
+      if (i === 4) return "ขออภัยค่ะ AI ไม่สามารถตอบได้ในขณะนี้ กรุณาลองใหม่ภายหลังค่ะ";
+      const delay = Math.pow(2, i) * 1000;
+      await new Promise(r => setTimeout(r, delay));
+    }
+  }
+}
+
+export default function App() {
+  const [activeTab, setActiveTab] = useState('all');
+  const [cart, setCart] = useState([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isAiLoading, setIsAiLoading] = useState(false);
+  const [aiMealPlan, setAiMealPlan] = useState("");
+  const [aiPrompt, setAiPrompt] = useState("");
+
+  const addToCart = (p) => {
+    const existing = cart.find(item => item.id === p.id);
+    if (existing) {
+      setCart(cart.map(item => item.id === p.id ? { ...item, qty: item.qty + 1 } : item));
+    } else {
+      setCart([...cart, { ...p, qty: 1 }]);
+    }
+  };
+
+  const updateQty = (id, delta) => {
+    setCart(prev => prev.map(item => 
+      item.id === id ? { ...item, qty: Math.max(1, item.qty + delta) } : item
+    ));
+  };
+
+  const removeFromCart = (id) => setCart(cart.filter(item => item.id !== id));
+  
+  const generateMealPlan = async () => {
+    if (!aiPrompt.trim()) return;
+    setIsAiLoading(true);
+    setAiMealPlan("");
+    const res = await callGemini(
+      `แนะนำเมนูอาหารสำหรับคุณแม่ที่ต้องการ: ${aiPrompt}`, 
+      "คุณคือ Mommy's Hero AI ผู้ช่วยด้านโภชนาการสำหรับคุณแม่หลังคลอด ให้คำแนะนำที่อบอุ่นและเป็นประโยชน์"
+    );
+    setAiMealPlan(res);
+    setIsAiLoading(false);
+  };
+
+  const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+  return (
+    <div className="max-w-md mx-auto min-h-screen bg-pink-50/30 pb-20 font-sans">
+      {/* Header */}
+      <header className="p-4 bg-white/80 backdrop-blur-md shadow-sm flex justify-between items-center sticky top-0 z-50">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center text-white">🦸‍♀️</div>
+          <h1 className="font-black text-gray-800 text-lg">Mommy's Hero</h1>
+        </div>
+        <button 
+          onClick={() => setIsCartOpen(true)} 
+          className="relative p-2 bg-pink-100/50 rounded-full transition-transform active:scale-90"
+        >
+          <ShoppingBag className="text-pink-500" size={20} />
+          {cart.length > 0 && (
+            <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold border-2 border-white">
+              {cart.reduce((s, i) => s + i.qty, 0)}
+            </span>
+          )}
+        </button>
+      </header>
+
+      <main className="p-4 space-y-6">
+        {/* Welcome Banner */}
+        <div className="bg-gradient-to-br from-rose-400 to-pink-500 p-6 rounded-[2rem] text-white shadow-lg relative overflow-hidden">
+          <div className="relative z-10">
+            <h2 className="text-xl font-bold">สวัสดีคุณแม่! ❤️</h2>
+            <p className="text-sm opacity-90">วันนี้ให้ Mommy's Hero ช่วยดูแลเรื่องอะไรดีคะ?</p>
+          </div>
+          <Sparkles className="absolute right-0 bottom-0 w-24 h-24 opacity-20 -rotate-12" />
+        </div>
+
+        {/* AI Meal Section */}
+        <section className="bg-white p-5 rounded-[2rem] shadow-sm border border-pink-100">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-8 h-8 bg-pink-50 rounded-lg flex items-center justify-center">
+              <Wand2 size={18} className="text-pink-500" />
+            </div>
+            <div>
+              <span className="font-black text-gray-800 block text-sm">AI Meal Planner</span>
+              <span className="text-[10px] text-pink-400 font-bold uppercase tracking-wider">อัจฉริยะช่วยคิดเมนู</span>
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <input 
+              value={aiPrompt}
+              onChange={(e) => setAiPrompt(e.target.value)}
+              placeholder="อยากทานอะไรเป็นพิเศษไหมคะ..."
+              className="flex-1 bg-gray-50 border-2 border-transparent focus:border-pink-200 rounded-2xl px-4 py-2.5 text-sm outline-none transition-all"
+            />
+            <button 
+              onClick={generateMealPlan} 
+              disabled={isAiLoading || !aiPrompt.trim()}
+              className="bg-gray-900 text-white p-3 rounded-2xl shadow-md disabled:opacity-50 active:scale-95 transition-all"
+            >
+              {isAiLoading ? <Loader2 className="animate-spin" size={20}/> : <SendHorizontal size={20}/>}
+            </button>
+          </div>
+          {aiMealPlan && (
+            <div className="mt-4 p-4 bg-rose-50 rounded-2xl text-[13px] text-gray-700 leading-relaxed border border-rose-100 animate-in fade-in slide-in-from-top-2">
+              {aiMealPlan}
+            </div>
+          )}
+        </section>
+
+        {/* Categories Tabs */}
+        <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2 px-1">
+          <button 
+            onClick={() => setActiveTab('all')}
+            className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all ${activeTab === 'all' ? 'bg-pink-500 text-white shadow-md' : 'bg-white text-gray-400'}`}
+          >
+            ทั้งหมด
+          </button>
+          {CATEGORIES.map(c => (
+            <button 
+              key={c.id} 
+              onClick={() => setActiveTab(c.id)}
+              className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all ${activeTab === c.id ? 'bg-pink-500 text-white shadow-md' : 'bg-white text-gray-400'}`}
+            >
+              {c.name}
+            </button>
+          ))}
+        </div>
+
+        {/* Product Grid/List */}
+        <div className="grid gap-4">
+          {(activeTab === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.cat === activeTab)).map(p => (
+            <div key={p.id} className="bg-white p-4 rounded-[1.5rem] flex items-center gap-4 shadow-sm border border-white hover:border-pink-100 transition-all group">
+              <div className="text-3xl bg-pink-50 w-20 h-20 flex items-center justify-center rounded-2xl border border-pink-100 shadow-inner group-hover:scale-105 transition-transform">
+                {p.img}
+              </div>
+              <div className="flex-1">
+                <h4 className="font-black text-gray-800 text-sm mb-1">{p.name}</h4>
+                <div className="flex items-center justify-between">
+                  <p className="text-pink-600 font-black text-lg">฿{p.price}</p>
+                  <button 
+                    onClick={() => addToCart(p)} 
+                    className="bg-gray-900 text-white px-5 py-2 rounded-xl text-[11px] font-black uppercase tracking-wider hover:bg-pink-500 active:scale-95 transition-all"
+                  >
+                    เพิ่ม
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </main>
+
+      {/* Cart Sidebar/Modal */}
+      {isCartOpen && (
+        <div className="fixed inset-0 z-[100] flex justify-end">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm animate-in fade-in" onClick={() => setIsCartOpen(false)} />
+          <div className="relative w-full max-w-xs bg-white h-full shadow-2xl flex flex-col rounded-l-[2.5rem] animate-in slide-in-from-right duration-300">
+            <div className="p-6 border-b flex justify-between items-center">
+              <h3 className="font-black text-xl text-gray-800 flex items-center gap-2">
+                <ShoppingBag className="text-pink-500" size={20} /> ตะกร้า
+              </h3>
+              <button onClick={() => setIsCartOpen(false)} className="p-2 bg-gray-50 rounded-full"><X size={20}/></button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto p-6 space-y-6 no-scrollbar">
+              {cart.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-gray-300 space-y-2">
+                  <ShoppingBasket size={48} opacity={0.3} />
+                  <p className="font-bold text-sm">ยังไม่มีสินค้าในตะกร้าค่ะ</p>
+                </div>
+              ) : (
+                cart.map(item => (
+                  <div key={item.id} className="flex gap-4 items-center animate-in fade-in">
+                    <div className="w-14 h-14 bg-pink-50 rounded-xl flex items-center justify-center text-xl border border-pink-100">{item.img}</div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-[11px] font-black text-gray-800 truncate">{item.name}</h4>
+                      <p className="text-pink-600 font-black text-sm">฿{(item.price * item.qty).toLocaleString()}</p>
+                      <div className="flex items-center gap-3 mt-2">
+                        <button onClick={() => updateQty(item.id, -1)} className="p-1 bg-gray-100 rounded-md hover:bg-pink-100"><Minus size={12} /></button>
+                        <span className="text-xs font-black">{item.qty}</span>
+                        <button onClick={() => updateQty(item.id, 1)} className="p-1 bg-gray-100 rounded-md hover:bg-pink-100"><Plus size={12} /></button>
+                      </div>
+                    </div>
+                    <button onClick={() => removeFromCart(item.id)} className="text-gray-300 hover:text-rose-500 transition-colors"><X size={16}/></button>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {cart.length > 0 && (
+              <div className="p-6 bg-pink-50/50 border-t space-y-4">
+                <div className="flex justify-between items-center">
+                  <span className="font-bold text-gray-400 text-sm">ยอดรวมทั้งหมด</span>
+                  <span className="font-black text-pink-600 text-xl">฿{total.toLocaleString()}</span>
+                </div>
+                <button 
+                  onClick={() => {alert("ระบบชำระเงินกำลังเตรียมความพร้อมค่ะ"); setIsCartOpen(false);}} 
+                  className="w-full py-4 bg-gray-900 text-white rounded-2xl font-black uppercase tracking-widest shadow-lg active:scale-95 transition-all"
+                >
+                  ดำเนินการสั่งซื้อ
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Navigation Bar */}
+      <nav className="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg border-t flex justify-around py-3 px-6 z-40 max-w-md mx-auto">
+        <button className="text-pink-500 flex flex-col items-center gap-1"><Heart size={20} /><span className="text-[10px] font-black">หน้าหลัก</span></button>
+        <button className="text-gray-300 flex flex-col items-center gap-1"><BookOpen size={20} /><span className="text-[10px] font-bold">บทความ</span></button>
+        <div className="w-12 h-12 bg-pink-500 rounded-full flex items-center justify-center text-white shadow-lg -mt-8 border-4 border-white active:scale-90 transition-transform"><Plus size={24} /></div>
+        <button className="text-gray-300 flex flex-col items-center gap-1"><Users size={20} /><span className="text-[10px] font-bold">ชุมชน</span></button>
+        <button className="text-gray-300 flex flex-col items-center gap-1"><User size={20} /><span className="text-[10px] font-bold">ฉัน</span></button>
+      </nav>
+    </div>
+  );
+}
