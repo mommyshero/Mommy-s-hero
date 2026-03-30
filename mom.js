@@ -1,0 +1,153 @@
+// Mami Dashboard System
+const checklistItems = [
+    { id: 1, text: '💊 กินโฟเลท', category: 'care', hasButton: true, buttonType: 'cart' },
+    { id: 2, text: '🧴 ทายาลดแผลเป็น', category: 'care', hasButton: true, buttonType: 'cart' },
+    { id: 3, text: '🥗 ทานอาหารที่มีประโยชน์', category: 'care', hasButton: true, buttonType: 'menu' },
+    { id: 4, text: '🎵 เปิดเพลงคลอเบาๆ', category: 'care', hasButton: false },
+    { id: 5, text: '💄 เสริมสวยกรุ้บกริ้บ', category: 'care', hasButton: false },
+    { id: 6, text: '🚿 อาบน้ำให้สดชื่น', category: 'care', hasButton: false },
+    { id: 7, text: '🛁 แช่น้ำอุ่น', category: 'care', hasButton: false },
+    { id: 8, text: '😴 งีบหลับ พักสายตา', category: 'care', hasButton: false },
+    { id: 9, text: '🧹 จัดของ 2-3 นาที', category: 'change', hasButton: false },
+    { id: 10, text: '🌳 ออกไปข้างนอก 5 นาที', category: 'change', hasButton: false },
+    { id: 11, text: '🚶 เดินเบาๆ 15 นาที', category: 'change', hasButton: false },
+];
+
+let checklistState = JSON.parse(localStorage.getItem('checklistState')) || {};
+let savedNotes = JSON.parse(localStorage.getItem('savedNotes')) || [];
+
+function initDashboard() {
+    renderChecklist();
+    updateProgress();
+    renderSavedNotes();
+}
+
+function renderChecklist() {
+    const careContainer = document.getElementById('careChecklist');
+    const changeContainer = document.getElementById('changeChecklist');
+    
+    if (!careContainer || !changeContainer) return;
+
+    const careItems = checklistItems.filter(item => item.category === 'care');
+    const changeItems = checklistItems.filter(item => item.category === 'change');
+
+    careContainer.innerHTML = careItems.map(item => `
+        <label class="checklist-item">
+            <input type="checkbox" ${checklistState[item.id] ? 'checked' : ''} onchange="toggleChecklist(${item.id})">
+            <span>${item.text}</span>
+            ${item.hasButton ? `<button class="checklist-btn btn-${item.buttonType}" onclick="event.stopPropagation()">${item.buttonType === 'cart' ? '🛒' : '🍱'}</button>` : ''}
+        </label>
+    `).join('');
+
+    changeContainer.innerHTML = changeItems.map(item => `
+        <label class="checklist-item">
+            <input type="checkbox" ${checklistState[item.id] ? 'checked' : ''} onchange="toggleChecklist(${item.id})">
+            <span>${item.text}</span>
+        </label>
+    `).join('');
+}
+
+function toggleChecklist(id) {
+    checklistState[id] = !checklistState[id];
+    localStorage.setItem('checklistState', JSON.stringify(checklistState));
+    updateProgress();
+
+    const total = checklistItems.length;
+    const checked = Object.values(checklistState).filter(v => v).length;
+    const percentage = (checked / total) * 100;
+
+    if (percentage === 25 || percentage === 50 || percentage === 75 || percentage === 100) {
+        showAIEncouragement(checked, total);
+    }
+}
+
+function updateProgress() {
+    const total = checklistItems.length;
+    const checked = Object.values(checklistState).filter(v => v).length;
+    const percentage = total > 0 ? (checked / total) * 100 : 0;
+
+    const progressFill = document.getElementById('progressFill');
+    const progressText = document.getElementById('progressText');
+    const motivationText = document.getElementById('motivationText');
+
+    if (progressFill) progressFill.style.width = percentage + '%';
+    if (progressText) progressText.textContent = 'สำเร็จแล้ว ' + checked + ' / ' + total + ' อย่าง';
+
+    let motivation = 'เริ่มเล็กๆ ก็เก่งแล้ว 💛';
+    if (percentage === 0) motivation = 'เริ่มเล็กๆ ก็เก่งแล้ว 💛';
+    else if (percentage < 50) motivation = 'กำลังทำได้ดี! สู้ๆ ✨';
+    else if (percentage < 100) motivation = 'มาครึ่งทางแล้ว เก่งมาก ✨';
+    else motivation = 'สุดยอด! วันนี้คุณชนะแล้ว 🎉';
+
+    if (motivationText) motivationText.textContent = motivation;
+}
+
+function showAIEncouragement(checked, total) {
+    const messages = [
+        'เก่งมากครับ! ทำเสร็จแล้ว ' + checked + ' จาก ' + total + ' ข้อ 💛',
+        'สุดยอด! ค่อยๆ ทำทีละขั้นก็เก่งแล้ว ✨',
+        'วันนี้คุณดูแลตัวเองได้ดีมาก 🌸',
+        'ภูมิใจในตัวคุณนะครับ! 🎉',
+        'คุณคือคุณแม่ที่เก่งที่สุด! 💖',
+    ];
+    const message = messages[Math.floor(Math.random() * messages.length)];
+
+    const container = document.getElementById('aiMessageContainer');
+    if (container) {
+        container.innerHTML = '<div class="ai-message-box"><span class="ai-icon">💬</span><p>' + message + '</p></div>';
+        setTimeout(() => { container.innerHTML = ''; }, 5000);
+    }
+}
+
+function saveSmallWin() {
+    const noteInput = document.getElementById('smallWinNote');
+    if (!noteInput) return;
+    const note = noteInput.value.trim();
+    if (!note) return;
+
+    const newNote = { id: Date.now(), text: note, timestamp: new Date().toISOString() };
+    savedNotes.unshift(newNote);
+    savedNotes = savedNotes.slice(0, 30);
+    localStorage.setItem('savedNotes', JSON.stringify(savedNotes));
+    noteInput.value = '';
+    renderSavedNotes();
+    showToast('✅ บันทึก Small Win แล้ว!');
+}
+
+function deleteNote(id) {
+    savedNotes = savedNotes.filter(note => note.id !== id);
+    localStorage.setItem('savedNotes', JSON.stringify(savedNotes));
+    renderSavedNotes();
+}
+
+function renderSavedNotes() {
+    const container = document.getElementById('savedNotes');
+    if (!container) return;
+    
+    if (savedNotes.length === 0) {
+        container.innerHTML = '<p class="no-notes">ยังไม่มี Small Win<br>เริ่มบันทึกชัยชนะเล็กๆ ของกัน!</p>';
+        return;
+    }
+
+    container.innerHTML = savedNotes.map(note => {
+        const time = new Date(note.timestamp).toLocaleDateString('th-TH', {
+            day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
+        });
+        return '<div class="note-item"><p class="note-text">🎉 ' + note.text + '</p><p class="note-time">' + time + '</p><button class="delete-btn" onclick="deleteNote(' + note.id + ')">🗑️ ลบ</button></div>';
+    }).join('');
+}
+
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
+
+function toggleMobileMenu() {
+    alert('Mobile menu clicked');
+}
+
+// Initialize on page load
+window.addEventListener('DOMContentLoaded', initDashboard);

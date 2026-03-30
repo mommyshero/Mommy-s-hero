@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ข้อมูลไว้เถียงแม่ - Mami's Hero</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root { --pink: #f75c9a; --light-pink: #ff6b9a; --blue: #5c9ff7; --peach: #ffe5e5; --light-blue: #e5f0ff; --white: #fff; --text-dark: #2C3E50; }
+        body { font-family: 'Prompt', sans-serif; background: linear-gradient(135deg, var(--peach), var(--light-blue)); min-height: 100vh; color: var(--text-dark); }
+        
+        .navbar { background: rgba(255,255,255,0.98); padding: 12px 0; box-shadow: 0 2px 15px rgba(0,0,0,0.1); position: fixed; top: 0; width: 100%; z-index: 1000; }
+        .nav-content { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; position: relative; }
+        .logo { font-size: 1.2rem; font-weight: 700; text-decoration: none; }
+        .logo-pink { color: var(--pink); }
+        .logo-blue { color: var(--blue); }
+        .nav-menu { display: flex; gap: 5px; align-items: center; }
+        .nav-menu a { color: var(--text-dark); text-decoration: none; font-weight: 600; padding: 8px 14px; border-radius: 20px; transition: all 0.3s; font-size: 0.85rem; }
+        .nav-menu a:hover, .nav-menu a.active { background: var(--pink); color: #fff; }
+        .nav-login-btn { background: none; border: 2px solid var(--pink); color: var(--pink); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
+        .nav-login-btn:hover { background: var(--pink); color: #fff; }
+        
+        /* Burger Menu */
+        .nav-burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 5px; }
+        .nav-burger span { display: block; width: 25px; height: 3px; background: var(--text-dark); border-radius: 2px; transition: all 0.3s; }
+        .nav-burger.active span:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); }
+        .nav-burger.active span:nth-child(2) { opacity: 0; }
+        .nav-burger.active span:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
+        
+        /* Mobile Nav */
+        @media (max-width: 768px) {
+            .nav-burger { display: flex; }
+            .nav-menu { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: #fff; flex-direction: column; padding: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+            .nav-menu.active { display: flex; }
+            .nav-menu a { width: 100%; text-align: center; padding: 12px; }
+        }
+        
+        .hero { padding: 120px 0 40px; text-align: center; }
+        .hero h1 { font-size: 2.5rem; color: var(--text-dark); margin-bottom: 10px; }
+        .hero p { font-size: 1.1rem; color: #666; }
+        
+        /* Login Modal */
+        .login-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:99999;justify-content:center;align-items:center;}
+        .login-modal.active{display:flex;}
+        .login-content{max-width:450px;background:linear-gradient(180deg,#fff,#fefefe);border-radius:24px;padding:35px;width:92%;text-align:center;position:relative;box-shadow:0 25px 60px rgba(0,0,0,0.2);border:1px solid #fce4ec;max-height:90vh;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#fce4ec transparent;}
+        .login-content::-webkit-scrollbar{width:6px;}
+        .login-content::-webkit-scrollbar-track{background:transparent;}
+        .login-content::-webkit-scrollbar-thumb{background:#fce4ec;border-radius:3px;}
+        .login-header{text-align:center;margin-bottom:25px;}
+        .login-icon{font-size:3.5rem;margin-bottom:12px;animation:pulse 2s infinite;}
+        @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
+        .login-header h2{font-size:1.7rem;color:var(--text-dark);margin-bottom:8px;font-weight:700;}
+        .login-header p{color:#666;font-size:1rem;}
+        .login-form{margin-top:20px;}
+        .login-form .form-group{margin-bottom:18px;}
+        .login-form label{display:block;font-weight:600;margin-bottom:8px;text-align:left;font-size:1rem;color:var(--text-dark);}
+        .login-form input{width:100%;padding:15px 18px;border:2px solid #e0e0e0;border-radius:14px;font-size:1.1rem;transition:all 0.3s;}
+        .login-form input:focus{border-color:var(--pink);outline:none;box-shadow:0 0 0 4px rgba(247,92,154,0.1);}
+        .login-btn{width:100%;background:linear-gradient(135deg,var(--pink),#ff6b9a);color:#fff;border:none;padding:18px;border-radius:50px;font-size:1.15rem;font-weight:700;cursor:pointer;box-shadow:0 8px 25px rgba(247,92,154,0.4);transition:all 0.3s;margin-top:10px;}
+        .login-btn:hover{transform:translateY(-3px);box-shadow:0 12px 35px rgba(247,92,154,0.5);}
+        .login-note{text-align:center;color:#999;font-size:0.95rem;margin-top:20px;line-height:1.6;}
+        .modal-close{position:absolute;top:12px;right:15px;background:#f5f5f5;border:none;width:38px;height:38px;border-radius:50%;font-size:1.3rem;cursor:pointer;color:#888;transition:all 0.3s;}
+        .modal-close:hover{background:var(--pink);color:white;}
+        
+        .tabs { display: flex; justify-content: center; gap: 15px; padding: 20px; flex-wrap: wrap; }
+        .tab-btn { padding: 12px 25px; border: 2px solid var(--pink); background: #fff; color: var(--pink); border-radius: 50px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
+        .tab-btn.active, .tab-btn:hover { background: var(--pink); color: #fff; }
+        
+        .articles-container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+        .article-card { background: #fff; border-radius: 20px; padding: 25px; margin-bottom: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.08); cursor: pointer; transition: all 0.3s; }
+        .article-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.12); }
+        .article-card h3 { font-size: 1.2rem; color: var(--text-dark); margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .article-card p { font-size: 0.95rem; color: #666; line-height: 1.6; }
+        .article-card .tag { background: var(--peach); color: var(--pink); padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; }
+        
+        .articles-section { display: none; }
+        .articles-section.active { display: block; }
+        
+        .featured-rotator { background: linear-gradient(135deg, var(--pink), var(--light-pink)); color: #fff; border-radius: 24px; padding: 40px; margin-bottom: 30px; text-align: center; }
+        .featured-rotator h2 { font-size: 1.8rem; margin-bottom: 15px; }
+        .featured-rotator p { font-size: 1.1rem; opacity: 0.95; line-height: 1.7; }
+        .featured-nav { display: flex; justify-content: center; gap: 10px; margin-top: 20px; }
+        .featured-dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; }
+        .featured-dot.active { background: #fff; }
+        
+        .login-panel { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; }
+        .login-panel.active { display: flex; }
+        .login-panel-content { background: #fff; border-radius: 16px; padding: 30px; max-width: 400px; width: 90%; text-align: center; position: relative; }
+        .login-panel-close { position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 1.5rem; cursor: pointer; }
+        .login-panel input { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #ddd; border-radius: 8px; font-size: 1rem; }
+        .login-panel button.submit { background: var(--pink); color: #fff; border: none; padding: 12px 24px; border-radius: 50px; font-size: 1rem; cursor: pointer; margin-top: 10px; }
+        
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 1.8rem; }
+            .tabs { gap: 10px; }
+            .tab-btn { padding: 10px 18px; font-size: 0.9rem; }
+        }
+            
+        .login-header { text-align: center; margin-bottom: 30px; }
+        .login-icon { font-size: 4rem; display: block; margin-bottom: 15px; }
+        .login-header h2 { font-size: 1.8rem; color: var(--text-dark); margin-bottom: 10px; }
+        .login-header p { color: var(--text-gray); font-size: 1rem; }
+        .login-form .form-group { margin-bottom: 25px; }
+        .login-form label { display: block; margin-bottom: 10px; font-weight: 600; color: var(--text-dark); }
+        .login-form input[type="tel"] { width: 100%; padding: 15px 20px; border: 2px solid var(--off-white); border-radius: 14px; font-size: 1.1rem; text-align: center; letter-spacing: 2px; }
+        .login-form input[type="tel"]:focus { outline: none; border-color: var(--pink); box-shadow: 0 0 0 4px rgba(247, 92, 154, 0.1); }
+        .login-btn { width: 100%; background: linear-gradient(135deg, #f75c9a, #ff6b9a); color: #fff; border: none; padding: 18px; border-radius: 50px; font-size: 1.1rem; font-weight: 700; cursor: pointer; box-shadow: 0 5px 25px rgba(247, 92, 154, 0.4); }
+        .login-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 35px rgba(247, 92, 154, 0.6); }
+        .login-note { text-align: center; color: var(--text-gray); font-size: 0.85rem; margin-top: 20px; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="index.html" class="logo">🍱 <span class="logo-pink">Mami's</span> <span class="logo-blue">Hero</span></a>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html">หน้าแรก</a>
+                <a href="menu.html">เมนู</a>
+                <a href="articles.html" class="active">บทความ</a>
+                <a href="shop.html">Mami Shop</a>
+                <a href="baby.html">บันทึกคุณลูก</a>
+                <a href="mom.html">บันทึกคุณแม่</a>
+                <a href="contact.html">ติดต่อ</a>
+                <a href="#" id="navLoginLink" onclick="openLogin(); return false;" style="background:var(--pink);color:#fff;padding:4px 10px;border-radius:20px;font-size:0.7rem;font-weight:600;">🔑 ล้อคอิน</a>
+                <a href="#" id="navCartLink" onclick="openCart(); return false;" style="display:none;background:var(--blue);color:#fff;padding:4px 10px;border-radius:20px;font-size:0.7rem;font-weight:600;">🛒 <span id="cartBadge" style="background:#fff;color:var(--blue);border-radius:50%;padding:1px 5px;font-size:0.65rem;">0</span></a>
+            </div>
+            
+            <div class="nav-burger" id="navBurger" onclick="toggleNav()">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+    
+    <script>
+    function toggleNav() {
+        document.getElementById('navMenu').classList.toggle('active');
+        document.getElementById('navBurger').classList.toggle('active');
+    }
+    </script>
+    
+    <section class="hero">
+        <h1>📖 ข้อมูลไว้เถียงแม่</h1>
+        <p>เรื่องหวานๆ ขำๆ สำหรับคุณแม่มือใหม่</p>
+    </section>
+    
+    <!-- Featured Rotator -->
+    <div class="articles-container">
+        <div class="featured-rotator" id="featuredRotator">
+            <h2 id="featuredTitle">❤️ ยินดีต้อนรับสู่ชีวิตแม่มือใหม่!</h2>
+            <p id="featuredContent">ถึงคุณแม่จะเพิ่งเป็นแม่ แต่อย่าลืมว่าคุณทำได้ดีที่สุดแล้ว ลูกรักคุณแม่มากที่สุด!</p>
+            <div class="featured-nav" id="featuredNav"></div>
+        </div>
+    </div>
+    
+    <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('complaints')">😂 ถูกบ่นเรื่องอะไรบ้าง</button>
+        <button class="tab-btn" onclick="showTab('baby-stories')">👶 เรื่องเล่าขำๆ</button>
+        <button class="tab-btn" onclick="showTab('tips')">💡 ทริคดีๆ</button>
+        <button class="tab-btn" onclick="showTab('yayee')">👵 เม้าส์คุณยาย!!</button>
+    </div>
+    
+    <div class="articles-container">
+        <!-- ถูกบ่นเรื่องอะไรบ้าง -->
+        <div class="articles-section active" id="complaints">
+            <div class="article-card" onclick="showArticle(0, 'complaints')">
+                <img src="images/article-namkang.jpg" alt="ทำไมไม่ดื่มน้ำอุ่น" style="width:100%;height:150px;object-fit:cover;border-radius:12px;margin-bottom:10px;">
+                <h3>🚰 "ทำไมไม่ดื่มน้ำอุ่น!" <span class="tag">ฮาไปได้</span></h3>
+                <p>ทุกครั้งที่คุณแม่หยิบน้ำเย็นขึ้นมาดื่ม ยายก็จะบอกว่า "น้ำเย็นมากนะ ลูกจะป่วยนะ!" แต่พอฤดูร้อนก็ยังบอกอยู่ดี...</p>
+            </div>
+            <div class="article-card" onclick="showArticle(1, 'complaints')">
+                <img src="images/article-bandai.jpg" alt="ห้ามขึ้นบันได" style="width:100%;height:210px;object-fit:cover;border-radius:12px;margin-bottom:10px;">
+                <h3>🪜 "ห้ามขึ้นบันได!" <span class="tag">ขำๆ</span></h3>
+                <p>คุณแม่อาศัยอยู่ชั้น 3 แต่ถูกบอกว่าห้ามขึ้นบันไดเพราะ "จะเป็นอันตราย" แต่ลูกอยู่ในท้องก็ไม่ได้มีขาไปไหนนะคะ!</p>
+            </div>
+            <div class="article-card" onclick="showArticle(2, 'complaints')">
+                <img src="images/article-satow.jpg" alt="สตอแร็กซ์" style="width:100%;height:150px;object-fit:cover;border-radius:12px;margin-bottom:10px;">
+                <h3>🧄 "กินสตอแต่ลูกจะเหม็นนะ!" <span class="tag">ยายพูด</span></h3>
+                <p>อยากกินสตอแร็กซ์มาก แต่ยายบอกว่า "กินไปลูกจะเหม็นน้ำนม" ความจริงคือกินได้เลยค่ะ ไม่มีผลอะไร!</p>
+            </div>
+            <div class="article-card" onclick="showArticle(3, 'complaints')">
+                <img src="images/article-khaoniab.jpg" alt="ข้าวเหนียวหมูปิ้ง" style="width:100%;height:150px;object-fit:cover;border-radius:12px;margin-bottom:10px;">
+                <h3>🍜 "ต้องกินข้าวเหนียวหมูปิ้ง" <span class="tag">คุณยาย</span></h3>
+                <p>ทุกมื้อถูกบังคับให้กินข้าวเหนียวหมูปิ้ง เพราะ "น้ำนมจะได้ข้นๆ" แต่ความจริงคือกินโปรตีนอะไรก็ได้ที่คุณแม่อยากกิน!</p>
+            </div>
+            <div class="article-card" onclick="showArticle(4, 'complaints')">
+                <img src="images/article-nondun.jpg" alt="นอนดึก" style="width:100%;height:150px;object-fit:cover;border-radius:12px;margin-bottom:10px;">
+                <h3>😴 "แม่ไม่ควรนอนดึก" <span class="tag">ตกใจ</span></h3>
+                <p>ทุกครั้งที่นอนดึก คุณยายจะบอกว่า "ลูกจะกลัวตอนคลอด" งั้นคนที่เล่นมือถือดึกๆ ก็ต้องระวังนะ!</p>
+            </div>
+            <div class="article-card" onclick="showArticle(5, 'complaints')">
+                <img src="images/article-aabnamyen.jpg" alt="อย่าอาบน้ำเย็น" style="width:100%;height:150px;object-fit:cover;border-radius:12px;margin-bottom:10px;">
+                <h3>🛁 "อย่าอาบน้ำเย็น ลูกจะไม่สบาย" <span class="tag">ความเชื่อ</span></h3>
+                <p>หลังคลอดถูกห้ามอาบน้ำเย็น ต้องอาบน้ำร้อนเท่านั้น แต่ความจริงคืออาบน้ำอุ่นก็ได้ไม่มีปัญหา!</p>
+            </div>
+            <div class="article-card" onclick="showArticle(6, 'complaints')">
+                <img src="images/article-tidmaitue.jpg" alt="ติดมือถือ" style="width:100%;height:150px;object-fit:cover;border-radius:12px;margin-bottom:10px;">
+                <h3>📱 "หยุดเล่นมือถือ ลูกจะติด" <span class="tag">ไม่จริง</span></h3>
+                <p>ทุกครั้งที่หยิบมือถือ คนรอบข้างจะบอกว่า "ลูกจะติดมือถือ" แต่ลูกยังเล็กมากที่จะรู้เรื่องนี้!</p>
+            </div>
+            <div class="article-card" onclick="showArticle(7, 'complaints')">
+                <img src="images/article-roonghai.jpg" alt="ทำไมยังร้องไห้" style="width:100%;height:150px;object-fit:cover;border-radius:12px;margin-bottom:10px;">
+                <h3>😢 "ทำไมยังร้องไห้ ลูกหิวขนาดนี้" <span class="tag">กดดัน</span></h3>
+                <p>ความรู้สึกเหมือนถูกกดดันว่าทำไม่ดีพอ ความจริงคือทารกร้องไห้เพราะหิว หาเปลี่ยนผ้าอ้อม หรืออยากอุ้มก็ได้!</p>
+            </div>
+            <div class="article-card" onclick="showArticle(8, 'complaints')">
+                <img src="images/article-horkoo.jpg" alt="ห่อลูกแน่นๆ" style="width:100%;height:150px;object-fit:cover;border-radius:12px;margin-bottom:10px;">
+                <h3>🧣 "ต้องห่อลูกแน่นๆ" <span class="tag">ยายบอก</span></h3>
+                <p>ยายบอกว่าต้องห่อลูกแน่นๆ ไม่งั้นจะเป็นเพราะลมเข้า แต่ความจริงคือทารกต้องการขยับมือได้!</p>
+            </div>
+            <div class="article-card" onclick="showArticle(9, 'complaints')">
+                <img src="images/article-pet.jpg" alt="ห้ามกินเผ็ด" style="width:100%;height:150px;object-fit:cover;border-radius:12px;margin-bottom:10px;">
+                <h3>🌶️ "ห้ามกินเผ็ด ลูกจะไม่สบาย" <span class="tag">โบราณ</span></h3>
+                <p>กลัวว่าเผ็ดจะทำให้ลูกผิดปกติ แต่จริงๆ แล้วอาหารรสเผ็ดไม่ได้ส่งผลต่อทารกโดยตรง!</p>
+            </div>
+        </div>
+        
+        <!-- เรื่องเล่าขำๆ -->
+        <div class="articles-section" id="baby-stories">
+            <div class="article-card" onclick="showArticle(0, 'baby-stories')">
+                <h3>👶 ลูกตาแดงตอนแรกเกิด <span class="tag">เครียม</span></h3>
+                <p>ตอนเห็นลูกใหม่ๆ ตาแดงเหมือนกระต่าย กลัวมาก แต่หมอบอกว่าเป็นปกติ สองสัปดาห์ก็หาย!</p>
+            </div>
+            <div class="article-card" onclick="showArticle(1, 'baby-stories')">
+                <h3>💩 ประวัติศาสตร์ผ้าอ้อมวันแรก <span class="tag">ฮา</span></h3>
+                <p>วันแรกที่บ้านลูกถ่ายเฉพาะตอนกลางคืน กลางวันไม่ยอมถ่าย พอดึก็ถ่ายเยอะจนเปลี่ยนทุก 2 ชม.!</p>
+            </div>
+            <div class="article-card" onclick="showArticle(2, 'baby-stories')">
+                <h3>😴 นอนกลางวันดึก ตื่นกลางคืน <span class="tag">กลับทิศ</span></h3>
+                <p>ลูกกลับกลางคืนกลางวัน เหมือนมี Jet lag แต่ตัวเอง พอตื่นเช้าก็ง่วงสุดๆ!</p>
+            </div>
+            <div class="article-card" onclick="showArticle(3, 'baby-stories')">
+                <h3>🍼 ดูดนมแต่ไม่กลืน <span class="tag">เล่น</span></h3>
+                <p>ลูกดูดนมอยู่นิ่งๆ แต่ไม่กลืน สรุปคือเล่นกับนมแม่อยู่ ไม่ได้หิว แค่อยากอุ้ม!</p>
+            </div>
+            <div class="article-card" onclick="showArticle(4, 'baby-stories')">
+                <h3>🤱 ลูกดูดนมแต่ตัวเองก็หิว <span class="tag">มาก</span></h3>
+                <p>พอลูกดูดนม ตัวเองก็หิวตามไปด้วย เหมือนร่างกายรู้ว่าต้องผลิตนมเยอะ!</p>
+            </div>
+            <div class="article-card" onclick="showArticle(5, 'baby-stories')">
+                <h3>👀 ตาไล่ตามแม่ทุกที่ <span class="tag">น่ารัก</span></h3>
+                <p>ลูกตาโตมองแม่ตลอด ไม่ว่าแม่จะไปไหน ตาเล็กๆ ก็ไล่ตามทุกที่ หัวใจละลาย!</p>
+            </div>
+            <div class="article-card" onclick="showArticle(6, 'baby-stories')">
+                <h3>🎵 ฟังเพลงแล้วร้องไห้ <span class="tag">อารมณ์</span></h3>
+                <p>พอเปิดเพลงขับร้อง ลูกกลับร้องไห้ แต่พอเปิดเพลงเบาๆ กลับหยุดร้อง งอแงจริง!</p>
+            </div>
+            <div class="article-card" onclick="showArticle(7, 'baby-stories')">
+                <h3>🪞 มองกระจกแล้วจ้อง <span class="tag">สะดุด</span></h3>
+                <p>ลูกมองกระจกแล้วจ้องตา เหมือนเห็นคนแปลกหน้า ไม่รู้ว่าตัวเองเป็นใคร!</p>
+            </div>
+            <div class="article-card" onclick="showArticle(8, 'baby-stories')">
+                <h3>😳 หัวเราะตอนเปลี่ยนผ้าอ้อม <span class="tag">ขำ</span></h3>
+                <p>พอเปลี่ยนผ้าอ้อมลูกกลับหัวเราะ งอแงมาก ไม่ยอมนิ่ง พอเสร็จก็ร้องไห้อีก!</p>
+            </div>
+            <div class="article-card" onclick="showArticle(9, 'baby-stories')">
+                <h3>🌙 ยิ้มตอนนอน <span class="tag">ฝัน</span></h3>
+                <p>ลูกยิ้มตอนนอนหลับ คุณแม่ถ่ายวิดีโอไว้ดูทั้งวัน ชีวิตติดใจ!</p>
+            </div>
+        </div>
+        
+        <!-- ทริคดีๆ -->
+        <div class="articles-section" id="tips">
+            <div class="article-card" onclick="showArticle(0, 'tips')">
+                <h3>💧 ดื่มน้ำเยอะๆ <span class="tag">สำคัญ</span></h3>
+                <p>แม่ที่ให้นมต้องดื่มน้ำอย่างน้อย 2-3 ลิตรต่อวัน น้ำนมจะได้มากและคุณภาพดี!</p>
+            </div>
+            <div class="article-card" onclick="showArticle(1, 'tips')">
+                <h3>😴 นอนเมื่อลูกนอน <span class="tag">พัก</span></h3>
+                <p>อย่าพยายามทำงานบ้านตอนลูกหลับ ใช้เวลานั้นนอนพักผ่อน ตื่นมาคุณแม่จะมีพลังมากขึ้น!</p>
+            </div>
+            <div class="article-card" onclick="showArticle(2, 'tips')">
+                <h3>🧘 ทำสมาธิแค่ 5 นาที <span class="tag">ผ่อนคลาย</span></h3>
+                <p>หายใจเข้าลึกๆ ปล่อยทุกข์ ลองนั่งสมาธิแม้แต่ 5 นาที ช่วยลดความเครียดได้!</p>
+            </div>
+            <div class="article-card" onclick="showArticle(3, 'tips')">
+                <h3>👶 อุ้มลูกติดตัว <span class="tag">ใกล้ชิด</span></h3>
+                <p>การอุ้มลูกติดตัวช่วยให้ลูกสงบและคุณแม่รู้สึกเชื่อมโยง ผิวติดผิว หัวใจสั่นพอ!</p>
+            </div>
+            <div class="article-card" onclick="showArticle(4, 'tips')">
+                <h3>🍽️ กินอาหารหลากหลาย <span class="tag">โภชนาการ</span></h3>
+                <p>ไม่ต้องกังวลเรื่องอาหารมากเกินไป กินหลากหลาย สมดุล ร่างกายจะดูแลลูกได้เอง!</p>
+            </div>
+            <div class="article-card" onclick="showArticle(5, 'tips')">
+                <h3>💪 ขอความช่วยเหลือ <span class="tag">สำคัญ</span></h3>
+                <p>อย่ากลัวที่จะขอความช่วยเหลือ สามี ยาย หรือแม่ คนรอบข้างพร้อมช่วยเสมอ!</p>
+            </div>
+            <div class="article-card" onclick="showArticle(6, 'tips')">
+                <h3>🎵 เปิดเพลงบำรุงอารมณ์ <span class="tag">มุมมอง</span></h3>
+                <p>เพลงที่ชอบช่วยให้อารมณ์ดีได้ ทั้งคุณแม่และลูกในท้อง ลองเปิดเพลงที่ทำให้มีความสุข!</p>
+            </div>
+            <div class="article-card" onclick="showArticle(7, 'tips')">
+                <h3>📝 จดบันทึกลูก <span class="tag">น่ารัก</span></h3>
+                <p>จดเรื่องน่ารักๆ ที่ลูกทำ อาจจะเป็นข้อความหรือรูป วันข้างหน้าจะอ่านแล้วอบอุ่นใจ!</p>
+            </div>
+            <div class="article-card" onclick="showArticle(8, 'tips')">
+                <h3>🚿 อาบน้ำอุ่นให้สดชื่น <span class="tag">ผ่อนคลาย</span></h3>
+                <p>อาบน้ำอุ่น 5-10 นาที ช่วยให้รู้สึกสดชื่น ลองหาสูทอาบน้ำที่ชอบกลิ่นหอม!</p>
+            </div>
+            <div class="article-card" onclick="showArticle(9, 'tips')">
+                <h3>❤️ ชมตัวเองบ้าง <span class="tag">มีค่า</span></h3>
+                <p>คุณทำได้ดีมากแล้ว! อย่าลืมชมตัวเองบ้าง คุณแม่ที่ดีที่สุดคือคุณนั่นเอง!</p>
+            </div>
+        </div>
+        
+        <!-- เม้าส์คุณยาย -->
+        <div class="articles-section" id="yayee">
+            <div style="background:linear-gradient(135deg,#fff5f8,#fff);border-radius:20px;padding:25px;margin-bottom:20px;text-align:center;">
+                <h3 style="color:var(--pink);margin-bottom:15px;">👵 เม้าส์คุณยาย!!</h3>
+                <p style="color:#666;font-size:0.95rem;margin-bottom:20px;">แม่ๆ มาแชร์เรื่องราวความยากลำบากในการรับมือกับความเชื่อต่างๆ<br>หรือเรื่องตลกที่อยากเล่าให้เพื่อนแม่ๆ ฟัง 😂</p>
+                <button onclick="showShareForm()" style="background:var(--pink);color:#fff;border:none;padding:12px 24px;border-radius:50px;font-size:1rem;font-weight:600;cursor:pointer;">✍️ แชร์เรื่องราวของแม่</button>
+            </div>
+            
+            <div id="shareForm" style="display:none;background:#fff;border-radius:20px;padding:25px;margin-bottom:20px;">
+                <h3 style="margin-bottom:15px;">📝 เขียนเรื่องราวของแม่</h3>
+                <textarea id="yayeeStory" rows="5" placeholder="แชร์เรื่องราวของแม่ที่นี่..." style="width:100%;padding:12px;border:2px solid #eee;border-radius:10px;font-size:0.95rem;margin-bottom:12px;resize:vertical;"></textarea>
+                <div style="margin-bottom:15px;">
+                    <label style="display:block;font-weight:600;margin-bottom:8px;font-size:0.9rem;">📷 เพิ่มรูป (ถ้ามี)</label>
+                    <input type="file" id="yayeeImage" accept="image/*" capture="environment" style="font-size:0.85rem;">
+                </div>
+                <div style="display:flex;gap:10px;">
+                    <button onclick="submitYayeeStory()" style="flex:1;background:var(--pink);color:#fff;border:none;padding:12px;border-radius:50px;font-size:1rem;font-weight:600;cursor:pointer;">📤 ส่งเรื่อง</button>
+                    <button onclick="hideShareForm()" style="flex:1;background:#eee;color:#666;border:none;padding:12px;border-radius:50px;font-size:1rem;font-weight:600;cursor:pointer;">✖ ยกเลิก</button>
+                </div>
+            </div>
+            
+            <div id="pendingMessage" style="display:none;background:#fff5f8;border-radius:16px;padding:20px;text-align:center;margin-bottom:20px;">
+                <p style="font-size:1.2rem;margin-bottom:10px;">🙏 ขอบคุณที่แชร์นะคะ</p>
+                <p style="color:#666;font-size:0.9rem;line-height:1.6;">แม่ห่วงเราเหมือนที่เราห่วงลูกแหละเนอะ 😊<br>บางทีที่แกวุ่นวายเพียงเพราะ เค้าห่วงเรามากแค่นั้นเอง<br>การบ่นหรือจู้จี้อาจจะแปลว่า<br><strong style="color:var(--pink);">"คุณเป็นที่รักของเค้านะ"</strong> 💕</p>
+                <p style="margin-top:15px;font-size:0.85rem;color:#999;">เรื่องราวของแม่จะได้รับการอนุมัติก่อนเผยแพร่ค่ะ</p>
+            </div>
+            
+            <div style="background:#fff;border-radius:16px;padding:20px;text-align:center;color:#999;font-size:0.9rem;">
+                <p>📌 หมายเหตุ: เรื่องราวที่ส่งจะได้รับการอนุมัติจากแอดมินก่อนเผยแพร่<br>เพื่อให้เป็นพื้นที่ที่ปลอดภัยสำหรับคุณแม่ทุกคนนะคะ</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- LOGIN PANEL -->
+    </div>
+    
+    <script>
+        // Featured articles data
+        const featuredArticles = [
+            { title: "❤️ ยินดีต้อนรับสู่ชีวิตแม่มือใหม่!", content: "ถึงคุณแม่จะเพิ่งเป็นแม่ แต่อย่าลืมว่าคุณทำได้ดีที่สุดแล้ว ลูกรักคุณแม่มากที่สุด!" },
+            { title: "😂 10 อย่างที่คุณแม่หลังคลอดถูกบ่น", content: "จาก 'ห้ามดื่มน้ำเย็น' ถึง 'ห้ามกินสตอ' มาดูกันว่าคุณแม่หลังคลอดถูกบ่นกี่อย่าง!" },
+            { title: "👶 10 วินาทีแรกที่เห็นลูก", content: "ตอนที่หมอวางลูกบนอก ทุกความเหนื่อยล้าหายไปหมด มีแต่ความรักที่เข้ามาเต็มหัวใจ!" },
+            { title: "💡 10 ทริคดีๆ สำหรับคุณแม่มือใหม่", content: "ดื่มน้ำเยอะๆ นอนเมื่อลูกนอน ขอความช่วยเหลือ และอย่าลืมดูแลตัวเองบ้าง!" },
+            { title: "🌟 คุณเป็นแม่ที่ดีที่สุดแล้ว!", content: "อย่าซีเรียสเรื่องการเลี้ยงลูกมากเกินไป ลูกต้องการแม่ที่มีความสุข ไม่ใช่แม่ที่สมบูรณ์แบบ!" }
+        ];
+        
+        let currentFeatured = 0;
+        
+        function showFeatured(index) {
+            currentFeatured = index;
+            document.getElementById('featuredTitle').textContent = featuredArticles[index].title;
+            document.getElementById('featuredContent').textContent = featuredArticles[index].content;
+            
+            // Update dots
+            const dots = document.querySelectorAll('.featured-dot');
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+        }
+        
+        function initFeaturedNav() {
+            const nav = document.getElementById('featuredNav');
+            featuredArticles.forEach((_, i) => {
+                const dot = document.createElement('div');
+                dot.className = 'featured-dot' + (i === 0 ? ' active' : '');
+                dot.onclick = () => showFeatured(i);
+                nav.appendChild(dot);
+            });
+        }
+        
+        // Auto rotate featured articles
+        setInterval(() => {
+            showFeatured((currentFeatured + 1) % featuredArticles.length);
+        }, 5000);
+        
+        function showTab(tabId) {
+            // Hide all sections
+            document.querySelectorAll('.articles-section').forEach(s => s.classList.remove('active'));
+            // Remove active from all tabs
+            document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+            
+            // Show selected
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        function showArticle(index, category) {
+            alert('📖 บทความนี้กำลังอ่าน... ขอบคุณที่ติดตาม!');
+        }
+        
+        function toggleLoginPanel() {
+            document.getElementById('loginPanel').classList.toggle('active');
+        }
+        
+        function handleLogin(e) {
+            e.preventDefault();
+            const phone = document.getElementById('loginPhone').value;
+            if (phone.length >= 9) {
+                localStorage.setItem('mami_hero_logged_in', 'true');
+                localStorage.setItem('mami_hero_phone', phone);
+                toggleLoginPanel();
+                alert('✅ เข้าสู่ระบบสำเร็จ!');
+            }
+        }
+        
+        // Yayee Share Functions
+        function showShareForm() {
+            const form = document.getElementById('shareForm');
+            if (form) form.style.display = 'block';
+        }
+        
+        function hideShareForm() {
+            const form = document.getElementById('shareForm');
+            if (form) form.style.display = 'none';
+        }
+        
+        function submitYayeeStory() {
+            const story = document.getElementById('yayeeStory').value.trim();
+            if (!story) {
+                alert('กรุณาเขียนเรื่องราวของแม่ก่อนนะคะ');
+                return;
+            }
+            
+            const imageInput = document.getElementById('yayeeImage');
+            
+            if (imageInput.files && imageInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    saveYayeeStory(story, e.target.result);
+                };
+                reader.readAsDataURL(imageInput.files[0]);
+            } else {
+                saveYayeeStory(story, '');
+            }
+        }
+        
+        function saveYayeeStory(story, imageData) {
+            let pending = JSON.parse(localStorage.getItem('yayee_pending') || '[]');
+            pending.unshift({
+                story: story,
+                image: imageData,
+                date: new Date().toISOString()
+            });
+            localStorage.setItem('yayee_pending', JSON.stringify(pending));
+            
+            document.getElementById('shareForm').style.display = 'none';
+            document.getElementById('pendingMessage').style.display = 'block';
+            document.getElementById('yayeeStory').value = '';
+            document.getElementById('yayeeImage').value = '';
+        }
+        
+        // Init
+        initFeaturedNav();
+    </script>
+    
+    <!-- Login Modal -->
+    <div class="login-modal" id="loginModal">
+        <div class="login-content">
+            <button class="modal-close" onclick="closeLogin()">×</button>
+            <div class="login-header">
+                <span class="login-icon">👩🍼</span>
+                <h2>ยินดีต้อนรับ</h2>
+                <p>เข้าสู่ระบบด้วยเบอร์มือถือ</p>
+            </div>
+            <div class="login-form">
+                <div class="form-group">
+                    <label>เบอร์มือถือ</label>
+                    <input type="tel" id="loginPhone" placeholder="08X-XXX-XXXX" maxlength="10">
+                </div>
+                <div class="form-group">
+                    <label>รหัสผ่าน</label>
+                    <input type="password" id="loginPassword" placeholder="ตั้งรหัสผ่าน" minlength="4">
+                </div>
+                <button class="login-btn" onclick="requestLogin()">🔐 เข้าสู่ระบบ</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="shared.js"></script>
+</body>
+</html>

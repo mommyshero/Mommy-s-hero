@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mami's Hero - อาหารเพื่อสุขภาพ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
+        :root{--pink:#f75c9a;--light-pink:#ff6b9a;--blue:#5c9ff7;--peach:#ffe5e5;--light-blue:#e5f0ff;--white:#fff;--text-dark:#2C3E50;}
+        body{font-family:'Prompt','Noto Sans Thai','Segoe UI',-apple-system,BlinkMacSystemFont,sans-serif;font-weight:500;color:var(--text-dark);}
+        
+        /* NAVBAR */
+        .navbar{background:var(--white);padding:15px 20px;box-shadow:0 2px 10px rgba(0,0,0,0.1);}
+        .nav-content{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;position:relative;}
+        .logo{font-size:1.5rem;font-weight:bold;text-decoration:none;}
+        .logo-pink{color:var(--pink);}
+        .logo-blue{color:var(--blue);}
+        .nav-login-btn{background:none;border:2px solid var(--pink);color:var(--pink);padding:2px 6px;border-radius:20px;cursor:pointer;font-weight:600;font-size:0.65rem;}
+        .nav-login-btn:hover{background:var(--pink);color:#fff;}
+        .nav-cart-btn{background:none;border:none;font-size:1.1rem;cursor:pointer;padding:3px 5px;}
+        .nav-menu{display:flex;gap:5px;align-items:center;}
+        .nav-menu a{color:var(--text-dark);text-decoration:none;font-weight:600;padding:8px 14px;border-radius:20px;transition:all 0.3s;font-size:0.85rem;}
+        .nav-menu a:hover,.nav-menu a.active{background:var(--pink);color:#fff;}
+        .nav-burger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;background:#f5f5f5;border-radius:8px;}
+        .nav-burger span{display:block;width:22px;height:2px;background:var(--text-dark);border-radius:2px;transition:all 0.3s;}
+        .nav-burger.active span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
+        .nav-burger.active span:nth-child(2){opacity:0;}
+        .nav-burger.active span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);}
+        @media(max-width:768px){
+            .nav-burger{display:flex;}
+            .nav-menu{display:none;position:absolute;top:100%;left:0;width:100%;background:#fff;flex-direction:column;padding:15px;box-shadow:0 5px 15px rgba(0,0,0,0.1);}
+            .nav-menu.active{display:flex;}
+            .nav-menu a{width:100%;text-align:center;padding:12px;}
+        }
+        
+        /* HERO */
+        .hero{background:linear-gradient(135deg,var(--peach),var(--light-blue));padding:120px 0 60px;}
+        .hero-container{max-width:1200px;margin:0 auto;padding:0 20px;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;}
+        .hero-text{text-align:left;}
+        .hero-text h1{font-size:2.5rem;color:var(--text-dark);margin-bottom:15px;}
+        .hero-text h1 span{color:var(--pink);}
+        .hero-text p{font-size:1.2rem;color:#666;margin-bottom:20px;}
+        .hero-buttons{display:flex;gap:10px;flex-wrap:wrap;margin-top:30px;}
+        .btn-hero{background:#fff;color:var(--pink);border:2px solid var(--pink);padding:8px 16px;border-radius:50px;font-weight:700;font-size:0.8rem;cursor:pointer;text-decoration:none;transition:all 0.3s;}
+        .btn-hero:hover{background:var(--pink);color:#fff;}
+        .hero-image{text-align:center;}
+        .hero-image img{max-width:100%;max-height:400px;border-radius:12px;}
+        .hero-links{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px;justify-content:center;}
+        .hero-links a{background:#fff;color:var(--blue);text-decoration:none;font-size:0.8rem;font-weight:600;padding:8px 16px;border-radius:50px;border:2px solid var(--blue);transition:all 0.3s;}
+        .hero-links a:hover{background:var(--blue);color:#fff;}
+        
+        /* FOOD SECTION */
+        .food-section{background:var(--peach);padding:60px 0;}
+        .food-container{max-width:1200px;margin:0 auto;padding:0 20px;display:grid;grid-template-columns:0.6fr 1fr;gap:30px;align-items:start;}
+        
+        /* FOOD LEFT - FORM */
+        .food-left h3{font-size:1.8rem;color:var(--pink);margin-bottom:15px;}
+        .food-left p{font-size:1rem;color:#666;margin-bottom:15px;}
+        .food-left input{width:100%;padding:12px;margin-bottom:12px;border:2px solid #ddd;border-radius:8px;font-size:1rem;}
+        .food-left button{background:var(--blue);color:#fff;border:none;padding:12px 24px;border-radius:8px;font-size:1rem;cursor:pointer;width:100%;margin-bottom:20px;}
+        .white-card{background:#fff;border-radius:16px;padding:20px;box-shadow:0 5px 20px rgba(0,0,0,0.1);margin-top:20px;}
+        .white-card h4{font-size:1.2rem;color:var(--pink);margin-bottom:15px;}
+        .heatmap-bar{display:flex;align-items:center;margin-bottom:12px;}
+        .heatmap-bar .label{width:60px;font-size:0.85rem;font-weight:bold;}
+        .heatmap-bar .bar{flex:1;height:12px;background:#e0e0e0;border-radius:12px;overflow:hidden;}
+        .heatmap-bar .bar-fill{height:100%;background:linear-gradient(90deg,var(--blue),#a8d0ff);border-radius:12px;}
+        .heatmap-bar .percent{font-size:0.8rem;font-weight:bold;color:var(--blue);margin-left:8px;}
+        .delivery-card{background:linear-gradient(135deg,#fffce8,#fff9c4);border:2px solid #f0d060;border-radius:16px;padding:20px;margin-top:20px;}
+        .delivery-card h3{color:#b8860b;font-size:1.1rem;margin-bottom:15px;text-align:center;}
+        .delivery-round{display:flex;gap:15px;}
+        .round-btn{cursor:pointer;flex:1;}
+        .round-btn input{display:none;}
+        .round-btn-content{display:block;background:#fff;border-radius:12px;padding:15px;text-align:center;border:2px solid #f0d060;transition:all 0.3s;}
+        .round-btn input:checked + .round-btn-content{border-color:var(--pink);background:linear-gradient(135deg,#fff5f8,#fff);box-shadow:0 4px 12px rgba(247,92,154,0.2);}
+        .round-btn-content:hover{border-color:var(--pink);}
+        .round-btn-title{font-weight:bold;color:var(--pink);font-size:0.9rem;display:block;margin-bottom:5px;}
+        .round-btn-date{font-size:0.85rem;color:#666;}
+        .extra-cards{display:flex;flex-wrap:wrap;gap:15px;margin-top:20px;}
+        .extra-card{flex:1;min-width:140px;background:#fff;border-radius:12px;padding:10px;box-shadow:0 3px 10px rgba(0,0,0,0.08);cursor:pointer;transition:all 0.3s;}
+        .extra-card:hover{border:2px solid var(--pink);}
+        .extra-card img{width:100%;height:80px;object-fit:cover;border-radius:8px;}
+        .extra-card .extra-title{font-size:0.8rem;font-weight:600;color:var(--text-dark);margin-top:8px;}
+        .extra-card .extra-price{font-size:0.75rem;color:var(--pink);font-weight:bold;}
+        
+        /* VANJAEW SECTION */
+        .vanjaew{background:var(--white);padding:60px 0;}
+        .vanjaew-header{max-width:1200px;margin:0 auto 30px;padding:0 20px;display:flex;align-items:center;gap:20px;}
+        .vanjaew-header img{width:150px;height:150px;object-fit:cover;border-radius:12px;}
+        .vanjaew-header h2{font-size:2rem;color:var(--text-dark);margin-bottom:10px;}
+        .vanjaew-header p{font-size:1.2rem;color:#666;}
+        .vanjaew-text{text-align:left;}
+        .vanjaew-services{max-width:1200px;margin:0 auto;padding:0 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:25px;}
+        .service-card{background:#fff;border-radius:16px;padding:20px;text-align:center;box-shadow:0 5px 20px rgba(0,0,0,0.08);transition:all 0.3s;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+        .service-card:hover{transform:translateY(-5px);box-shadow:0 10px 30px rgba(0,0,0,0.15);}
+        .service-card img{width:100%;height:150px;object-fit:cover;border-radius:8px;margin-bottom:15px;pointer-events:none;}
+        .service-card h3{font-size:1.1rem;color:var(--text-dark);margin-bottom:10px;}
+        .service-card p{font-size:0.9rem;color:#666;margin-bottom:10px;}
+        .service-price{font-size:1rem;font-weight:bold;color:var(--pink);}
+        .tell-jiew{background:linear-gradient(135deg,var(--pink),#ff8ab5);color:#fff;}
+        
+        /* SERVICE MODAL */
+        .service-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.4);z-index:99999;justify-content:center;align-items:center;}
+        .service-modal.active{display:flex;}
+        .service-modal-content{background:linear-gradient(180deg,#fff9fb,#fff);border-radius:24px;padding:32px;max-width:480px;width:92%;max-height:92vh;overflow-y:auto;position:relative;animation:modalSlideIn 0.4s ease;box-shadow:0 20px 60px rgba(0,0,0,0.15);border:1px solid #fce4ec;}
+        @keyframes modalSlideIn{from{transform:translateY(30px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+        @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.5;}}
+        .service-modal-close{position:absolute;top:12px;right:16px;background:#f8f8f8;border:none;width:36px;height:36px;border-radius:50%;font-size:1.5rem;color:#888;cursor:pointer;transition:all 0.3s;display:flex;align-items:center;justify-content:center;}
+        .service-modal-close:hover{background:#f0f0f0;color:var(--pink);}
+        .service-modal-header{text-align:center;margin-bottom:24px;padding-bottom:16px;border-bottom:2px solid #fce4ec;}
+        .service-modal-header h2{font-size:1.6rem;color:#2C3E50;margin-bottom:8px;font-weight:700;}
+        .service-name{font-size:1.2rem;color:var(--pink);font-weight:600;background:#fff5f8;padding:8px 20px;border-radius:20px;display:inline-block;}
+        .service-form .form-row{margin-bottom:18px;}
+        .service-form label{display:block;font-size:1rem;color:#555;margin-bottom:8px;font-weight:500;}
+        .service-form input,.service-form textarea{width:100%;padding:14px 16px;border:2px solid #e8e8e8;border-radius:14px;font-size:1rem;font-family:inherit;background:#fafafa;transition:all 0.3s;}
+        .service-form input:focus,.service-form textarea:focus{border-color:var(--pink);outline:none;background:#fff;box-shadow:0 0 0 4px rgba(247,92,154,0.1);}
+        .time-slots{display:flex;gap:12px;}
+        .time-slot{cursor:pointer;flex:1;}
+        .time-slot input{display:none;}
+        .time-slot-content{display:block;padding:14px;border:2px solid #e8e8e8;border-radius:14px;text-align:center;font-size:0.95rem;transition:all 0.3s;background:#fafafa;}
+        .time-slot input:checked + .time-slot-content{border-color:var(--pink);background:linear-gradient(135deg,#fff5f8,#fff);color:var(--pink);font-weight:600;box-shadow:0 4px 12px rgba(247,92,154,0.2);}
+        .service-submit-btn{width:100%;background:linear-gradient(135deg,var(--pink),#ff8ab5);color:#fff;border:none;padding:16px;border-radius:50px;font-size:1.15rem;font-weight:700;cursor:pointer;margin-top:16px;transition:all 0.3s;box-shadow:0 6px 20px rgba(247,92,154,0.35);}
+        .service-submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(247,92,154,0.45);}
+        .service-note{text-align:center;font-size:0.9rem;color:#888;margin-top:16px;line-height:1.6;padding:12px;background:#f8f9fa;border-radius:12px;}
+        .info-box{padding:14px;background:linear-gradient(135deg,#e8f5e9,#f1f8e9);border-radius:14px;margin-bottom:18px;font-size:0.95rem;border:1px solid #c8e6c9;}
+        .info-box .highlight{color:#43a047;font-weight:700;}
+        .price-options{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+        .price-option{padding:12px;border:2px solid #e8e8e8;border-radius:14px;text-align:center;cursor:pointer;transition:all 0.3s;background:#fafafa;font-size:0.95rem;}
+        .price-option:hover{border-color:var(--pink);background:#fff5f8;}
+        .price-option input{display:none;}
+        .price-option input:checked + span{border-color:var(--pink);background:linear-gradient(135deg,#fff5f8,#fff);color:var(--pink);font-weight:700;}
+        .price-option span{display:block;}
+        .warning-box{padding:14px;background:linear-gradient(135deg,#fff8e1,#fff3e0);border:2px solid #ffe082;border-radius:14px;font-size:0.85rem;color:#e65100;margin-top:14px;line-height:1.6;}
+        .house-size-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px;}
+        .house-size-cell{cursor:pointer;}
+        .house-size-cell input{display:none;}
+        .house-size-cell .cell-content{padding:14px;border:2px solid #e8e8e8;border-radius:14px;text-align:center;transition:all 0.3s;background:#fafafa;}
+        .house-size-cell:hover .cell-content{border-color:var(--blue);}
+        .house-size-cell input:checked + .cell-content{border-color:var(--pink);background:linear-gradient(135deg,#fff5f8,#fff);box-shadow:0 4px 12px rgba(247,92,154,0.2);}
+        .house-size-cell .cell-icon{font-size:1.8rem;margin-bottom:4px;}
+        .house-size-cell .cell-label{font-size:0.85rem;color:#555;margin-bottom:4px;}
+        .house-size-cell .cell-price{font-size:1.1rem;font-weight:700;color:var(--pink);}
+        .house-size-cell input:checked + .cell-content .cell-price{color:var(--pink);}
+        .floor-addon{margin-bottom:12px;}
+        .floor-addon .addon-checkbox{display:flex;align-items:center;padding:12px 14px;border:2px solid #e8e8e8;border-radius:12px;cursor:pointer;transition:all 0.3s;background:#fafafa;}
+        .floor-addon .addon-checkbox:hover{border-color:var(--blue);}
+        .floor-addon input{display:none;}
+        .floor-addon input:checked + span{color:var(--blue);font-weight:600;}
+        .floor-addon span{font-size:0.95rem;color:#555;}
+        .total-price{font-size:1.1rem;font-weight:700;color:var(--text-dark);margin-bottom:18px;text-align:center;padding:12px;background:#fff5f8;border-radius:12px;}
+        .tell-jiew h3,.tell-jiew p{color:#fff;}
+        .tell-jiew-icon{font-size:3rem;margin-bottom:10px;}
+        .tell-jiew-title{font-size:1.3rem;font-weight:bold;margin-bottom:10px;}
+        .tell-jiew-text{font-size:0.9rem;margin-bottom:15px;line-height:1.5;}
+        .btn-tell-jiew{display:inline-block;background:#fff;color:var(--pink);padding:10px 20px;border-radius:50px;font-weight:600;text-decoration:none;transition:all 0.3s;}
+        .btn-tell-jiew:hover{background:#ffe5e5;}
+        
+        /* CONTACT SECTION */
+        .contact-section{background-color:#FFFEF5;padding:80px 0;}
+        .contact-container{max-width:900px;margin:0 auto;padding:0 20px;}
+        .contact-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px;align-items:start;}
+        .contact-brand{text-align:left;}
+        .contact-brand h2{font-size:1.8rem;color:var(--text-dark);margin-bottom:15px;font-weight:600;}
+        .contact-brand p{color:#888;font-size:1rem;line-height:1.6;}
+        .contact-center{}
+        .contact-right{}
+        .contact-col h3{font-size:0.6rem;color:var(--pink);margin-bottom:15px;font-weight:600;text-align:center;}
+        .contact-row{display:flex;align-items:center;gap:15px;padding:10px 0;border-bottom:1px solid #f0efe0;}
+        .contact-row:last-child{border-bottom:none;}
+        .contact-row .icon{font-size:1.2rem;}
+        .contact-row .label{font-size:0.5rem;color:#999;margin-bottom:2px;}
+        .contact-row .value{font-size:0.6rem;color:var(--text-dark);font-weight:500;}
+        .contact-row .value a{color:var(--text-dark);text-decoration:none;}
+        .social-btn{display:block;padding:12px 0;border-bottom:1px solid #f0efe0;text-decoration:none;color:var(--text-dark);font-size:0.95rem;transition:all 0.3s;}
+        .social-btn:last-child{border-bottom:none;}
+        .social-btn:hover{color:var(--pink);}
+        .social-btn .soc-icon{margin-right:10px;}
+        .contact-footer{margin-top:60px;padding-top:30px;border-top:1px solid #f0efe0;text-align:center;}
+        .contact-footer p{font-size:0.85rem;color:#aaa;}
+        
+        /* FOOD RIGHT - MENU LIST */
+        .food-right{text-align:right;}
+        .food-right h3{font-size:1.8rem;color:var(--pink);margin-bottom:20px;}
+        .menu-list{}
+        .menu-item-link{text-decoration:none;display:block;color:inherit;}
+        .menu-item{display:flex;align-items:center;gap:15px;padding:15px 0;border-bottom:1px solid #eee;flex-direction:row-reverse;transition:all 0.3s;}
+        .menu-item-link:hover .menu-item{background:#fff5f8;}
+        .menu-item img{width:200px;height:200px;object-fit:cover;border-radius:8px;flex-shrink:0;}
+        .menu-item .menu-name{font-weight:bold;color:var(--text-dark);white-space:nowrap;min-width:150px;text-align:right;direction:rtl;}
+        .menu-item .menu-desc{font-size:0.85rem;color:#666;min-width:200px;text-align:right;direction:rtl;}
+        
+        /* RESPONSIVE MOBILE */
+        @media(max-width:768px){
+            *{word-wrap:break-word;overflow-wrap:break-word;}
+            body{font-size:14px;line-height:1.5;}
+            .hero{padding:80px 0 0!important;min-height:100vh!important;display:flex!important;flex-direction:column!important;}
+            .hero-container{grid-template-columns:1fr!important;gap:10px!important;padding:0 15px!important;flex:1!important;display:flex!important;flex-direction:column!important;}
+            .hero-text{text-align:center!important;width:100%!important;}
+            .hero-text h1{font-size:1.3rem!important;line-height:1.3!important;margin-bottom:8px!important;}
+            .hero-text p{font-size:0.85rem!important;margin-bottom:10px!important;}
+            .hero-buttons{display:flex!important;flex-wrap:wrap!important;justify-content:center!important;gap:6px!important;margin-top:10px!important;}
+            .btn-hero{padding:8px 12px!important;font-size:0.75rem!important;}
+            .hero-image{width:100%!important;margin-top:auto!important;display:block!important;}
+            .hero-image img{max-height:100%!important;width:100%!important;height:100vh!important;object-fit:cover!important;}
+            .hero-links{display:flex!important;flex-wrap:wrap!important;justify-content:center!important;gap:6px!important;margin-top:10px!important;}
+            .hero-links a{padding:5px 10px!important;font-size:0.7rem!important;}
+            .food-section{padding:30px 0!important;}
+            .food-container{grid-template-columns:1fr!important;padding:0 15px!important;}
+            .food-left h3{font-size:1.2rem!important;}
+            .food-left p{font-size:0.85rem!important;}
+            .white-card,.delivery-card{padding:12px!important;}
+            .vanjaew{padding:30px 0!important;}
+            .vanjaew-header{flex-direction:column!important;padding:0 15px!important;}
+            .vanjaew-header img{width:100px!important;height:100px!important;}
+            .vanjaew-header h2{font-size:1.2rem!important;}
+            .vanjaew-services{padding:0 15px!important;grid-template-columns:1fr!important;}
+            .service-card{padding:12px!important;}
+            .service-card img{height:100px!important;}
+            .contact-section{padding:40px 0!important;}
+            .contact-container{padding:0 15px!important;}
+            .contact-grid{grid-template-columns:1fr!important;gap:20px!important;}
+            .contact-brand{text-align:center!important;}
+            .menu-item img{width:80px!important;height:80px!important;}
+            .menu-item .menu-name,.menu-item .menu-desc{min-width:80px!important;font-size:0.85rem!important;}
+            .navbar{padding:10px 0!important;}
+            .logo{font-size:1rem!important;}
+            .nav-menu a{padding:10px 12px!important;font-size:0.8rem!important;}
+            .scroll-btns{bottom:10px!important;right:10px!important;}
+            .scroll-btn{width:40px!important;height:40px!important;font-size:1rem!important;}
+        }
+        
+        /* Login Modal */
+        .login-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:99999;justify-content:center;align-items:center;}
+        .login-modal.active{display:flex;}
+        .login-content{max-width:450px;background:linear-gradient(180deg,#fff,#fefefe);border-radius:24px;padding:35px;width:92%;text-align:center;position:relative;box-shadow:0 25px 60px rgba(0,0,0,0.2);border:1px solid #fce4ec;max-height:90vh;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#fce4ec transparent;}
+        .login-content::-webkit-scrollbar{width:6px;}
+        .login-content::-webkit-scrollbar-track{background:transparent;}
+        .login-content::-webkit-scrollbar-thumb{background:#fce4ec;border-radius:3px;}
+        .login-header{text-align:center;margin-bottom:25px;}
+        .login-icon{font-size:3.5rem;margin-bottom:12px;animation:pulse 2s infinite;}
+        @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
+        .login-header h2{font-size:1.7rem;color:var(--text-dark);margin-bottom:8px;font-weight:700;}
+        .login-header p{color:#666;font-size:1rem;}
+        .login-form{margin-top:20px;}
+        .login-form .form-group{margin-bottom:18px;}
+        .login-form label{display:block;font-weight:600;margin-bottom:8px;text-align:left;font-size:1rem;color:var(--text-dark);}
+        .login-form input{width:100%;padding:15px 18px;border:2px solid #e0e0e0;border-radius:14px;font-size:1.1rem;transition:all 0.3s;}
+        .login-form input:focus{border-color:var(--pink);outline:none;box-shadow:0 0 0 4px rgba(247,92,154,0.1);}
+        .login-btn{width:100%;background:linear-gradient(135deg,var(--pink),#ff6b9a);color:#fff;border:none;padding:18px;border-radius:50px;font-size:1.15rem;font-weight:700;cursor:pointer;box-shadow:0 8px 25px rgba(247,92,154,0.4);transition:all 0.3s;margin-top:10px;}
+        .login-btn:hover{transform:translateY(-3px);box-shadow:0 12px 35px rgba(247,92,154,0.5);}
+        .login-note{text-align:center;color:#999;font-size:0.95rem;margin-top:20px;line-height:1.6;}
+        .modal-close{position:absolute;top:12px;right:15px;background:#f5f5f5;border:none;width:38px;height:38px;border-radius:50%;font-size:1.3rem;cursor:pointer;color:#888;transition:all 0.3s;}
+        .modal-close:hover{background:var(--pink);color:white;}
+        
+        .scroll-btns{position:fixed;bottom:20px;right:20px;display:flex;flex-direction:column;gap:10px;z-index:999;}
+        .scroll-btn{width:45px;height:45px;border-radius:50%;border:none;font-size:1.3rem;cursor:pointer;transition:all 0.3s;}
+        .scroll-btn.up{background:var(--pink);color:white;box-shadow:0 3px 15px rgba(247,92,154,0.4);}
+        .scroll-btn.down{background:var(--blue);color:white;box-shadow:0 3px 15px rgba(92,159,247,0.4);}
+        .scroll-btn:hover{transform:scale(1.1);}
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="boh.html" class="logo">🍱 <span class="logo-pink">Mami's</span> <span class="logo-blue">Hero</span></a>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="active">หน้าแรก</a>
+                <a href="menu.html">เมนู</a>
+                <a href="articles.html">บทความ</a>
+                <a href="shop.html">Mami Shop</a>
+                <a href="baby.html">บันทึกคุณลูก</a>
+                <a href="mom.html">บันทึกคุณแม่</a>
+                <a href="contact.html">ติดต่อ</a>
+            </div>
+            
+            <div style="display:flex;gap:8px;align-items:center;">
+                <a href="#" id="navLoginLink" onclick="openLogin(); return false;" style="background:var(--pink);color:#fff;padding:4px 10px;border-radius:20px;font-size:0.7rem;font-weight:600;">🔑 ล้อคอิน</a>
+                <a href="#" id="navCartLink" onclick="openCart(); return false;" style="display:none;background:var(--blue);color:#fff;padding:4px 10px;border-radius:20px;font-size:0.7rem;font-weight:600;">🛒 <span id="cartBadge" style="background:#fff;color:var(--blue);border-radius:50%;padding:1px 5px;font-size:0.65rem;">0</span></a>
+            </div>
+            
+            <div class="nav-burger" id="navBurger" onclick="toggleNav()">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Floating Complaint Popup -->
+    <div id="complaintPopup" style="display:none;position:fixed;top:80px;right:20px;background:linear-gradient(135deg,#fff5f8,#fff);border-radius:16px;padding:20px;max-width:300px;box-shadow:0 10px 40px rgba(247,92,154,0.3);z-index:999;animation:slideIn 0.5s ease;">
+        <button onclick="closeComplaintPopup()" style="position:absolute;top:8px;right:10px;background:none;border:none;font-size:1.2rem;cursor:pointer;color:#999;">×</button>
+        <div style="text-align:center;">
+            <span id="complaintIcon" style="font-size:2.5rem;"></span>
+            <p id="complaintText" style="font-size:0.95rem;color:#555;margin:10px 0;line-height:1.5;"></p>
+            <p style="font-size:0.8rem;color:var(--pink);font-weight:600;">ถ้าโดนเหมือนกัน มาเมาส์ทางนี้!!! 👇</p>
+            <button onclick="goToArticles()" style="background:var(--pink);color:#fff;border:none;padding:8px 16px;border-radius:20px;font-size:0.85rem;cursor:pointer;margin-top:8px;">📖 อ่านเพิ่มเติม</button>
+        </div>
+    </div>
+    
+    <script>
+    const complaints = [
+        { icon: '🚰', text: '"ทำไมไม่ดื่มน้ำอุ่น!" ทุกครั้งที่หยิบน้ำเย็นขึ้นมาดื่ม...' },
+        { icon: '🪜', text: '"ห้ามขึ้นบันได!" คุณแม่อยู่ชั้น 3 แต่ลูกไม่มีบันไดไปไหน!' },
+        { icon: '🧄', text: '"กินสตอแล้วลูกจะเหม็นน้ำนม!" ความจริงคือกินได้เลย!' },
+        { icon: '🍜', text: '"ต้องกินข้าวเหนียวหมูปิ้งทุกมื้อ!" กินโปรตีนอะไรก็ได้!' },
+        { icon: '😴', text: '"อย่านอนดึก ลูกจะกลัว!" ทารกยังไม่รู้เรื่องเวลา!' },
+        { icon: '🛁', text: '"ห้ามอาบน้ำเย็น!" อาบน้ำอุ่นก็ได้ไม่มีปัญหา!' },
+        { icon: '📱', text: '"หยุดเล่นมือถือ ลูกจะติด!" ลูกยังเล็กมากที่จะรู้เรื่องนี้!' },
+        { icon: '😢', text: '"ทำไมยังร้องไห้ ลูกหิวขนาดนี้?" ทารกร้องไห้เพราะหิว หาเปลี่ยนผ้าอ้อม หรืออยากอุ้ม!' }
+    ];
+    let currentComplaint = 0;
+    
+    function showComplaint() {
+        const popup = document.getElementById('complaintPopup');
+        const icon = document.getElementById('complaintIcon');
+        const text = document.getElementById('complaintText');
+        if (popup && icon && text) {
+            icon.textContent = complaints[currentComplaint].icon;
+            text.textContent = complaints[currentComplaint].text;
+            popup.style.display = 'block';
+            currentComplaint = (currentComplaint + 1) % complaints.length;
+        }
+    }
+    
+    function closeComplaintPopup() {
+        document.getElementById('complaintPopup').style.display = 'none';
+    }
+    
+    function goToArticles() {
+        window.location.href = 'articles.html';
+    }
+    
+    // Show popup after 3 seconds
+    setTimeout(showComplaint, 3000);
+    
+    function toggleNav(){document.getElementById('navMenu').classList.toggle('active');document.getElementById('navBurger').classList.toggle('active');}
+    </script>
+    
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-text">
+                <h1>อาหารเพื่อสุขภาพ</h1>
+                <h1>สำหรับ<span>คุณแม่</span>และทุกคนในบ้าน</h1>
+                <p>App ขายอาหารและบริการครบวงจร เพื่อคุณแม่หลังคลอดและครอบครัว จัดส่งถึงบ้านสัปดาห์ละ 2 ครั้ง</p>
+                <div class="hero-buttons">
+                    <a href="menu.html" class="btn-hero">🍱 สั่งอาหาร</a>
+                    <a href="shop.html" class="btn-hero">🛍️ MAMI shop</a>
+                    <a href="#vanjaew" class="btn-hero">🛒 ฝากซื้อของ</a>
+                    <a href="#vanjaew" class="btn-hero">🔥 อยู่ไฟ</a>
+                    <a href="#vanjaew" class="btn-hero">💆 นวดเปิดท่อนม</a>
+                    <a href="#" onclick="document.getElementById('joinModal').classList.add('active'); return false;" class="btn-hero" style="background:var(--pink);color:#fff;border:2px solid var(--pink);">📦 สินค้าอยากเข้าร่วม</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="hero-food.jpg" alt="อาหาร Mami's Hero">
+                <div class="hero-links">
+                    <a href="baby.html">บันทึกคุณลูก</a>
+                    <a href="mom.html">บันทึกคุณแม่</a>
+                    <a href="articles.html">ข้อมูลไว้เถียงแม่</a>
+                    <a href="stories.html">นิทานมามิจัง</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- FOOD SECTION -->
+    <section class="food-section">
+        <div class="food-container">
+            <!-- LEFT - FORM -->
+            <div class="food-left">
+                <!-- ช่องทางคลายความเครียด -->
+                <div style="background:linear-gradient(135deg,#fff3e0,#fff);border-radius:12px;padding:15px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+                    <div style="text-align:center;margin-bottom:10px;">
+                        <img src="mami-avatar.png" alt="Mami" style="width:180px;height:180px;border-radius:50%;object-fit:cover;margin-bottom:5px;" onerror="this.src='https://ui-avatars.com/api/?name=Mami&background=f75c9a&color=fff&size=128'">
+                        <h4 style="color:var(--text-dark);margin:5px 0;font-size:1rem;">แนะนำ!! ช่องทางคลายความเครียดคุณแม่</h4>
+                    </div>
+                    <div style="background:#fff;border-radius:8px;padding:12px;font-size:0.85rem;color:#333;">
+                        <p style="margin-bottom:8px;">💙 คุณแม่ไม่ได้อยู่คนเดียวนะค่ะ</p>
+                        <a href="https://www.blissiam.org" target="_blank" style="display:block;padding:8px;background:#e3f2fd;border-radius:6px;margin:5px 0;color:var(--blue);text-decoration:none;">🌐 Blissiam - กลุ่มแม่อาสา</a>
+                        <a href="https://www.satichon.org" target="_blank" style="display:block;padding:8px;background:#e8f5e9;border-radius:6px;margin:5px 0;color:#2e7d32;text-decoration:none;">🌐 SATI - มูลนิธิสติปัญญา</a>
+                        <a href="https://www.alljit.org" target="_blank" style="display:block;padding:8px;background:#fce4ec;border-radius:6px;margin:5px 0;color:#c2185b;text-decoration:none;">🌐 Alljit - กลุ่มแม่อาสา</a>
+                        <a href="https://www.ishare.inselfcare.org" target="_blank" style="display:block;padding:8px;background:#fff3e0;border-radius:6px;margin:5px 0;color:#e65100;text-decoration:none;">🌐 iSHARE - แบ่งปันความรู้</a>
+                    </div>
+                </div>
+                
+                <h3>🥘 คุณแม่อยากหม่ำ</h3>
+                <p>อยากทานอะไรพิเศษ ส่งมาชวนเพื่อนแม่สั่ง ครบ10กล่อง เราทำให้ ส่งรอบถัดไป!!!!</p>
+                <input type="text" id="momRequestName" placeholder="ชื่อเมนูที่ต้องการ (เช่น: ข้าวผัดกุ้ง)">
+                <button onclick="submitMomRequest()">ส่งคำขอ</button>
+                
+                <div class="white-card">
+                    <h4>📊 รายการคุณแม่อยากหม่ำ โหวตเลย!!</h4>
+                    <div class="heatmap-bar"><span class="label">ข้าวผัด</span><div class="bar"><div class="bar-fill" style="width:70%;"></div></div><span class="percent">70%</span></div>
+                    <div class="heatmap-bar"><span class="label">ต้มข่า</span><div class="bar"><div class="bar-fill" style="width:45%;"></div></div><span class="percent">45%</span></div>
+                    <div class="heatmap-bar"><span class="label">แกงเขียว</span><div class="bar"><div class="bar-fill" style="width:30%;"></div></div><span class="percent">30%</span></div>
+                </div>
+                
+                <div class="delivery-card">
+                    <h3>📦 รอบส่งต่อไป</h3>
+                    <div class="delivery-round">
+                        <label class="round-btn">
+                            <input type="radio" name="deliveryRoundSelect" value="1" checked>
+                            <span class="round-btn-content">
+                                <span class="round-btn-title">📅 รอบ 1</span>
+                                <span class="round-btn-date" id="round1Date">อังคาร ช่วงสาย</span>
+                                <small style="color:#999;font-size:0.7rem;">ตัดรอบ อาทิตย์ เที่ยงคืน</small>
+                            </span>
+                        </label>
+                        <label class="round-btn">
+                            <input type="radio" name="deliveryRoundSelect" value="2">
+                            <span class="round-btn-content">
+                                <span class="round-btn-title">📅 รอบ 2</span>
+                                <span class="round-btn-date" id="round2Date">ศุกร์ ช่วงสาย</span>
+                                <small style="color:#999;font-size:0.7rem;">ตัดรอบ พุธ เที่ยงคืน</small>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="extra-cards">
+                    <div class="extra-card" onclick="window.open('menu.html', '_blank')">
+                        <img src="menu-fruit.jpg" alt="ผลไม้หั่น">
+                        <div class="extra-title">ผลไม้หั่น-คว้านเม็ด</div>
+                        <div class="extra-price">เริ่มต้น 35฿</div>
+                    </div>
+                    <div class="extra-card" onclick="window.open('menu.html', '_blank')">
+                        <img src="menu-yogurt.jpg" alt="โยเกิร์ต">
+                        <div class="extra-title">โฮมเมดโยเกิร์ต กราโนล่า</div>
+                        <div class="extra-price">เริ่มต้น 89฿</div>
+                    </div>
+                    <div class="extra-card" onclick="window.open('menu.html', '_blank')">
+                        <img src="menu-snack.jpg" alt="Healthy Snack">
+                        <div class="extra-title">Healthy Snack</div>
+                        <div class="extra-price">เริ่มต้น 49฿</div>
+                    </div>
+                    <div class="extra-card" onclick="window.open('menu.html', '_blank')">
+                        <img src="menu-pokebowl.jpg" alt="Poke Bowl">
+                        <div class="extra-title">Poke Bowl</div>
+                        <div class="extra-price">เริ่มต้น 129฿</div>
+                    </div>
+                </div>
+                
+                <a href="menu.html" class="btn-hero" style="margin-top:20px;display:block;text-align:center;">📋 ดูเมนูทั้งหมด</a>
+            </div>
+            
+            <!-- RIGHT - MENU LIST -->
+            <div class="food-right">
+                <h1 style="color:var(--text-dark);font-size:2.5rem;">อยากจะชวน <span style="color:var(--pink);">มาผูกปิ่นโตกันมั้ย?!!!</span></h1>
+                <p style="color:var(--text-dark);font-size:0.9rem;">ให้ Mami ช่วยดูแล คุณแม่และครอบครัว ด้วยอาหารที่ปรุงด้วยใจ จากพวกเรา 🌸</p>
+                <h3 style="font-size:1rem;"><a href="menu.html" style="color:var(--blue);text-decoration:none;animation:blink 1.5s infinite;">ดูเมนูอาหาร →</a></h3>
+                <div class="menu-list">
+                    <a href="menu.html" class="menu-item-link">
+                    <div class="menu-item">
+                        <img src="menu-nursing.jpg" alt="อาหารคุณแม่ให้นม">
+                        <div>
+                            <div class="menu-name">อาหารคุณแม่ให้นม</div>
+                            <div class="menu-desc">อาหารบำรุงน้ำนม อุดมสมบูรณ์ด้วยสารอาหารครบถ้วน</div>
+                        </div>
+                    </div>
+                    </a>
+                    <a href="menu.html" class="menu-item-link">
+                    <div class="menu-item">
+                        <img src="menu-clean.jpg" alt="เมนูคลีน">
+                        <div>
+                            <div class="menu-name">เมนูคลีน</div>
+                            <div class="menu-desc">ลดน้ำหนักอย่างปลอดภัย กับเมนูสุขภาพที่อร่อยได้ทุกมื้อ</div>
+                        </div>
+                    </div>
+                    </a>
+                    <a href="menu.html" class="menu-item-link">
+                    <div class="menu-item">
+                        <img src="menu-lunchbox.jpg" alt="อาหารกล่องพ่อ-ลูก">
+                        <div>
+                            <div class="menu-name">อาหารกล่องพ่อ-ลูก</div>
+                            <div class="menu-desc">พกไปทำงานหรือทานบนรถ ระหว่างเดินทางก็อร่อย</div>
+                        </div>
+                    </div>
+                    </a>
+                    <a href="menu.html" class="menu-item-link">
+                    <div class="menu-item">
+                        <img src="menu-intl.jpg" alt="ปิ่นโตนานาชาติ">
+                        <div>
+                            <div class="menu-name">ปิ่นโตนานาชาติ</div>
+                            <div class="menu-desc">สัปดาห์ละ 10 เมนู รับประทานได้ไม่ซ้ำทั้งเดือน</div>
+                        </div>
+                    </div>
+                    </a>
+                    <a href="menu.html" class="menu-item-link">
+                    <div class="menu-item">
+                        <img src="menu-thai.jpg" alt="ปิ่นโตไทย">
+                        <div>
+                            <div class="menu-name">ปิ่นโตไทย</div>
+                            <div class="menu-desc">กับข้าวปิ่นโตกับข้าวไทย สัปดาห์ละ 10 เมนู</div>
+                        </div>
+                    </div>
+                    </a>
+                    <a href="menu.html" class="menu-item-link">
+                    <div class="menu-item">
+                        <img src="menu-elderly.jpg" alt="อาหารผู้สูงอายุ">
+                        <div>
+                            <div class="menu-name">อาหารผู้สูงอายุ</div>
+                            <div class="menu-desc">อาหารเคี้ยวง่าย ดูแลสุขภาพพ่อแม่ที่มาช่วยดูแลเรา</div>
+                        </div>
+                    </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- VANJAEW SECTION -->
+    <section class="vanjaew" id="vanjaew">
+        <div class="vanjaew-header">
+            <img src="vanjaew-header.jpg" alt="วานแจ๋ว">
+            <div class="vanjaew-text">
+                <h2>วานแจ๋ว - บริการครบวงจร</h2>
+                <p>อยากให้ช่วยอะไร บอกน้องแจ๋วได้เลย! รับรองแจ๋วจริง</p>
+            </div>
+        </div>
+        <div class="vanjaew-services">
+            <div class="service-card" onclick="openServiceModal('บริการฝากซื้อของ')">
+                <img src="service-shopping.jpg" alt="ฝากซื้อของ">
+                <h3>🛒 บริการฝากซื้อของ</h3>
+                <p>ซื้อของใช้ ของกิน ส่งถึงบ้าน</p>
+                <div class="service-price">ค่าบริการ 10%</div>
+            </div>
+            <div class="service-card" onclick="openServiceModal('บริการทำความสะอาด')">
+                <img src="service-cleaning.jpg" alt="ทำความสะอาดบ้าน">
+                <h3>🧹 ทำความสะอาดบ้าน</h3>
+                <p>แม่บ้านมืออาชีพ ดูแลทั่วถึง</p>
+                <div class="service-price">เริ่มต้น 1,500฿/ครั้ง</div>
+            </div>
+            <div class="service-card" onclick="openServiceModal('บริการอยู่ไฟ')">
+                <img src="service-postpartum.jpg" alt="อยู่ไฟ">
+                <h3>🔥 บริการอยู่ไฟ</h3>
+                <p>ดูแลหลังคลอด อบร้อนถึงกระดูก</p>
+                <div class="service-price">เริ่ม 600฿/ชม.</div>
+            </div>
+            <div class="service-card" onclick="openServiceModal('บริการนวดเปิดท่อนม')">
+                <img src="service-massage.jpg" alt="นวดเปิดท่อนม">
+                <h3>💆 นวดเปิดท่อนม</h3>
+                <p>ช่วยให้น้ำนมไหลดี ปลอดภัย</p>
+                <div class="service-price">เริ่ม 500฿/ชม.</div>
+            </div>
+            <div class="service-card tell-jiew">
+                <div class="tell-jiew-icon">💬</div>
+                <div class="tell-jiew-title">บอกแจ๋ว</div>
+                <div class="tell-jiew-text">ยังไม่มีบริการที่ถูกใจ<br>ลองถามแจ๋วดู</div>
+                <a href="https://line.me/ti/p/~mamihero" target="_blank" class="btn-tell-jiew">📩 ส่งข้อความ</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CONTACT SECTION -->
+    <section class="contact-section">
+        <div class="contact-container">
+            <div class="contact-grid">
+                <!-- LEFT - Brand -->
+                <div class="contact-brand">
+                    <h2>🍱 Mommy's Hero</h2>
+                    <p>อาหารเพื่อสุขภาพสำหรับคุณแม่และลูกน้อย จัดส่งถึงบ้านสัปดาห์ละ 2 ครั้ง</p>
+                </div>
+                
+                <!-- CENTER - Contact Info -->
+                <div class="contact-center">
+                    <h3>📞 ติดต่อเรา</h3>
+                    <div class="contact-row">
+                        <span class="icon">📞</span>
+                        <div>
+                            <div class="label">โทรศัพท์</div>
+                            <div class="value"><a href="tel:02-XXX-XXXX">02-XXX-XXXX</a></div>
+                        </div>
+                    </div>
+                    <div class="contact-row">
+                        <span class="icon">📧</span>
+                        <div>
+                            <div class="label">อีเมล</div>
+                            <div class="value"><a href="mailto:hello@mommyshero.com">hello@mommyshero.com</a></div>
+                        </div>
+                    </div>
+                    <div class="contact-row">
+                        <span class="icon">📍</span>
+                        <div>
+                            <div class="label">ที่อยู่</div>
+                            <div class="value">กรุงเทพฯ, ประเทศไทย</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- RIGHT - Social -->
+                <div class="contact-right">
+                    <h3>📱 ติดตามเรา</h3>
+                    <a href="#" class="social-btn"><span class="soc-icon">📘</span>Facebook</a>
+                    <a href="#" class="social-btn"><span class="soc-icon">📷</span>Instagram</a>
+                    <a href="#" class="social-btn"><span class="soc-icon">💬</span>LINE</a>
+                </div>
+            </div>
+            
+            <div class="contact-footer">
+                <p>© 2026 Mommy's Hero. สงวนลิขสิทธิ์.</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- JOIN MODAL -->
+    <div class="service-modal" id="joinModal">
+        <div class="service-modal-content">
+            <button class="service-modal-close" onclick="document.getElementById('joinModal').classList.remove('active')">×</button>
+            <div style="text-align:center;padding:20px;">
+                <h2 style="color:var(--pink);margin-bottom:20px;">📦 สินค้าอยากเข้าร่วม</h2>
+                <p style="font-size:1rem;color:#666;margin-bottom:25px;">ติดต่อมาสอบถามได้เลยค่ะ</p>
+                <div style="display:flex;flex-direction:column;gap:15px;align-items:center;">
+                    <a href="tel:0808995394" style="display:flex;align-items:center;gap:10px;background:var(--blue);color:#fff;padding:15px 30px;border-radius:50px;font-size:1.1rem;font-weight:600;text-decoration:none;width:80%;">
+                        <span>📱</span> 080-899-5394
+                    </a>
+                    <a href="mailto:ceogascorp@gmail.com" style="display:flex;align-items:center;gap:10px;background:var(--pink);color:#fff;padding:15px 30px;border-radius:50px;font-size:1.1rem;font-weight:600;text-decoration:none;width:80%;">
+                        <span>✉️</span> ceogascorp@gmail.com
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    // AI Chat
+    <div class="service-modal" id="serviceModal">
+        <div class="service-modal-content">
+            <button class="service-modal-close" onclick="closeServiceModal()">×</button>
+            <div class="service-modal-header">
+                <h2>📅 จองบริการ</h2>
+                <p class="service-name" id="serviceModalName"></p>
+            </div>
+            <div class="service-form" id="serviceFormContent">
+                <!-- All fields generated by JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    function submitMomRequest(){
+        const name = document.getElementById('momRequestName').value;
+        if(name) alert('ส่งคำขอ: ' + name + ' เรียบร้อยแล้ว! 🍱');
+    }
+    
+    // AI Chat - Mami's Hero Chatbot
+    function sendToAI() {
+        const input = document.getElementById('aiChatInput').value.trim();
+        if(!input) { alert('กรุณาพิมพ์คำถามค่ะ'); return; }
+        
+        const responseDiv = document.getElementById('aiResponse');
+        const lowerInput = input.toLowerCase();
+        
+        let response = '';
+        
+        // คำทักทาง
+        if(lowerInput.includes('สวัสดี') || lowerInput.includes('หนู') || lowerInput.includes('สวี') || lowerInput === 'hi' || lowerInput === 'hello' || lowerInput === 'hey') {
+            response = 'สวัสดีค่ะ! 👋\n\nMami ยินดีช่วยเหลือค่ะ!\n\nถามได้เลยนะค่ะ เช่น:\n• มีเมนูอะไรบ้าง?\n• สั่งยังไง?\n• มีบริการอะไร?';
+        }
+        // เมนู / มีอะไรบ้าง
+        else if(lowerInput.includes('เมนู') || lowerInput.includes('มีอะไรบ้าง') || lowerInput.includes('เลือกเมนู') || lowerInput.includes('menu')) {
+            response = '🍱 เมนูของเรามีหลากหลายค่ะ:\n\n• อาหารคุณแม่ให้นม (ข้าวต้มปลา ปลานึ่ง ซี่ปลา)\n• เมนูคลีน (สลัด ไก่ย่าง สตรีม)\n• อาหารกล่องพ่อ-ลูก\n• ปิ่นโตนานาชาติ/ไทย\n• อาหารผู้สูงอายุ\n• ผลไม้หั่น โยเกิร์ต\n\nกด "🍱 สั่งอาหาร" เลือกเมนูได้เลยค่ะ!';
+        }
+        // นม / ให้นม / ลูก
+        else if(lowerInput.includes('นม') || lowerInput.includes('ให้นม') || lowerInput.includes('ลูก') || lowerInput.includes('ทารก') || lowerInput.includes('Baby')) {
+            response = '💕 แม่ให้นมควรกินอะไรดีคะ:\n\n✅ ควรกิน:\n• ข้าวต้มปลา - โปรตีนสูง ช่วยน้ำนม\n• ปลานึ่งมะนาว - โปรตีน + วิตามิน\n• ซี่ปลา - แคลเซียมสูง\n• ผักใบเขียว - ไฟเบอร์\n• ดื่มน้ำ 2-3 ลิตร/วัน\n\n❌ ควรหลีก:\n• อาหารเผ็ดมาก\n• กาแฟ\n• ช็อกโกแลต\n\nมีเมนูสำหรับแม่ให้นมหลายตัวเลยค่ะ!';
+        }
+        // คลีน / ลดน้ำหนัก / ผอม / clean
+        else if(lowerInput.includes('คลีน') || lowerInput.includes('ลดน้ำหนัก') || lowerInput.includes('ผอม') || lowerInput.includes('อ้วน') || lowerInput.includes('diet')) {
+            response = '🥗 เมนูคลีนของเรามีหลายตัวค่ะ:\n\n• สลัดผักรวม + น้ำสลัดน้ำส้ม (99฿)\n• ไก่ย่างต้นหอม (89฿)\n• สตรีมไก่ผักบุ้ง (89฿)\n• ข้าวเบคอนผักรวม (99฿)\n\n💡 เคล็ดลับ:\n• กินข้าวแทนขนมปัง\n• ดื่มน้ำก่อนอาหาร 30 นาที\n• กินผักก่อน 50% ของจาน';
+        }
+        // สั่ง / จอง / ซื้อ / order
+        else if(lowerInput.includes('สั่ง') || lowerInput.includes('จอง') || lowerInput.includes('ซื้อ') || lowerInput.includes('order') || lowerInput.includes('ส่ง')) {
+            response = '🍱 วิธีสั่งอาหารค่ะ:\n\n1. กดปุ่ม "🍱 สั่งอาหาร"\n2. เลือกเมนูที่ต้องการ\n3. ใส่ที่อยู่จัดส่ง\n4. เลือกวันส่ง (สัปดาห์ละ 2 ครั้ง)\n5. กดยืนยัน\n\n🚚 จัดส่งถึงบ้านค่ะ\n📞 สอบถาม: 080-899-5394';
+        }
+        // บริการ / นวด / อยู่ไฟ / service
+        else if(lowerInput.includes('บริการ') || lowerInput.includes('นวด') || lowerInput.includes('อยู่ไฟ') || lowerInput.includes('ฝากซื้อ')) {
+            response = '💆 บริการของเรามีค่ะ:\n\n• 🛒 ฝากซื้อของ - ซื้อของให้ถึงบ้าน\n• 🔥 อยู่ไฟ - ดูแลแม่หลังคลอด\n• 💆 นวดเปิดท่อนม - ช่วยให้นมไหลดี\n\nสนใจบริการไหน ติดต่อมาได้เลยค่ะ 📱 080-899-5394';
+        }
+        // shop / สินค้า / ซื้อของ
+        else if(lowerInput.includes('shop') || lowerInput.includes('สินค้า') || lowerInput.includes('ซื้อของ') || lowerInput.includes('โฟลิค') || lowerInput.includes('วิตามิน')) {
+            response = '🛍️ Mami Shop มีสินค้าค่ะ:\n\n• โฟลิค แอซิด สำหรับแม่ให้นม\n• วิตามินเสริมต่างๆ\n• ผลิตภัณฑ์ดูแลทารก\n\nกด "🛍️ MAMI shop" ไปดูสินค้าได้เลยค่ะ!';
+        }
+        // ราคา / เท่าไหร่ / price
+        else if(lowerInput.includes('ราคา') || lowerInput.includes('เท่าไหร่') || lowerInput.includes('price') || lowerInput.includes('ตัง')) {
+            response = '💰 ราคาเมนูค่ะ:\n\n• เมนูทั่วไป: 79-149 ฿\n• เมนูคลีน: 89-99 ฿\n• อาหารคุณแม่: 89-159 ฿\n• ผลไม้หั่น: 49-89 ฿\n• โยเกิร์ต: 49-79 ฿\n\n📦 ส่งฟรี! ขั้นต่ำ 200 ฿';
+        }
+        // เวลาทำงาน / จัดส่งวันไหน
+        else if(lowerInput.includes('เวลา') || lowerInput.includes('วัน') || lowerInput.includes('จัดส่ง') || lowerInput.includes('วันไหน')) {
+            response = '⏰ เวลาทำงานและจัดส่งค่ะ:\n\n• จัดส่ง: สัปดาห์ละ 2 ครั้ง\n• เช่น วันพุธ และ วันเสาร์\n• หรือตามที่ตกลงกับลูกค้า\n\n📞 สอบถามเพิ่มเติม: 080-899-5394';
+        }
+        // ติดต่อ / เบอร์ / โทร / contact
+        else if(lowerInput.includes('ติดต่อ') || lowerInput.includes('เบอร์') || lowerInput.includes('โทร') || lowerInput.includes('contact') || lowerInput.includes('line')) {
+            response = '📞 ติดต่อ Mami ได้เลยค่ะ:\n\n• 📱 080-899-5394\n• ✉️ ceogascorp@gmail.com\n• 💬 LINE: @momyshero\n\nยินดีช่วยเหลือค่ะ! 💕';
+        }
+        // สินค้าอยากเข้าร่วม / ร่วมงาน / ขายของ
+        else if(lowerInput.includes('เข้าร่วม') || lowerInput.includes('ร่วมงาน') || lowerInput.includes('ขาย') || lowerInput.includes('supplier') || lowerInput.includes('สินค้า')) {
+            response = '📦 สินค้าอยากเข้าร่วมกับ Mami มั้ยคะ?\n\nติดต่อได้เลยค่ะ!\n\n• 📱 080-899-5394\n• ✉️ ceogascorp@gmail.com\n\nยินดีร่วมงานค่ะ! 💕';
+        }
+        // ขอบคุณ / ขอบใจ
+        else if(lowerInput.includes('ขอบคุณ') || lowerInput.includes('ขอบใจ') || lowerInput.includes('thank') || lowerInput.includes('thx')) {
+            response = '💕 ไม่เป็นไรค่ะ!\n\nยินดีช่วยเหลือเสมอนะค่ะ\nถ้ามีอะไรถามเพิ่มได้เลยค่ะ!';
+        }
+        // เครียด / ซึม / เศร้า / ทุกข์ / ช่วย / หนักใจ
+        else if(lowerInput.includes('เครียด') || lowerInput.includes('ซึม') || lowerInput.includes('เศร้า') || lowerInput.includes('ทุกข์') || lowerInput.includes('หนักใจ') || lowerInput.includes('กดดัน') || lowerInput.includes('แย่')) {
+            response = '💙 แนะนำ!! ช่องทางคลายความเครียดคุณแม่:\n\n• 🌐 Blissiam.org - กลุ่มแม่อาสา\n• 🌐 SATI - มูลนิธิสติปัญญา\n• Alljit - กลุ่มแม่อาสา\n• iSHARE - แบ่งปันความรู้\n\n💕 คุณแม่ไม่ได้อยู่คนเดียวนะค่ะ';
+        }
+        // ตอบไม่ได้ / ไม่เข้าใจ
+        else {
+            response = '💬 ' + input + '\n\nขอบคุณที่ถามค่ะ! Mami จะพยายามตอบให้นะค่ะ\n\nถ้าต้องการคุยเพิ่มเติม ติดต่อได้ที่ 📱 080-899-5394 ค่ะ\nหรือกด "🍱 สั่งอาหาร" ได้เลยค่ะ!';
+        }
+        
+        responseDiv.style.display = 'block';
+        responseDiv.innerHTML = response.replace(/\n/g, '<br>').replace(/✅/g, '<br>✅').replace(/❌/g, '<br>❌').replace(/•/g, '<br>•');
+    }
+    
+    function sendToAIHero() {
+        const input = document.getElementById('aiChatInputHero').value.trim();
+        if(!input) return;
+        
+        const responseDiv = document.getElementById('aiResponseHero');
+        const lowerInput = input.toLowerCase();
+        
+        let response = '';
+        
+        if(lowerInput.includes('นม') || lowerInput.includes('ให้นม') || lowerInput.includes('ลูก')) {
+            response = '💕 แม่ให้นมควรกินข้าวต้มปลา ปลานึ่ง ผักFiber ดื่มน้ำเยอะๆ';
+        } else if(lowerInput.includes('คลีน') || lowerInput.includes('ลดน้ำหนัก')) {
+            response = '🥗 มีสลัดผัก ไก่ย่าง สตรีมไก่ สั่งได้เลย!';
+        } else if(lowerInput.includes('จอง') || lowerInput.includes('สั่ง')) {
+            response = '🍱 กด "สั่งอาหาร" ได้เลยค่ะ';
+        } else if(lowerInput.includes('บริการ') || lowerInput.includes('นวด')) {
+            response = '💆 มีฝากซื้อของ อยู่ไฟ นวดเปิดท่อนม';
+        } else if(lowerInput.includes('เครียด') || lowerInput.includes('เศร้า') || lowerInput.includes('ช่วย')) {
+            response = '💙 พร้อมรับฟังนะค่ะ หรือติดต่อ 080-899-5394';
+        } else {
+            response = '💬 ขอบคุณค่ะ ติดต่อ 080-899-5394 ได้เลย!';
+        }
+        
+        responseDiv.style.display = 'block';
+        responseDiv.textContent = response;
+    }
+    
+    function sendToAIFood() {
+        const input = document.getElementById('aiChatInputFood').value.trim();
+        if(!input) return;
+        
+        const responseDiv = document.getElementById('aiResponseFood');
+        const lowerInput = input.toLowerCase();
+        
+        let response = '';
+        
+        if(lowerInput.includes('นม') || lowerInput.includes('ให้นม') || lowerInput.includes('ลูก')) {
+            response = '💕 แม่ให้นมควรกินข้าวต้มปลา ปลานึ่ง ผักFiber';
+        } else if(lowerInput.includes('คลีน') || lowerInput.includes('ลดน้ำหนัก')) {
+            response = '🥗 มีสลัดผัก ไก่ย่าง สตรีมไก่';
+        } else if(lowerInput.includes('จอง') || lowerInput.includes('สั่ง')) {
+            response = '🍱 สั่งได้เลยค่ะ!';
+        } else if(lowerInput.includes('บริการ') || lowerInput.includes('นวด')) {
+            response = '💆 มีฝากซื้อ อยู่ไฟ นวดเปิดท่อนม';
+        } else {
+            response = '💬 ติดต่อ 080-899-5394 ได้เลยค่ะ';
+        }
+        
+        responseDiv.style.display = 'block';
+        responseDiv.textContent = response;
+    }
+    
+    // Service Booking Modal
+    let currentService = "";
+    
+    function openServiceModal(serviceName) {
+        currentService = serviceName;
+        document.getElementById("serviceModalName").textContent = serviceName;
+        
+        let fieldsHTML = "";
+        
+        if (serviceName === "บริการฝากซื้อของ") {
+            fieldsHTML = `
+<div class="form-row">
+<label>เลือกวันที่</label>
+<input type="date" id="serviceDate" placeholder="dd/mm/yyyy">
+</div>
+<div class="form-row">
+<label>📦 เลือกรอบส่ง</label>
+<div class="time-slots">
+<label class="time-slot"><input type="radio" name="deliveryRound" value="tue" checked><span class="time-slot-content">📅 อังคาร ช่วงสาย</span></label>
+<label class="time-slot"><input type="radio" name="deliveryRound" value="fri"><span class="time-slot-content">📅 ศุกร์ ช่วงสาย</span></label>
+</div>
+</div>
+<div class="info-box">
+💰 ค่าส่งเริ่มต้น <span class="highlight">30฿</span> (คิดตามน้ำหนัก/ระยะทาง)
+</div>
+<div class="form-row">
+<label>รายการของที่ให้ซื้อ</label>
+<textarea id="shoppingList" placeholder="ระบุรายการของที่ต้องการ พร้อมประมาณราคา" rows="3"></textarea>
+</div>
+<div class="form-row">
+<label>💰 โอนเงินมาล่วงหน้า</label>
+<div class="price-options">
+<label class="price-option"><input type="radio" name="prepay" value="500"><span>500฿</span></label>
+<label class="price-option"><input type="radio" name="prepay" value="1000"><span>1,000฿</span></label>
+<label class="price-option"><input type="radio" name="prepay" value="1500"><span>1,500฿</span></label>
+<label class="price-option"><input type="radio" name="prepay" value="2000"><span>2,000฿</span></label>
+</div>
+</div>
+<div class="form-row">
+<label>📍 ที่อยู่จัดส่ง</label>
+<textarea id="serviceAddress" placeholder="กรอกที่อยู่สำหรับให้บริการ" rows="2"></textarea>
+</div>
+<div class="form-row">
+<label>ชื่อ-นามสกุล</label>
+<input type="text" id="serviceName" placeholder="กรอกชื่อของคุณ">
+</div>
+<div class="form-row">
+<label>เบอร์โทรศัพท์</label>
+<input type="tel" id="servicePhone" placeholder="08X-XXX-XXXX">
+</div>
+<div class="form-row">
+<label>หมายเหตุเพิ่มเติม</label>
+<textarea id="serviceNote" placeholder="ข้อความพิเศษที่ต้องการแจ้ง" rows="2"></textarea>
+</div>
+<div class="warning-box">⚠️ ทาง Mami ขอสงวนสิทธิ์ไม่รับออร์เดอร์จากสินค้าที่น่าสงสัยว่าจะเป็นสิ่งผิดกฎหมาย และจะแจ้งความทันที</div>`;
+        } else if (serviceName === "บริการทำความสะอาด") {
+            fieldsHTML = `
+<div class="form-row">
+<label>เลือกวันที่</label>
+<input type="date" id="serviceDate" placeholder="dd/mm/yyyy">
+</div>
+<div class="form-row">
+<label>เลือกช่วงเวลา</label>
+<div class="time-slots">
+<label class="time-slot"><input type="radio" name="timeSlot" value="morning"><span class="time-slot-content">🌅 เช้า (9:00 - 12:00)</span></label>
+<label class="time-slot"><input type="radio" name="timeSlot" value="afternoon"><span class="time-slot-content">🌇 บ่าย (13:00 - 17:00)</span></label>
+</div>
+</div>
+<div class="form-row">
+<label>🏠 ขนาดบ้าน</label>
+<div class="house-size-grid">
+<label class="house-size-cell">
+<input type="radio" name="houseSize" value="900" checked onchange="calculateCleaningPrice()">
+<div class="cell-content">
+<div class="cell-icon">🏠</div>
+<div class="cell-label">คอนโด/ห้องเดี่ยว</div>
+<div class="cell-price">900฿</div>
+</div>
+</label>
+<label class="house-size-cell">
+<input type="radio" name="houseSize" value="1200" onchange="calculateCleaningPrice()">
+<div class="cell-content">
+<div class="cell-icon">🏡</div>
+<div class="cell-label">บ้านเล็ก</div>
+<div class="cell-price">1,200฿</div>
+</div>
+</label>
+<label class="house-size-cell">
+<input type="radio" name="houseSize" value="1600" onchange="calculateCleaningPrice()">
+<div class="cell-content">
+<div class="cell-icon">🏠</div>
+<div class="cell-label">บ้านกลาง</div>
+<div class="cell-price">1,600฿</div>
+</div>
+</label>
+<label class="house-size-cell">
+<input type="radio" name="houseSize" value="2200" onchange="calculateCleaningPrice()">
+<div class="cell-content">
+<div class="cell-icon">🏘️</div>
+<div class="cell-label">บ้านใหญ่</div>
+<div class="cell-price">2,200฿</div>
+</div>
+</label>
+</div>
+<div class="floor-addon">
+<label class="addon-checkbox">
+<input type="checkbox" id="has2floor" onchange="calculateCleaningPrice()">
+<span>🏢 มีชั้น 2 (+50%)</span>
+</label>
+</div>
+<div class="total-price">💰 ราคาบริการ: <span id="cleaningTotal">900</span>฿</div>
+</div>
+<div class="form-row">
+<label>📍 ที่อยู่บริการ</label>
+<textarea id="serviceAddress" placeholder="กรอกที่อยู่สำหรับให้บริการ" rows="2"></textarea>
+</div>
+<div class="info-box">
+📦 ค่าส่ง (หากมีของที่ต้องส่งกลับ): <span class="highlight">30฿</span>
+</div>
+<div class="form-row">
+<label>ชื่อ-นามสกุล</label>
+<input type="text" id="serviceName" placeholder="กรอกชื่อของคุณ">
+</div>
+<div class="form-row">
+<label>เบอร์โทรศัพท์</label>
+<input type="tel" id="servicePhone" placeholder="08X-XXX-XXXX">
+</div>
+<div class="form-row">
+<label>หมายเหตุเพิ่มเติม</label>
+<textarea id="serviceNote" placeholder="ข้อความพิเศษที่ต้องการแจ้ง" rows="2"></textarea>
+</div>`;
+        } else {
+            fieldsHTML = `
+<div class="form-row">
+<label>เลือกวันที่</label>
+<input type="date" id="serviceDate" placeholder="dd/mm/yyyy">
+</div>
+<div class="form-row">
+<label>เลือกช่วงเวลา</label>
+<div class="time-slots">
+<label class="time-slot"><input type="radio" name="timeSlot" value="morning"><span class="time-slot-content">🌅 เช้า (9:00 - 12:00)</span></label>
+<label class="time-slot"><input type="radio" name="timeSlot" value="afternoon"><span class="time-slot-content">🌇 บ่าย (13:00 - 17:00)</span></label>
+</div>
+</div>
+<div class="form-row">
+<label>📍 ที่อยู่บริการ</label>
+<textarea id="serviceAddress" placeholder="กรอกที่อยู่สำหรับให้บริการ" rows="2"></textarea>
+</div>
+<div class="info-box">
+🚗 ค่าเดินทาง: <span class="highlight">ตามระยะทางจริง</span>
+</div>
+<div class="form-row">
+<label>ชื่อ-นามสกุล</label>
+<input type="text" id="serviceName" placeholder="กรอกชื่อของคุณ">
+</div>
+<div class="form-row">
+<label>เบอร์โทรศัพท์</label>
+<input type="tel" id="servicePhone" placeholder="08X-XXX-XXXX">
+</div>
+<div class="form-row">
+<label>หมายเหตุเพิ่มเติม</label>
+<textarea id="serviceNote" placeholder="ข้อความพิเศษที่ต้องการแจ้ง" rows="2"></textarea>
+</div>`;
+        }
+        
+        fieldsHTML += `<button class="service-submit-btn" onclick="submitBooking()">📩 ส่งคำจอง + แนบสลิป</button>
+<div class="service-note">💡 ทาง Mami จะยืนยันคิวใน 1-3 วัน<br>หากไม่มีการติดต่อ โทรหาเราได้เลย</div>`;
+        
+        document.getElementById("serviceFormContent").innerHTML = fieldsHTML;
+        document.getElementById("serviceModal").classList.add("active");
+    }
+    
+    function calculateCleaningPrice() {
+        const basePrice = parseInt(document.querySelector('input[name="houseSize"]:checked')?.value || "900");
+        const has2Floor = document.getElementById("has2floor")?.checked;
+        const total = has2Floor ? Math.round(basePrice * 1.5) : basePrice;
+        document.getElementById("cleaningTotal").textContent = total.toLocaleString();
+    }
+    
+    function closeServiceModal() {
+        document.getElementById("serviceModal").classList.remove("active");
+    }
+    
+    function submitBooking() {
+        const date = document.getElementById("serviceDate").value;
+        const name = document.getElementById("serviceName").value;
+        const phone = document.getElementById("servicePhone").value;
+        const address = document.getElementById("serviceAddress").value;
+        
+        if (!date || !name || !phone || !address) {
+            alert("กรุณากรอกข้อมูลให้ครบ");
+            return;
+        }
+        
+        alert("ส่งคำจองสำเร็จ! 📩 กรุณาแนบสลิปโอนเงิน\n\nทาง Mami จะติดต่อกลับภายใน 1-3 วัน\nหากไม่มีการติดต่อ โทรหาเราได้เลย\n\n📍 ที่อยู่จัดส่ง: " + address);
+        closeServiceModal();
+    }
+    
+    document.addEventListener("click", function(e) {
+        const modal = document.getElementById("serviceModal");
+        if (e.target === modal) {
+            closeServiceModal();
+        }
+    });
+    </script>
+    
+    <!-- Login Modal -->
+    <div class="login-modal" id="loginModal">
+        <div class="login-content">
+            <button class="modal-close" onclick="closeLogin()">×</button>
+            <div class="login-header">
+                <span class="login-icon">👩🍼</span>
+                <h2>ยินดีต้อนรับ</h2>
+                <p id="loginHint">ครั้งแรก: ตั้งรหัสผ่าน</p>
+            </div>
+            <div class="login-form">
+                <div class="form-group">
+                    <input type="tel" id="loginPhone" placeholder="เบอร์มือถือ 10 หลัก" maxlength="10" style="width:100%;padding:12px;border:2px solid #ddd;border-radius:10px;font-size:1rem;">
+                </div>
+                <div class="form-group">
+                    <input type="password" id="loginPassword" placeholder="รหัสผ่าน (อย่างน้อย 4 ตัว)" minlength="4" style="width:100%;padding:12px;border:2px solid #ddd;border-radius:10px;font-size:1rem;">
+                </div>
+                <button class="login-btn" onclick="requestLogin()">🔐 <span id="loginBtnText">ตั้งรหัส & เข้าใช้</span></button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scroll Buttons -->
+    <div class="scroll-btns" style="flex-direction:row!important;">
+        <button class="scroll-btn up" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="margin-right:10px;">▲</button>
+        <button class="scroll-btn down" onclick="window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})">▼</button>
+    </div>
+    
+    <script src="shared.js"></script>
+</body>
+</html>

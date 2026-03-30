@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>บันทึกคุณแม่ - Mami's Hero</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pink: #f75c9a;
+            --light-pink: #ffb6d9;
+            --blue: #5c9ff7;
+            --text-dark: #2C3E50;
+            --text-gray: #666;
+            --white: #fff;
+            --peach: #fff5f7;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Prompt', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--peach); color: var(--text-dark); font-weight: 500; }
+        
+        /* Navbar */
+        .navbar { background: var(--white); padding: 15px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .nav-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 1.5rem; font-weight: bold; text-decoration: none; }
+        .logo-pink { color: var(--pink); }
+        .logo-blue { color: var(--blue); }
+        .nav-cart-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; padding: 5px 10px; }
+        .nav-login-btn { background: none; border: 2px solid var(--pink); color: var(--pink); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: 600; }
+        .nav-menu { display: flex; gap: 5px; align-items: center; }
+        .nav-menu a { color: var(--text-dark); text-decoration: none; font-weight: 600; padding: 8px 14px; border-radius: 20px; transition: all 0.3s; font-size: 0.85rem; }
+        .nav-menu a:hover, .nav-menu a.active { background: var(--pink); color: #fff; }
+        
+        /* Burger Menu */
+        .nav-burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 8px; background: #f5f5f5; border-radius: 8px; }
+        .nav-burger span { display: block; width: 22px; height: 2px; background: var(--text-dark); border-radius: 2px; transition: all 0.3s; }
+        .nav-burger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+        .nav-burger.active span:nth-child(2) { opacity: 0; }
+        .nav-burger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+        
+        /* Mobile Nav */
+        @media (max-width: 768px) {
+            .nav-burger { display: flex; }
+            .nav-menu { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: #fff; flex-direction: column; padding: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+            .nav-menu.active { display: flex; }
+            .nav-menu a { width: 100%; text-align: center; padding: 12px; }
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            max-width: 100%;
+            margin: 60px 0 0;
+            padding: 0;
+        }
+        .hero-section img { width: 100%; height: auto; display: block; }
+        .mini-win-card { background: white; border-radius: 16px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; margin: 15px; }
+        .mini-win-card h3 { font-size: 1rem; color: #333; margin-bottom: 15px; }
+        .mini-chart { display: flex; align-items: center; gap: 10px; }
+        .mini-circle { position: relative; width: 60px; height: 60px; }
+        .mini-circle svg { width: 100%; height: 100%; }
+        .mini-circle span { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 0.8rem; font-weight: bold; color: var(--pink); }
+        .mini-days { display: flex; gap: 3px; font-size: 0.6rem; color: #888; }
+        .mini-days span { padding: 2px 4px; }
+        .mini-motivation { font-size: 0.75rem; color: var(--pink); margin-top: 8px; font-weight: 600; }
+        .mini-textarea { width: 100%; padding: 8px; border: 2px solid #ffe5e5; border-radius: 8px; font-size: 0.75rem; resize: none; margin-top: 8px; font-family: inherit; }
+        .mini-textarea:focus { outline: none; border-color: var(--pink); }
+        .mini-notes { font-size: 0.7rem; color: #888; margin-top: 5px; max-height: 40px; overflow-y: auto; text-align: left; }
+        
+        /* Dashboard Grid */
+        .dashboard {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+        
+        /* Card */
+        .card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ffe5e5;
+        }
+        
+        /* Checklist */
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .checklist-item:hover { background: #ffe5e5; transform: translateX(5px); }
+        .checklist-item input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--pink); cursor: pointer; }
+        .checklist-item span { flex: 1; font-size: 0.95rem; }
+        .checklist-item { display: flex; align-items: center; gap: 8px; }
+        .mami-buy-btn { padding: 5px 12px; border: none; border-radius: 20px; background: #fff4b8; color: #b8860b; font-size: 0.75rem; cursor: pointer; white-space: nowrap; font-weight: 600; animation: blink 1s infinite; }
+        
+        /* Blink Animation */
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        @-webkit-keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .blink-mami { -webkit-animation: blink 1s infinite; animation: blink 1s infinite; display: inline-block; }
+        
+        /* Progress */
+        .progress-bar {
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--pink), var(--blue));
+            width: 0%;
+            transition: width 0.5s;
+        }
+        .progress-text { font-size: 0.9rem; color: var(--text-gray); margin-bottom: 5px; }
+        .motivation { font-size: 0.85rem; color: var(--pink); font-weight: 600; }
+        
+        /* Note */
+        .note-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            resize: vertical;
+            font-family: inherit;
+            margin-bottom: 10px;
+        }
+        .note-textarea:focus { outline: none; border-color: var(--pink); }
+        .save-btn {
+            background: var(--pink);
+            color: var(--white);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .save-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(247,92,154,0.3); }
+        
+        /* Activities */
+        .activity-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .activity-btn {
+            padding: 12px;
+            border: 2px solid var(--light-pink);
+            border-radius: 50px;
+            background: linear-gradient(135deg, #fff5f8, #fff);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        .activity-btn:hover { border-color: var(--pink); background: linear-gradient(135deg, #ffe5f0, #fff); transform: translateY(-2px); box-shadow: 0 4px 15px rgba(247,92,154,0.2); }
+        .activity-btn.active { border-color: var(--pink); background: linear-gradient(135deg, var(--light-pink), #fff); }
+        
+        /* Relax List */
+        .relax-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .relax-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--text-dark);
+            transition: all 0.3s;
+        }
+        .relax-item:hover { background: #fff5f8; transform: translateX(5px); }
+        .relax-icon { font-size: 1.8rem; }
+        .relax-info { display: flex; flex-direction: column; }
+        .relax-title { font-size: 0.95rem; font-weight: 600; }
+        .relax-desc { font-size: 0.8rem; color: var(--text-gray); }
+        .relax-links-title { font-size: 0.9rem; font-weight: 600; color: var(--text-dark); margin: 15px 0 10px; padding-top: 15px; border-top: 2px solid #ffe5e5; }
+        .service-btns { display: flex; gap: 8px; margin-top: 15px; }
+        .service-btn { flex: 1; padding: 12px 8px; border: none; border-radius: 12px; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+        .service-btn span { font-size: 1.3rem; }
+        .service-btn.shop { background: linear-gradient(135deg, #fff4b8, #fff); border: 2px solid #f0d060; color: #b8860b; }
+        .service-btn.food { background: linear-gradient(135deg, #fff5f8, #fff); border: 2px solid var(--light-pink); color: var(--pink); }
+        .service-btn.massage { background: linear-gradient(135deg, #e8f4ff, #fff); border: 2px solid var(--blue); color: var(--blue); }
+        .service-btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.15); }
+        
+        /* Success Chart */
+        .success-chart { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+        .chart-circle { position: relative; width: 80px; height: 80px; }
+        .chart-circle svg { width: 100%; height: 100%; }
+        .chart-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+        .chart-percent { font-size: 1rem; font-weight: bold; color: var(--pink); display: block; }
+        .chart-label { font-size: 0.7rem; color: var(--text-gray); }
+        .week-chart { display: flex; gap: 4px; align-items: flex-end; height: 60px; flex: 1; }
+        .day-bar { display: flex; flex-direction: column; align-items: center; gap: 3px; flex: 1; }
+        .day-bar .bar-fill { width: 100%; background: linear-gradient(to top, var(--pink), var(--blue)); border-radius: 4px 4px 0 0; min-height: 4px; transition: height 0.5s; }
+        .day-bar span { font-size: 0.65rem; color: var(--text-gray); }
+        
+        /* Pump Alarm */
+        .pump-timer-display { text-align: center; padding: 15px; background: linear-gradient(135deg, #fff5f8, #fff); border-radius: 12px; margin-bottom: 12px; }
+        .pump-timer-display span { font-size: 2.2rem; font-weight: bold; color: var(--pink); display: block; }
+        .pump-timer-display small { color: var(--text-gray); font-size: 0.8rem; }
+        .pump-controls { display: flex; gap: 8px; margin-bottom: 12px; }
+        .pump-btn { flex: 1; padding: 12px; border: none; border-radius: 50px; font-size: 0.9rem; font-weight: 600; cursor: pointer; background: var(--pink); color: white; transition: all 0.3s; }
+        .pump-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(247,92,154,0.3); }
+        .pump-btn.stop { background: var(--blue); }
+        .pump-interval { display: flex; align-items: center; gap: 8px; margin-bottom: 15px; font-size: 0.9rem; }
+        .pump-interval select { padding: 8px 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 0.9rem; cursor: pointer; }
+        .pump-record h4, .pump-summary h4 { font-size: 0.85rem; color: var(--text-dark); margin-bottom: 8px; }
+        .volume-input { display: flex; gap: 8px; margin-bottom: 12px; }
+        .volume-input input { flex: 1; padding: 10px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 0.9rem; }
+        .volume-input input:focus { outline: none; border-color: var(--pink); }
+        .pump-summary { background: #f8f9fa; padding: 12px; border-radius: 12px; }
+        .pump-summary #pumpSummary { font-size: 0.85rem; color: var(--text-gray); line-height: 1.6; }
+        
+        /* Water Alarm */
+        .water-timer-display { text-align: center; padding: 15px; background: linear-gradient(135deg, #e8f4ff, #fff); border-radius: 12px; margin-bottom: 12px; }
+        .water-timer-display span { font-size: 2.2rem; font-weight: bold; color: var(--blue); display: block; }
+        .water-timer-display small { color: var(--text-gray); font-size: 0.8rem; }
+        .water-controls { display: flex; gap: 8px; margin-bottom: 12px; }
+        .water-btn { flex: 1; padding: 12px; border: none; border-radius: 50px; font-size: 0.9rem; font-weight: 600; cursor: pointer; background: var(--blue); color: white; transition: all 0.3s; }
+        .water-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(92,159,247,0.3); }
+        .water-btn.stop { background: #888; }
+        .water-count { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #f0f8ff; border-radius: 8px; font-size: 0.9rem; }
+        .small-btn { padding: 6px 12px; border: none; border-radius: 20px; background: var(--blue); color: white; font-size: 0.8rem; cursor: pointer; }
+        
+        /* Encouragement Popup */
+        .encourage-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        .encourage-popup.show { display: flex; }
+        .encourage-content {
+            background: linear-gradient(135deg, #fff5f8, #fff);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+            max-width: 380px;
+            position: relative;
+            animation: popIn 0.4s ease;
+            box-shadow: 0 15px 50px rgba(247,92,154,0.4);
+            border: 3px solid var(--light-pink);
+        }
+        @keyframes popIn { from { transform: scale(0.5) rotate(-10deg); opacity: 0; } to { transform: scale(1) rotate(0deg); opacity: 1; } }
+        .encourage-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.8rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #999;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        .encourage-close:hover { background: #ffe5e5; color: var(--pink); }
+        .encourage-icon { font-size: 5rem; margin-bottom: 15px; animation: bounce 1s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .encourage-content p { font-size: 1.4rem; color: var(--text-dark); line-height: 1.6; font-weight: 600; background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .encourage-btn { width: 100%; padding: 12px; border: 2px dashed var(--pink); border-radius: 12px; background: #fff5f8; color: var(--pink); font-size: 0.95rem; font-weight: 600; cursor: pointer; margin-bottom: 12px; transition: all 0.3s; }
+        .encourage-btn:hover { background: var(--pink); color: white; }
+        
+        /* Alarm Mini */
+        .alarm-mini { margin-top: 15px; padding-top: 15px; border-top: 2px solid #ffe5e5; }
+        .alarm-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+        .alarm-icon { font-size: 1.5rem; }
+        .alarm-header h4 { font-size: 0.9rem; color: var(--text-dark); margin: 0; }
+        .alarm-display { text-align: center; padding: 10px; background: linear-gradient(135deg, #e8f4ff, #fff); border-radius: 12px; margin-bottom: 10px; }
+        .alarm-display span { font-size: 1.8rem; font-weight: bold; color: var(--blue); }
+        .alarm-row { display: flex; gap: 8px; margin-bottom: 10px; }
+        .mini-btn { flex: 1; padding: 10px; border: none; border-radius: 10px; background: var(--blue); color: white; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .mini-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(92,159,247,0.3); }
+        .mini-btn.pump { background: var(--pink); }
+        .mini-btn.pump:hover { box-shadow: 0 4px 12px rgba(247,92,154,0.3); }
+        .mini-btn.stop { background: #888; }
+        .water-progress { display: flex; justify-content: space-between; align-items: center; padding: 8px; background: #f0f8ff; border-radius: 8px; font-size: 0.85rem; }
+        .alarm-mini small { font-size: 0.75rem; color: var(--text-gray); display: block; margin-top: 5px; text-align: center; }
+        .alarm-mini select { padding: 2px 5px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.75rem; }
+        .divider { height: 2px; background: #ffe5e5; margin: 20px 0; }
+        
+        /* Alarm Cards with Icons */
+        .alarm-card { text-align: center; padding: 25px 20px; }
+        .alarm-card-icon { font-size: 4rem; margin-bottom: 10px; }
+        .alarm-card-icon-top { font-size: 3rem; margin-bottom: 5px; }
+        .alarm-card-img { width: 480px; height: 480px; object-fit: cover; margin-bottom: 10px; }
+        .alarm-display { padding: 15px; background: #f8f9fa; border-radius: 12px; margin-bottom: 10px; }
+        .alarm-display span { font-size: 2rem; font-weight: bold; color: var(--blue); display: block; }
+        .alarm-display small { font-size: 0.8rem; color: var(--text-gray); }
+        .alarm-card-title { font-size: 1.1rem; color: var(--text-dark); margin-bottom: 15px; }
+        .alarm-card-timer { padding: 20px; border-radius: 16px; margin-bottom: 15px; }
+        .alarm-card-timer span { font-size: 2.5rem; font-weight: bold; display: block; }
+        .alarm-card-timer small { font-size: 0.8rem; color: var(--text-gray); }
+        .water-card .alarm-card-timer { background: linear-gradient(135deg, #e8f4ff, #fff); }
+        .water-card .alarm-card-timer span { color: var(--blue); }
+        .water-circle { position: relative; width: 120px; height: 120px; margin: 0 auto 10px; }
+        .water-circle svg { width: 100%; height: 100%; }
+        .water-circle-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+        .water-circle-text span { font-size: 1.8rem; font-weight: bold; color: var(--blue); display: block; }
+        .water-circle-text small { font-size: 0.7rem; color: var(--text-gray); }
+        .water-next { font-size: 0.8rem; color: var(--text-gray); display: block; margin-bottom: 10px; }
+        .pump-circle { position: relative; width: 120px; height: 120px; margin: 0 auto 10px; }
+        .pump-circle svg { width: 100%; height: 100%; }
+        .pump-circle-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+        .pump-circle-text span { font-size: 1.8rem; font-weight: bold; color: var(--pink); display: block; }
+        .pump-circle-text small { font-size: 0.7rem; color: var(--text-gray); }
+        .pump-next { font-size: 0.8rem; color: var(--text-gray); display: block; margin-bottom: 10px; }
+        .circle-icon { display: block; font-size: 2.5rem; text-align: center; margin-bottom: 5px; }
+        .pump-card .alarm-card-timer { background: linear-gradient(135deg, #fff5f8, #fff); }
+        .pump-card .alarm-card-timer span { color: var(--pink); }
+        .alarm-card-btns { display: flex; gap: 10px; margin-bottom: 15px; }
+        .alarm-btn { flex: 1; padding: 12px; border: none; border-radius: 50px; font-size: 0.9rem; font-weight: 600; cursor: pointer; color: white; transition: all 0.3s; }
+        .alarm-btn.water { background: var(--blue); }
+        .alarm-btn.pump { background: var(--pink); }
+        .alarm-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .alarm-btn.stop { background: #888; }
+        .alarm-card-progress { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background: #f8f9fa; border-radius: 10px; font-size: 0.9rem; }
+        .plus-btn { padding: 8px 15px; border: none; border-radius: 20px; background: var(--blue); color: white; font-size: 0.85rem; cursor: pointer; }
+        .alarm-card-select { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.85rem; color: var(--text-gray); }
+        .alarm-card-select select { padding: 6px 10px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 0.85rem; cursor: pointer; }
+        .pump-input-row { display: flex; gap: 8px; margin: 10px 0; }
+        .pump-input-row input { flex: 1; padding: 8px; border: 2px solid #ffe5e5; border-radius: 8px; font-size: 0.85rem; }
+        .pump-input-row input:focus { outline: none; border-color: var(--pink); }
+        .pump-summary { background: #fff5f8; padding: 8px; border-radius: 8px; text-align: center; font-size: 0.85rem; margin-bottom: 8px; }
+        .pump-summary b { color: var(--pink); }
+        .pump-graph { display: flex; gap: 3px; align-items: flex-end; height: 40px; }
+        .pump-bar { flex: 1; background: linear-gradient(to top, var(--pink), #ffb6d9); border-radius: 3px 3px 0 0; min-height: 5px; transition: height 0.3s; }
+        .card .alarm-card { box-shadow: none; padding: 0; margin-bottom: 15px; background: transparent; }
+        .card .alarm-card-img { width: 360px; height: 360px; margin: 0 auto 10px; display: block; }
+        
+        @media (max-width: 1200px) {
+            .dashboard { grid-template-columns: repeat(2, 1fr); }
+        }
+        
+        @media (max-width: 768px) {
+            .navbar { padding: 10px 15px; position: relative; }
+            .logo { font-size: 1.2rem; }
+            .nav-burger { display: flex; }
+            .nav-menu { display: none; position: fixed; top: auto; bottom: 0; left: 0; right: 0; width: 100%; background: #fff; flex-direction: column; padding: 20px; box-shadow: 0 -5px 20px rgba(0,0,0,0.2); border-radius: 20px 20px 0 0; z-index: 9999; }
+            .nav-menu.active { display: flex; }
+            .nav-menu a { width: 100%; text-align: center; padding: 15px; font-size: 1rem; border-bottom: 1px solid #eee; }
+            .nav-menu a:last-child { border-bottom: none; }
+            .dashboard { grid-template-columns: 1fr; gap: 15px; padding: 10px; }
+            .card { padding: 15px; margin-bottom: 15px; }
+            .card-title { font-size: 1rem; }
+            .relax-list { grid-template-columns: 1fr; gap: 10px; }
+            .relax-item { padding: 12px; }
+            .relax-title { font-size: 0.9rem; }
+            .relax-desc { font-size: 0.8rem; }
+            .activity-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+            .activity-btn { padding: 10px; font-size: 0.85rem; }
+            .card .alarm-card-img { width: 150px; height: 150px; margin: 0 auto 10px; display: block; }
+            .alarm-display { font-size: 1.5rem; }
+            .water-card { padding: 12px; }
+            .water-card h3 { font-size: 0.9rem; }
+            .plus-btn { padding: 8px 15px; font-size: 0.85rem; }
+            .smiles-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+            .smile-btn { padding: 10px; font-size: 0.85rem; }
+            .encourage-card { padding: 12px; font-size: 0.9rem; }
+            .pump-input-row { flex-direction: column; gap: 8px; }
+            .pump-input-row input { width: 100%; }
+            .nav-content { flex-wrap: wrap; gap: 10px; }
+        }
+        
+        /* Login Modal */
+        
+        
+        .login-content { max-width: 450px; background: linear-gradient(180deg,#fff,#fefefe); border-radius: 24px; padding: 35px; width: 92%; text-align: center; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.2); border: 1px solid #fce4ec; margin: auto; }
+        
+        .login-icon { font-size: 3.5rem; margin-bottom: 12px; }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="index.html" class="logo">🍱 <span class="logo-pink">Mami's</span> <span class="logo-blue">Hero</span></a>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html">หน้าแรก</a>
+                <a href="menu.html">เมนู</a>
+                <a href="articles.html">บทความ</a>
+                <a href="shop.html">Mami Shop</a>
+                <a href="baby.html">บันทึกคุณลูก</a>
+                <a href="mom.html" class="active">บันทึกคุณแม่</a>
+                <a href="contact.html">ติดต่อ</a>
+            </div>
+            
+            <div style="display:flex;gap:8px;align-items:center;">
+                <a href="#" id="navLoginLink" onclick="openLogin(); return false;" style="background:var(--pink);color:#fff;padding:6px 14px;border-radius:20px;font-size:0.8rem;font-weight:600;">🔑 ล้อคอิน</a>
+                <a href="#" id="navCartLink" onclick="openCart(); return false;" style="display:none;background:var(--blue);color:#fff;padding:6px 14px;border-radius:20px;font-size:0.8rem;font-weight:600;">🛒 <span id="cartBadge" style="background:#fff;color:var(--blue);border-radius:50%;padding:1px 6px;font-size:0.7rem;">0</span></a>
+            </div>
+            
+            <div class="nav-burger" id="navBurger" onclick="toggleNav()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+    
+    <script>
+    function toggleNav() {
+        document.getElementById('navMenu').classList.toggle('active');
+        document.getElementById('navBurger').classList.toggle('active');
+    }
+    </script>
+    
+    <!-- LOGIN PANEL -->
+    </div>
+    
+    <!-- Encouragement Popup -->
+    <div id="encouragePopup" class="encourage-popup">
+        <div class="encourage-content">
+            <button class="encourage-close" onclick="closeEncourage()">×</button>
+            <div class="encourage-icon">💪</div>
+            <p id="encourageText">คุณทำได้ดีมาก!</p>
+        </div>
+    </div>
+    
+    <!-- Hero Image -->
+    <section class="hero-section">
+        <img src="mom-hero.jpg" alt="Mami" style="width:100%;height:auto;border-radius:0;">
+    </section>
+    
+    <!-- Small Win -->
+    <section style="padding:15px;background:#fff5f7;">
+        <div class="mini-win-card" style="max-width:500px;margin:0 auto;">
+            <h3>🏆 Small Win วันนี้</h3>
+            <div class="mini-chart">
+                <div class="mini-circle">
+                    <svg viewBox="0 0 60 60">
+                        <circle cx="30" cy="30" r="27" fill="none" stroke="#e0e0e0" stroke-width="5"/>
+                        <circle id="miniProgressCircle" cx="30" cy="30" r="27" fill="none" stroke="url(#miniGradient)" stroke-width="5" stroke-dasharray="170" stroke-dashoffset="170" stroke-linecap="round" transform="rotate(-90 30 30)"/>
+                        <defs>
+                            <linearGradient id="miniGradient">
+                                <stop offset="0%" stop-color="#f75c9a"/>
+                                <stop offset="100%" stop-color="#5c9ff7"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <span id="miniPercent">0%</span>
+                </div>
+                <div class="mini-days">
+                    <span>จ</span><span>อ</span><span>พ</span><span>พฤ</span><span>ศ</span><span>ส</span><span>อา</span>
+                </div>
+            </div>
+            <p class="mini-motivation" id="miniMotivation">เริ่มเล็กๆ ก็เก่งแล้ว 💛</p>
+            <div class="mini-notes" id="miniNotes"></div>
+            <textarea class="mini-textarea" id="smallWinNote" placeholder="วันนี้ทำอะไรสำเร็จบ้าง..."></textarea>
+            <button class="save-btn" onclick="saveSmallWin()">💾 บันทึก</button>
+        </div>
+    </section>
+    
+    <!-- Dashboard -->
+    <section class="dashboard">
+        <!-- Column 1: Care Checklist -->
+        <div class="card">
+            <h3 class="card-title">🌸 ดูแลตัวเอง</h3>
+            <div id="careChecklist">
+                <label class="checklist-item" onclick="showEncourage()">
+                    <input type="checkbox" onchange="updateProgress()">
+                    <span>💊 กินโฟเลท</span>
+                    <button class="mami-buy-btn" onclick="event.stopPropagation(); window.open('shop.html', '_blank')">ซื้อ</button>
+                </label>
+                <label class="checklist-item" onclick="showEncourage()">
+                    <input type="checkbox" onchange="updateProgress()">
+                    <span>🧴 ทายาลดแผลเป็น</span>
+                    <button class="mami-buy-btn" onclick="event.stopPropagation(); window.open('shop.html', '_blank')">ซื้อ</button>
+                </label>
+                <label class="checklist-item" onclick="showEncourage()">
+                    <input type="checkbox" onchange="updateProgress()">
+                    <span>🥗 ทานอาหารที่มีประโยชน์</span>
+                    <button class="mami-buy-btn" onclick="event.stopPropagation(); window.open('menu.html', '_blank')">🍱 เมนู</button>
+                </label>
+                <label class="checklist-item" onclick="showEncourage()">
+                    <input type="checkbox" onchange="updateProgress()">
+                    <span>🎵 เปิดเพลงคลอเบาๆ</span>
+                </label>
+                <label class="checklist-item" onclick="showEncourage()">
+                    <input type="checkbox" onchange="updateProgress()">
+                    <span>💄 เสริมสวยกรุ้บกริ้บ</span>
+                </label>
+                <label class="checklist-item" onclick="showEncourage()">
+                    <input type="checkbox" onchange="updateProgress()">
+                    <span>🚿 อาบน้ำให้สดชื่น</span>
+                </label>
+                <label class="checklist-item" onclick="showEncourage()">
+                    <input type="checkbox" onchange="updateProgress()">
+                    <span>🛁 แช่น้ำอุ่น</span>
+                </label>
+                <label class="checklist-item" onclick="showEncourage()">
+                    <input type="checkbox" onchange="updateProgress()">
+                    <span>😴 งีบหลับ พักสายตา</span>
+                </label>
+                <label class="checklist-item" onclick="showEncourage()">
+                    <input type="checkbox" onchange="updateProgress()">
+                    <span>🌿 เปลี่ยนบรรยากาศ</span>
+                </label>
+                <label class="checklist-item" onclick="showEncourage()">
+                    <input type="checkbox" onchange="updateProgress()">
+                    <span>🧹 จัดของ 2-3 นาที</span>
+                </label>
+                <label class="checklist-item" onclick="showEncourage()">
+                    <input type="checkbox" onchange="updateProgress()">
+                    <span>🌳 ออกไปข้างนอก 5 นาที</span>
+                </label>
+                <label class="checklist-item" onclick="showEncourage()">
+                    <input type="checkbox" onchange="updateProgress()">
+                    <span>🚶 ดินเบาๆ 15 นาที</span>
+                </label>
+            </div>
+        </div>
+        
+        <!-- Column 2: Water + Activities -->
+        <div class="card">
+            <div class="alarm-card water-card">
+                <img src="water-alarm.jpg" alt="ดื่มน้ำ" class="alarm-card-img">
+                <h3 class="alarm-card-title">นาฬิกาดื่มน้ำ</h3>
+                <div class="alarm-display">
+                    <span id="waterTimerDisplay">--:--</span>
+                </div>
+                <small class="water-next">ทุก <b id="waterIntervalDisplay">60</b> นาที</small>
+                <div class="alarm-card-btns">
+                    <button id="waterToggle" class="alarm-btn water" onclick="toggleWaterAlarm()">▶ เริ่มนับ</button>
+                    <button class="alarm-btn stop" onclick="stopWaterAlarm()">⏹ หยุด</button>
+                </div>
+                <div class="alarm-card-progress">
+                    <span>วันนี้ดื่มแล้ว: <b id="waterCount">0</b> แก้ว</span>
+                    <button class="plus-btn" onclick="addWater()">+1 แก้ว</button>
+                </div>
+            </div>
+            <h3 class="card-title" style="margin-top:20px">🧘♀️ กิจกรรมผ่อนคลาย</h3>
+            <div class="activity-grid">
+                <button class="activity-btn" onclick="toggleActivity(this); showEncourage();">🛁 อาบน้ำอุ่น</button>
+                <button class="activity-btn" onclick="toggleActivity(this); showEncourage();">📖 อ่านหนังสือ</button>
+                <button class="activity-btn" onclick="toggleActivity(this); showEncourage();">🎵 ฟังเพลง</button>
+                <button class="activity-btn" onclick="toggleActivity(this); showEncourage();">🌿 ปลูกต้นไม้</button>
+                <button class="activity-btn" onclick="toggleActivity(this); showEncourage();">☕ ดื่มชา/กาแฟ</button>
+                <button class="activity-btn" onclick="toggleActivity(this); showEncourage();">📱 เล่นโซเชียล</button>
+                <button class="activity-btn" onclick="toggleActivity(this); showEncourage();">👶 อุ้มลูก</button>
+                <button class="activity-btn" onclick="toggleActivity(this); showEncourage();">💕 กอดสามี</button>
+            </div>
+        </div>
+        
+        <!-- Column 3: Pump + Links -->
+        <div class="card">
+            <div class="alarm-card pump-card">
+                <img src="pump-alarm.jpg" alt="ปั๊มนม" class="alarm-card-img">
+                <h3 class="alarm-card-title">นาฬิกาปั๊มนม</h3>
+                <div class="alarm-display">
+                    <span id="pumpTimerDisplay">--:--</span>
+                    <small>นาที</small>
+                </div>
+                <small class="pump-next">ทุก <b id="pumpIntervalDisplay">3</b> ชม.</small>
+                <div class="alarm-card-btns">
+                    <button id="pumpToggle" class="alarm-btn pump" onclick="togglePumpAlarm()">▶ เริ่มนับ</button>
+                    <button class="alarm-btn stop" onclick="stopPumpAlarm()">⏹ หยุด</button>
+                </div>
+                <div class="pump-input-row">
+                    <input type="number" id="pumpAmount" placeholder="ปริมาณ (ออนส์)" min="0">
+                    <button class="plus-btn" onclick="savePumpRecord()">💾</button>
+                </div>
+                <div class="pump-summary">
+                    <span>รวมวันนี้: <b id="pumpTotal">0</b> ออนส์</span>
+                </div>
+                <div class="pump-graph" id="pumpGraph"></div>
+            </div>
+            <h4 class="relax-links-title">🎬 ลิงค์ผ่อนคลาย</h4>
+            <div class="relax-list">
+                <a href="https://netflix.com" target="_blank" class="relax-item">
+                    <span class="relax-icon">🎬</span>
+                    <div class="relax-info">
+                        <span class="relax-title">ดูหนัง</span>
+                        <span class="relax-desc">Netflix</span>
+                    </div>
+                </a>
+                <a href="https://poki.com/" target="_blank" class="relax-item">
+                    <span class="relax-icon">🎮</span>
+                    <div class="relax-info">
+                        <span class="relax-title">เกมส์สนุก</span>
+                        <span class="relax-desc">แก้เบื่อเบาๆ</span>
+                    </div>
+                </a>
+                <a href="https://youtube.com/results?search_query=yoga+for+mom" target="_blank" class="relax-item">
+                    <span class="relax-icon">🧘</span>
+                    <div class="relax-info">
+                        <span class="relax-title">โยคะ</span>
+                        <span class="relax-desc">ฟื้นฟูร่างกาย</span>
+                    </div>
+                </a>
+                <a href="https://open.spotify.com/search/indie+pop+playlist" target="_blank" class="relax-item">
+                    <span class="relax-icon">🎵</span>
+                    <div class="relax-info">
+                        <span class="relax-title">ฟังเพลง</span>
+                        <span class="relax-desc">เพลงผ่อนคลาย</span>
+                    </div>
+                </a>
+                <a href="https://youtube.com/@theghostradio?si=LtrbGGei3ggbU2db" target="_blank" class="relax-item">
+                    <span class="relax-icon">👻</span>
+                    <div class="relax-info">
+                        <span class="relax-title">The Ghost Radio</span>
+                        <span class="relax-desc">ฟังกุ้กกรู๋เพลินๆ</span>
+                    </div>
+                </a>
+                <a href="https://www.sanook.com/horoscope/" target="_blank" class="relax-item">
+                    <span class="relax-icon">🔮</span>
+                    <div class="relax-info">
+                        <span class="relax-title">ดูดวง</span>
+                        <span class="relax-desc">ดวงวันนี้</span>
+                    </div>
+                </a>
+                <a href="https://www.youtube.com/results?search_query=sitcom+thai+full+episode" target="_blank" class="relax-item">
+                    <span class="relax-icon">😂</span>
+                    <div class="relax-info">
+                        <span class="relax-title">ซิทคอมฮาๆ</span>
+                        <span class="relax-desc">คลายเครียด</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <script>
+        // Save Small Win
+        function saveSmallWin() {
+            const note = document.getElementById('smallWinNote').value;
+            if (note) {
+                let notes = JSON.parse(localStorage.getItem('smallWinNotes') || '[]');
+                notes.unshift({ date: new Date().toLocaleDateString('th-TH'), text: note });
+                if (notes.length > 5) notes = notes.slice(0, 5);
+                localStorage.setItem('smallWinNotes', JSON.stringify(notes));
+                displayMiniNotes();
+                document.getElementById('smallWinNote').value = '';
+                alert('บันทึกสำเร็จ! 🎉');
+            }
+        }
+        
+        function displayMiniNotes() {
+            const notes = JSON.parse(localStorage.getItem('smallWinNotes') || '[]');
+            const container = document.getElementById('miniNotes');
+            if (notes.length > 0) {
+                container.innerHTML = notes.map(n => '<div>• ' + n.text + '</div>').join('');
+            } else {
+                container.innerHTML = '';
+            }
+        }
+        
+        displayMiniNotes();
+        
+        // Toggle Activity
+        function toggleActivity(btn) {
+            btn.classList.toggle('active');
+        }
+        
+        // Checklist Progress
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(cb => cb.addEventListener('change', updateProgress));
+        
+        function updateProgress() {
+            const checked = document.querySelectorAll('input[type="checkbox"]:checked').length;
+            const total = checkboxes.length;
+            const percent = Math.round((checked / total) * 100);
+            
+            // Update mini chart in hero
+            const miniCircle = document.getElementById('miniProgressCircle');
+            if (miniCircle) {
+                const miniCirc = 170;
+                miniCircle.style.strokeDashoffset = miniCirc - (percent / 100) * miniCirc;
+            }
+            const miniPercent = document.getElementById('miniPercent');
+            if (miniPercent) miniPercent.textContent = percent + '%';
+            
+            // Update today bar
+            const today = new Date().getDay();
+            const dayMap = [6, 0, 1, 2, 3, 4, 5]; // อา,จ,อ,พ,พฤ,ศ,ส
+            const todayIndex = dayMap.indexOf(today);
+            const dayBars = document.querySelectorAll('.day-bar');
+            if (dayBars[todayIndex]) {
+                dayBars[todayIndex].querySelector('.bar-fill').style.height = percent + '%';
+            }
+            
+            // Show encouragement popup on task completion
+            if (percent > 0 && percent < 100) {
+                showEncourage();
+            }
+        }
+        
+        // Pump Alarm
+        let pumpTimerInterval = null;
+        let pumpStartTime = null;
+        let pumpHours = 3;
+        
+        function togglePumpAlarm() {
+            const toggleBtn = document.getElementById('pumpToggle');
+            if (pumpTimerInterval) {
+                // Stop
+                clearInterval(pumpTimerInterval);
+                pumpTimerInterval = null;
+                pumpStartTime = null;
+                toggleBtn.textContent = '▶ เริ่มนับ';
+                document.getElementById('pumpTimerDisplay').textContent = '--:--';
+            } else {
+                // Start
+                pumpHours = 3; // Default 3 hours
+                pumpStartTime = new Date();
+                toggleBtn.textContent = '⏸ กำลังนับ...';
+                updatePumpTimer();
+                pumpTimerInterval = setInterval(updatePumpTimer, 1000);
+            }
+        }
+        
+        function updatePumpTimer() {
+            if (!pumpStartTime) return;
+            const now = new Date();
+            const diff = Math.floor((now - pumpStartTime) / 1000);
+            const targetSec = pumpHours * 3600;
+            const remaining = Math.max(0, targetSec - diff);
+            
+            const h = String(Math.floor(remaining / 3600)).padStart(2, '0');
+            const m = String(Math.floor((remaining % 3600) / 60)).padStart(2, '0');
+            
+            document.getElementById('pumpTimerDisplay').textContent = h + ':' + m;
+            document.getElementById('pumpIntervalDisplay').textContent = pumpHours;
+            
+            if (remaining === 0) {
+                playAlarm();
+            }
+        }
+        
+        function stopPumpAlarm() {
+            clearInterval(pumpTimerInterval);
+            pumpTimerInterval = null;
+            pumpStartTime = null;
+            document.getElementById('pumpTimerDisplay').textContent = '--:--';
+            const toggleBtn = document.getElementById('pumpToggle');
+            if (toggleBtn) toggleBtn.textContent = '▶ เริ่มนับ';
+        }
+        
+        function playAlarm() {
+            // Create loud beeping sound
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            let beepCount = 0;
+            const beepInterval = setInterval(() => {
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                oscillator.frequency.value = 880;
+                oscillator.type = 'square';
+                gainNode.gain.value = 0.3;
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.3);
+                beepCount++;
+                if (beepCount >= 10) clearInterval(beepInterval);
+            }, 400);
+            
+            // Show alert
+            setTimeout(() => {
+                alert('🍼 ถึงเวลาปั๊มนมแล้วค่ะ!');
+            }, 100);
+        }
+        
+        function savePumpRecord() {
+            const amount = document.getElementById('pumpAmount').value;
+            if (!amount) {
+                alert('กรุณาใส่ปริมาณนม');
+                return;
+            }
+            
+            let records = JSON.parse(localStorage.getItem('pumpAmounts') || '[]');
+            const now = new Date();
+            records.unshift({ 
+                time: now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }), 
+                amount: amount,
+                date: now.toDateString()
+            });
+            if (records.length > 20) records = records.slice(0, 20);
+            localStorage.setItem('pumpAmounts', JSON.stringify(records));
+            
+            document.getElementById('pumpAmount').value = '';
+            loadPumpTotal();
+            displayPumpGraph();
+            alert('บันทึกสำเร็จ! 🍼');
+        }
+        
+        function loadPumpTotal() {
+            const records = JSON.parse(localStorage.getItem('pumpAmounts') || '[]');
+            const today = new Date().toDateString();
+            const todayRecords = records.filter(r => r.date === today);
+            const total = todayRecords.reduce((sum, r) => sum + parseFloat(r.amount), 0);
+            document.getElementById('pumpTotal').textContent = total.toFixed(1);
+        }
+        
+        function loadPumpSummary() {
+            loadPumpTotal();
+            displayPumpGraph();
+        }
+        
+        function displayPumpGraph() {
+            const records = JSON.parse(localStorage.getItem('pumpAmounts') || '[]');
+            const today = new Date().toDateString();
+            const todayRecords = records.filter(r => r.date === today);
+            
+            const container = document.getElementById('pumpGraph');
+            if (!container) return;
+            if (todayRecords.length === 0) {
+                container.innerHTML = '<div style="text-align:center;color:#999;padding:10px;">ยังไม่มีข้อมูลวันนี้</div>';
+                return;
+            }
+            
+            const max = Math.max(...todayRecords.map(r => parseFloat(r.amount)), 1);
+            container.innerHTML = todayRecords.slice(0, 7).reverse().map(r => {
+                const height = Math.max(10, (parseFloat(r.amount) / max) * 100);
+                return '<div class="pump-bar" style="height:' + height + '%" title="' + r.amount + ' ออนส์ @ ' + r.time + '"></div>';
+            }).join('');
+        }
+        
+        // Initialize on load
+        loadPumpTotal();
+        displayPumpGraph();
+        
+        // Water Alarm
+        let waterInterval = null;
+        let waterStartTime = null;
+        const WATER_HOURS = 60; // minutes
+        
+        function toggleWaterAlarm() {
+            if (waterInterval) {
+                clearInterval(waterInterval);
+                waterInterval = null;
+                document.getElementById('waterToggle').textContent = '▶ เริ่มนับเวลา';
+            } else {
+                waterStartTime = new Date();
+                document.getElementById('waterToggle').textContent = '⏸ กำลังนับ...';
+                updateWaterTimer();
+                waterInterval = setInterval(updateWaterTimer, 1000);
+            }
+        }
+        
+        function updateWaterTimer() {
+            if (!waterStartTime) return;
+            const now = new Date();
+            const diff = Math.floor((now - waterStartTime) / 1000);
+            const targetSec = WATER_HOURS * 60; // minutes
+            const remaining = Math.max(0, targetSec - diff);
+            
+            const m = String(Math.floor(remaining)).padStart(2, '0');
+            const s = String(Math.floor((remaining % 1) * 60)).padStart(2, '0');
+            
+            document.getElementById('waterTimerDisplay').textContent = m + ':' + s;
+            document.getElementById('waterIntervalDisplay').textContent = WATER_HOURS;
+            
+            // Update circle progress
+            const circumference = 339;
+            const progress = (diff / targetSec) * circumference;
+            const circle = document.getElementById('waterProgressCircle');
+            if (circle) {
+                circle.style.strokeDashoffset = circumference - Math.min(progress, circumference);
+            }
+            
+            if (remaining === 0) {
+                playWaterAlarm();
+            }
+        }
+        
+        function stopWaterAlarm() {
+            clearInterval(waterInterval);
+            waterInterval = null;
+            waterStartTime = null;
+            document.getElementById('waterTimerDisplay').textContent = '--:--';
+            const toggleBtn = document.getElementById('waterToggle');
+            if (toggleBtn) toggleBtn.textContent = '▶ เริ่มนับ';
+        }
+        
+        function playWaterAlarm() {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            let beepCount = 0;
+            const beepInterval = setInterval(() => {
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                oscillator.frequency.value = 660;
+                oscillator.type = 'square';
+                gainNode.gain.value = 0.3;
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.3);
+                beepCount++;
+                if (beepCount >= 10) clearInterval(beepInterval);
+            }, 400);
+            
+            setTimeout(() => {
+                alert('💧 ถึงเวลาดื่มน้ำแล้วค่ะ!');
+            }, 100);
+        }
+        
+        function addWater() {
+            let count = parseInt(localStorage.getItem('waterCount') || '0');
+            count++;
+            localStorage.setItem('waterCount', count.toString());
+            document.getElementById('waterCount').textContent = count;
+            document.getElementById('waterCountMini').textContent = count;
+        }
+        
+        document.getElementById('waterCount').textContent = localStorage.getItem('waterCount') || '0';
+        document.getElementById('waterCountMini').textContent = localStorage.getItem('waterCount') || '0';
+        
+        // Encouragement System
+        const encouragements = [
+            "วันนี้คุณทำได้ดีมาก! 🌟",
+            "คุณเป็นแม่ที่ยอดเยี่ยม! 💖",
+            "ดีมาก! ลูกโชคดี่ที่มีคุณ 👶",
+            "ทำไปเรื่อยๆ นะคะ! 💪",
+            "วันนี้สำเร็จอีกวันแล้ว! 🎉",
+            "คุณทำได้ดีมากเลยค่ะ! 🌈",
+            "เหนื่อยหน่อยแต่คุ้มค่านะ! 😘",
+            "ขอบคุณที่ดูแลลูกด้วยใจ! 💕",
+            "คุณเก่งมากวันนี้! 🏆",
+            "พักผ่อนบ้างนะ คุณสำคัญมาก! 💝",
+            "วันนี้คุณเจ๋งมาก! ✨",
+            "ลูกๆ รักคุณมากนะ! ❤️",
+            "ทำได้ดีมากๆ เลยค่ะ! 🌸",
+            "คุณทำให้ทุกอย่างดีขึ้น! 💪",
+            "วันนี้คุณสวยมาก! 💄",
+            "ดูแลตัวเองด้วยนะคะ! 🌿",
+            "เคลียร์มากวันนี้! 🎯",
+            "คุณมีความแข็งแกร่งมาก! 💪",
+            "วันนี้เป็นวันที่ดีมาก! ☀️",
+            "คุณทำได้อีกแล้ว! 🌟",
+            "รักตัวเองบ้างนะคะ! 💖",
+            "คุณคือฮีโร่ของลูก! 🦸‍♀️",
+            "วันนี้สุขภาพดีมาก! 💚",
+            "ดีมาก! ต่อไปอีก! 🚀",
+            "คุณมีพลังมาก! ⚡",
+            "วันนี้งดงามมาก! 🌺",
+            "ทำได้ดีสุดๆ ไปเลย! 🌈",
+            "คุณเป็นที่หนึ่งในใจลูก! 💗",
+            "วันนี้พิเศษมาก! ✨",
+            "เก่งมาก! ต่อไปสิ! 🔥"
+        ];
+        let encourageIndex = 0;
+        
+        function showEncourage() {
+            encourageIndex = (encourageIndex + 1) % encouragements.length;
+            const text = encouragements[encourageIndex];
+            document.getElementById('encourageText').textContent = text;
+            document.getElementById('encouragePopup').classList.add('show');
+            
+            setTimeout(() => {
+                closeEncourage();
+            }, 4000);
+        }
+        
+        function closeEncourage() {
+            document.getElementById('encouragePopup').classList.remove('show');
+        }
+        function toggleCart() {
+            const cart = document.getElementById('cartPanel');
+            if(cart) cart.classList.toggle('active');
+        }
+    </script>
+    <script src="shared.js"></script>
+    <!-- login modal removed -->
+</body>
+</html>

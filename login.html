@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ล้อคอิน - Mami's Hero</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .login-page { background: linear-gradient(135deg, #fff9e6, #ffffff); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+        .login-card { background: white; border-radius: 20px; padding: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); max-width: 400px; width: 100%; }
+        .login-card h2 { font-size: 2rem; color: #2C3E50; margin-bottom: 10px; text-align: center; }
+        .login-card p { color: #7F8C8D; text-align: center; margin-bottom: 30px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #2C3E50; }
+        .form-group input { width: 100%; padding: 15px; border: 2px solid #f8f9fa; border-radius: 12px; font-size: 1rem; font-family: 'Prompt', sans-serif; transition: all 0.3s ease; }
+        .form-group input:focus { outline: none; border-color: #f75c9a; box-shadow: 0 0 0 4px rgba(247, 92, 154, 0.1); }
+        .login-btn { width: 100%; background: linear-gradient(135deg, #f75c9a, #ff6b9a); color: white; border: none; padding: 15px; border-radius: 50px; font-size: 1.05rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        .login-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(247, 92, 154, 0.4); }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <span class="logo"><span class="logo-pink">🍱 Mami's</span> <span class="logo-blue">Hero</span></span>
+                <div class="nav-menu">
+                    <a href="index.html" class="nav-link">HOME</a>
+                    <a href="baby.html" class="nav-link">บันทึกคุณลูก</a>
+                    <a href="mom.html" class="nav-link">บันทึกคุณแม่</a>
+                    <a href="stories.html" class="nav-link">นิทานมามิจัง</a>
+                    <a href="shop.html" class="nav-link">MAMI shop</a>
+                    <a href="#" class="nav-btn-login" onclick="openLogin()">📱 ล้อคอิน</a>
+                    <a href="boh.html" class="nav-btn-boh" onclick="openBOH()">
+                        <svg viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.63a5.5 5.5 0 1 1-7.778 4.428 5.5 5.5 0 0 1 7.777-4.428zm0 0L15.75 12H12v4H8v4H4v-3.5c0-.54.22-1.05.59-1.41l8.83-8.83z"/></svg>
+                        BOH</a>
+                </div>
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">☰</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Section -->
+    <section class="login-page">
+        <div class="login-card">
+            <h2>ล้อคอิน</h2>
+            <p>เข้าสู่ระบบเพื่อใช้งานฟีเจอร์พิเศษ</p>
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>เบอร์มือถือ</label>
+                    <input type="tel" id="loginPhone" placeholder="08X-XXX-XXXX" required />
+                </div>
+                <div class="form-group">
+                    <label>รหัสผ่าน</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required />
+                </div>
+                <button type="submit" class="login-btn">เข้าสู่ระบบ</button>
+            </form>
+        </div>
+    </section>
+
+    <script>
+        function handleLogin(e) {
+            e.preventDefault();
+            const phone = document.getElementById('loginPhone').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            // Simple login (can be connected to backend)
+            if (phone && password) {
+                localStorage.setItem('userPhone', phone);
+                alert('✅ เข้าสู่ระบบสำเร็จ!');
+                window.location.href = 'index.html';
+            }
+        }
+
+        function toggleMobileMenu() {
+            alert('Mobile menu clicked');
+        }
+    </script>
+<script src="shared.js"></script>
+    <script src="cart-system.js"></script>
+</body>
+</html>

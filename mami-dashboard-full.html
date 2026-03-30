@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mami Self-Care Dashboard 💖</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pink: #f75c9a;
+            --light-pink: #ff6b9a;
+            --yellow: #f1c40f;
+            --yellow-light: #fff9e6;
+            --blue: #e5f0ff;
+            --white: #ffffff;
+            --off-white: #f8f9fa;
+            --text-dark: #2C3E50;
+            --text-gray: #7F8C8D;
+            --radius: 16px;
+            --shadow: 0 5px 20px rgba(0,0,0,0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Prompt', sans-serif;
+            background: linear-gradient(135deg, var(--blue), var(--white));
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container { max-width: 1400px; margin: 0 auto; }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: var(--text-gray);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .column { min-width: 0; }
+
+        .card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 30px;
+            box-shadow: var(--shadow);
+            height: 100%;
+        }
+
+        .card-header h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--peach);
+        }
+
+        .small-win-card {
+            background: linear-gradient(135deg, var(--yellow-light), var(--white));
+            border: 2px solid var(--yellow);
+        }
+
+        .relax-card {
+            background: linear-gradient(135deg, var(--blue), var(--white));
+        }
+
+        /* AI Message */
+        .ai-message-box {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            border-left: 4px solid #4caf50;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            animation: slideIn 0.5s ease;
+        }
+
+        .ai-message-box { display: flex; align-items: center; gap: 12px; }
+        .ai-icon { font-size: 1.5rem; }
+        .ai-message-box p { font-size: 0.95rem; color: #2e7d32; margin: 0; }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Sections */
+        .section {
+            background: var(--off-white);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--peach);
+        }
+
+        .checklist { display: flex; flex-direction: column; gap: 8px; }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--white);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .checklist-item:hover {
+            background: var(--peach);
+            transform: translateX(5px);
+        }
+
+        .checklist-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--pink);
+            cursor: pointer;
+        }
+
+        .checklist-item span { flex: 1; font-size: 0.95rem; color: var(--text-dark); }
+
+        .btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-cart {
+            background: linear-gradient(135deg, var(--pink), var(--light-pink));
+            color: var(--white);
+        }
+
+        .btn-menu {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: var(--white);
+        }
+
+        /* Progress */
+        .progress-section { margin-bottom: 25px; }
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: var(--off-white);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--yellow), #f39c12);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        .progress-text {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+        .motivation-text {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            font-style: italic;
+        }
+
+        /* Note Section */
+        .note-section h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+        .note-section textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--off-white);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-family: 'Prompt', sans-serif;
+            resize: vertical;
+            transition: var(--transition);
+            background: var(--white);
+        }
+        .note-section textarea:focus {
+            outline: none;
+            border-color: var(--yellow);
+            box-shadow: 0 0 0 4px rgba(241, 196, 15, 0.1);
+        }
+        .save-btn {
+            width: 100%;
+            background: linear-gradient(135deg, var(--yellow), #f39c12);
+            color: var(--white);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: var(--transition);
+        }
+        .save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(241, 196, 15, 0.4);
+        }
+
+        /* Notes List */
+        .notes-list { max-height: 300px; overflow-y: auto; margin-top: 20px; }
+        .no-notes { text-align: center; color: var(--text-gray); padding: 30px 0; }
+        .note-item {
+            background: var(--white);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--yellow);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .note-text { font-size: 0.9rem; color: var(--text-dark); margin-bottom: 8px; line-height: 1.5; }
+        .note-time { font-size: 0.75rem; color: var(--text-gray); }
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #e74c3c;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-top: 8px;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        .delete-btn:hover { background: #ffeaea; }
+
+        /* Activities */
+        .activities { display: flex; flex-direction: column; gap: 12px; }
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: var(--white);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid var(--off-white);
+            text-decoration: none;
+        }
+        .activity-item:hover {
+            background: var(--peach);
+            border-color: var(--pink);
+            transform: translateX(-5px);
+        }
+        .activity-text { flex: 1; }
+        .activity-text h4 { font-size: 0.95rem; font-weight: 600; color: var(--text-dark); margin: 0 0 3px 0; }
+        .activity-text p { font-size: 0.8rem; color: var(--text-gray); margin: 0; }
+        .arrow { font-size: 1.3rem; color: var(--pink); }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .dashboard-grid { grid-template-columns: 1fr 1fr; }
+            .column:last-child { grid-column: span 2; }
+        }
+        @media (max-width: 768px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .column:last-child { grid-column: span 1; }
+            .header h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🤱 Mami Self-Care Dashboard 💖</h1>
+            <p>ดูแลสุขภาพคุณแม่หลังคลอด ทั้งกายและใจ</p>
+        </header>
+
+        <div class="dashboard-grid">
+            <!-- Left Column: Checklist -->
+            <div class="column">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>🌸 เช็คลิสต์ดูแลตัวเอง</h2>
+                    </div>
+
+                    <div id="aiMessageContainer"></div>
+
+                    <div class="section">
+                        <h3 class="section-title">🌸 ดูแลตัวเอง</h3>
+                        <div class="checklist" id="careChecklist"></div>
+                    </div>
+
+                    <div class="section">
+                        <h3 class="section-title">🌿 เปลี่ยนบรรยากาศ</h3>
+                        <div class="checklist" id="changeChecklist"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Middle Column: Small Win -->
+            <div class="column">
+                <div class="card small-win-card">
+                    <div class="card-header">
+                        <h2>🏆 Small Win วันนี้</h2>
+                    </div>
+
+                    <div class="progress-section">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <p class="progress-text" id="progressText">สำเร็จแล้ว 0 / 11 อย่าง</p>
+                        <p class="motivation-text" id="motivationText">เริ่มเล็กๆ ก็เก่งแล้ว 💛</p>
+                    </div>
+
+                    <div class="note-section">
+                        <h3>💾 บันทึก Small Win</h3>
+                        <textarea id="smallWinNote" placeholder="วันนี้คุณทำอะไรสำเร็จเล็กๆ บ้าง..."></textarea>
+                        <button class="save-btn" onclick="saveSmallWin()">บันทึก</button>
+                    </div>
+
+                    <div class="notes-list" id="savedNotes"></div>
+                </div>
+            </div>
+
+            <!-- Right Column: Relax -->
+            <div class="column">
+                <div class="card relax-card">
+                    <div class="card-header">
+                        <h2>กิจกรรมผ่อนคลาย</h2>
+                    </div>
+
+                    <div class="activities">
+                        <a href="https://www.netflix.com" target="_blank" class="activity-item">
+                            <div class="activity-text">
+                                <h4>ดูหนัง</h4>
+                                <p>ผ่อนคลายกับหนังดีๆ</p>
+                            </div>
+                            <span class="arrow">→</span>
+                        </a>
+
+                        <a href="https://poki.com" target="_blank" class="activity-item">
+                            <div class="activity-text">
+                                <h4>เกมส์สนุก</h4>
+                                <p>แก้เบื่อกับเกมส์เบาๆ</p>
+                            </div>
+                            <span class="arrow">→</span>
+                        </a>
+
+                        <a href="https://www.youtube.com/results?search_query=postpartum+yoga" target="_blank" class="activity-item">
+                            <div class="activity-text">
+                                <h4>โยคะ</h4>
+                                <p>ฟื้นฟูร่างกายหลังคลอด</p>
+                            </div>
+                            <span class="arrow">→</span>
+                        </a>
+
+                        <a href="https://www.youtube.com/results?search_query=relaxing+music" target="_blank" class="activity-item">
+                            <div class="activity-text">
+                                <h4>ฟังเพลง</h4>
+                                <p>เพลงผ่อนคลาย / podcast</p>
+                            </div>
+                            <span class="arrow">→</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const checklistItems = [
+            { id: 1, text: '💊 กินโฟเลท', category: 'care', hasButton: true, buttonType: 'cart' },
+            { id: 2, text: '🧴 ทายาลดแผลเป็น', category: 'care', hasButton: true, buttonType: 'cart' },
+            { id: 3, text: '🥗 ทานอาหารที่มีประโยชน์', category: 'care', hasButton: true, buttonType: 'menu' },
+            { id: 4, text: '🎵 เปิดเพลงคลอเบาๆ', category: 'care', hasButton: false },
+            { id: 5, text: '💄 เสริมสวยกรุ้บกริ้บ', category: 'care', hasButton: false },
+            { id: 6, text: '🚿 อาบน้ำให้สดชื่น', category: 'care', hasButton: false },
+            { id: 7, text: '🛁 แช่น้ำอุ่น', category: 'care', hasButton: false },
+            { id: 8, text: '😴 งีบหลับ พักสายตา', category: 'care', hasButton: false },
+            { id: 9, text: '🧹 จัดของ 2-3 นาที', category: 'change', hasButton: false },
+            { id: 10, text: '🌳 ออกไปข้างนอก 5 นาที', category: 'change', hasButton: false },
+            { id: 11, text: '🚶 เดินเบาๆ 15 นาที', category: 'change', hasButton: false },
+        ];
+
+        let checklistState = JSON.parse(localStorage.getItem('checklistState')) || {};
+        let savedNotes = JSON.parse(localStorage.getItem('savedNotes')) || [];
+
+        function initDashboard() {
+            renderChecklist();
+            updateProgress();
+            renderSavedNotes();
+        }
+
+        function renderChecklist() {
+            const careContainer = document.getElementById('careChecklist');
+            const changeContainer = document.getElementById('changeChecklist');
+
+            const careItems = checklistItems.filter(item => item.category === 'care');
+            const changeItems = checklistItems.filter(item => item.category === 'change');
+
+            careContainer.innerHTML = careItems.map(item => `
+                <label class="checklist-item">
+                    <input type="checkbox" ${checklistState[item.id] ? 'checked' : ''} onchange="toggleChecklist(${item.id})">
+                    <span>${item.text}</span>
+                    ${item.hasButton ? `<button class="btn btn-${item.buttonType}" onclick="event.stopPropagation()">${item.buttonType === 'cart' ? '🛒' : '🍱'}</button>` : ''}
+                </label>
+            `).join('');
+
+            changeContainer.innerHTML = changeItems.map(item => `
+                <label class="checklist-item">
+                    <input type="checkbox" ${checklistState[item.id] ? 'checked' : ''} onchange="toggleChecklist(${item.id})">
+                    <span>${item.text}</span>
+                </label>
+            `).join('');
+        }
+
+        function toggleChecklist(id) {
+            checklistState[id] = !checklistState[id];
+            localStorage.setItem('checklistState', JSON.stringify(checklistState));
+            updateProgress();
+
+            const total = checklistItems.length;
+            const checked = Object.values(checklistState).filter(v => v).length;
+            const percentage = (checked / total) * 100;
+
+            if (percentage === 25 || percentage === 50 || percentage === 75 || percentage === 100) {
+                showAIEncouragement(checked, total);
+            }
+        }
+
+        function updateProgress() {
+            const total = checklistItems.length;
+            const checked = Object.values(checklistState).filter(v => v).length;
+            const percentage = total > 0 ? (checked / total) * 100 : 0;
+
+            document.getElementById('progressFill').style.width = percentage + '%';
+            document.getElementById('progressText').textContent = 'สำเร็จแล้ว ' + checked + ' / ' + total + ' อย่าง';
+
+            let motivation = 'เริ่มเล็กๆ ก็เก่งแล้ว 💛';
+            if (percentage === 0) motivation = 'เริ่มเล็กๆ ก็เก่งแล้ว 💛';
+            else if (percentage < 50) motivation = 'กำลังทำได้ดี! สู้ๆ ✨';
+            else if (percentage < 100) motivation = 'มาครึ่งทางแล้ว เก่งมาก ✨';
+            else motivation = 'สุดยอด! วันนี้คุณชนะแล้ว 🎉';
+
+            document.getElementById('motivationText').textContent = motivation;
+        }
+
+        function showAIEncouragement(checked, total) {
+            const messages = [
+                'เก่งมากครับ! ทำเสร็จแล้ว ' + checked + ' จาก ' + total + ' ข้อ 💛',
+                'สุดยอด! ค่อยๆ ทำทีละขั้นก็เก่งแล้ว ✨',
+                'วันนี้คุณดูแลตัวเองได้ดีมาก 🌸',
+                'ภูมิใจในตัวคุณนะครับ! 🎉',
+                'คุณคือคุณแม่ที่เก่งที่สุด! 💖',
+            ];
+            const message = messages[Math.floor(Math.random() * messages.length)];
+
+            const container = document.getElementById('aiMessageContainer');
+            container.innerHTML = '<div class="ai-message-box"><span class="ai-icon">💬</span><p>' + message + '</p></div>';
+
+            setTimeout(() => { container.innerHTML = ''; }, 5000);
+        }
+
+        function saveSmallWin() {
+            const noteInput = document.getElementById('smallWinNote');
+            const note = noteInput.value.trim();
+            if (!note) return;
+
+            const newNote = { id: Date.now(), text: note, timestamp: new Date().toISOString() };
+
+            savedNotes.unshift(newNote);
+            savedNotes = savedNotes.slice(0, 30);
+            localStorage.setItem('savedNotes', JSON.stringify(savedNotes));
+            noteInput.value = '';
+            renderSavedNotes();
+        }
+
+        function deleteNote(id) {
+            savedNotes = savedNotes.filter(note => note.id !== id);
+            localStorage.setItem('savedNotes', JSON.stringify(savedNotes));
+            renderSavedNotes();
+        }
+
+        function renderSavedNotes() {
+            const container = document.getElementById('savedNotes');
+            if (savedNotes.length === 0) {
+                container.innerHTML = '<p class="no-notes">ยังไม่มี Small Win<br>เริ่มบันทึกชัยชนะเล็กๆ ของกัน!</p>';
+                return;
+            }
+
+            container.innerHTML = savedNotes.map(note => {
+                const time = new Date(note.timestamp).toLocaleDateString('th-TH', {
+                    day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
+                });
+                return '<div class="note-item"><p class="note-text">🎉 ' + note.text + '</p><p class="note-time">' + time + '</p><button class="delete-btn" onclick="deleteNote(' + note.id + ')">🗑️ ลบ</button></div>';
+            }).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', initDashboard);
+    </script>
+<script src="shared.js"></script>
+    <script src="cart-system.js"></script>
+</body>
+</html>

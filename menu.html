@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>เมนูอาหาร - Mami's Hero</title>
+<link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--pink:#f75c9a;--light-pink:#ffb6d9;--blue:#5c9ff7;--light-blue:#e5f0ff;--text-dark:#2C3E50;--text-gray:#666;--white:#fff;--peach:#fff5f7;--green:#27ae60;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Prompt',sans-serif;background:linear-gradient(135deg,var(--peach),var(--light-blue));min-height:100vh;color:var(--text-dark);}
+.navbar{background:rgba(255,255,255,0.95);padding:15px 20px;box-shadow:0 2px 10px rgba(0,0,0,0.1);position:fixed;top:0;width:100%;z-index:1000;}
+.nav-content{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;}
+.logo{font-size:1.2rem;font-weight:bold;text-decoration:none;}
+.logo-pink{color:var(--pink);}
+.logo-blue{color:var(--blue);}
+.nav-menu{display:flex;gap:5px;align-items:center;}
+.nav-menu a{color:var(--text-dark);text-decoration:none;font-weight:600;padding:8px 14px;border-radius:20px;transition:all 0.3s;font-size:0.85rem;}
+.nav-menu a:hover,.nav-menu a.active{background:var(--pink);color:#fff;}
+.nav-burger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:5px;}
+.nav-burger span{display:block;width:25px;height:3px;background:var(--text-dark);border-radius:2px;transition:all 0.3s;}
+.nav-burger.active span:nth-child(1){transform:rotate(45deg) translate(6px,6px);}
+.nav-burger.active span:nth-child(2){opacity:0;}
+.nav-burger.active span:nth-child(3){transform:rotate(-45deg) translate(6px,-6px);}
+@media(max-width:768px){.nav-burger{display:flex;}.nav-menu{display:none;position:absolute;top:100%;left:0;width:100%;background:#fff;flex-direction:column;padding:15px;box-shadow:0 5px 15px rgba(0,0,0,0.1);}.nav-menu.active{display:flex;}.nav-menu a{width:100%;text-align:center;padding:12px;}}
+.container{max-width:900px;margin:100px auto 40px;padding:0 20px;}
+.page-header{text-align:center;margin-bottom:30px;}
+.page-header h1{font-size:2rem;color:var(--pink);margin-bottom:10px;}
+.page-header p{color:var(--text-gray);}
+.categories-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px;}
+.category-section{background:var(--white);border-radius:16px;margin-bottom:15px;box-shadow:0 4px 15px rgba(0,0,0,0.08);overflow:hidden;}
+.category-header{padding:20px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:all 0.3s;}
+.category-header:hover{background:#fef9fa;}
+.category-info{display:flex;align-items:center;gap:15px;}
+.category-icon{font-size:2.5rem;}
+.category-text h3{font-size:1.2rem;color:var(--text-dark);margin-bottom:5px;}
+.category-text p{font-size:0.9rem;color:var(--text-gray);}
+.category-toggle{font-size:1.5rem;color:var(--pink);transition:transform 0.3s;}
+.category-section.active .category-toggle{transform:rotate(180deg);}
+.category-content{display:none;padding:0 20px 20px;}
+.category-section.active .category-content{display:block;}
+.menu-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px;margin-top:15px;}
+.menu-item{background:#fafafa;border-radius:12px;padding:15px;transition:all 0.3s;border:2px solid transparent;}
+.menu-item:hover{border-color:var(--pink);background:#fff5f8;}
+.menu-item h4{font-size:1rem;color:var(--text-dark);margin-bottom:8px;}
+.menu-item p{font-size:0.85rem;color:var(--text-gray);margin-bottom:10px;line-height:1.4;}
+.menu-price{font-size:1.1rem;font-weight:bold;color:var(--pink);margin-bottom:10px;}
+.add-btn{width:100%;background:linear-gradient(135deg,var(--pink),var(--light-pink));color:white;border:none;padding:10px;border-radius:20px;font-size:0.9rem;font-weight:600;cursor:pointer;transition:all 0.3s;}
+.add-btn:hover{transform:translateY(-2px);box-shadow:0 4px 15px rgba(247,92,154,0.3);}
+footer{background:var(--white);padding:30px;text-align:center;margin-top:50px;}
+footer p{color:var(--text-gray);font-size:0.9rem;}
+</style>
+</head>
+<body>
+<nav class="navbar">
+<div class="nav-content">
+<a href="index.html" class="logo">🍱 <span class="logo-pink">Mami's</span> <span class="logo-blue">Hero</span></a>
+<div class="nav-menu" id="navMenu">
+<a href="index.html">หน้าแรก</a>
+<a href="menu.html" class="active">เมนู</a>
+<a href="articles.html">บทความ</a>
+<a href="shop.html">Mami Shop</a>
+<a href="baby.html">บันทึกคุณลูก</a>
+<a href="mom.html">บันทึกคุณแม่</a>
+<a href="contact.html">ติดต่อ</a>
+<a href="#" id="navLoginLink" onclick="openLogin(); return false;" style="background:var(--pink);color:#fff;padding:4px 10px;border-radius:20px;font-size:0.7rem;font-weight:600;">🔑 ล้อคอิน</a>
+<a href="#" id="navCartLink" onclick="openCart(); return false;" style="display:none;background:var(--blue);color:#fff;padding:4px 10px;border-radius:20px;font-size:0.7rem;font-weight:600;">🛒 <span id="cartBadge" style="background:#fff;color:var(--blue);border-radius:50%;padding:1px 5px;font-size:0.65rem;">0</span></a>
+</div>
+<div class="nav-burger" id="navBurger" onclick="toggleNav()"><span></span><span></span><span></span></div>
+</div>
+</nav>
+<script>
+function toggleNav(){document.getElementById('navMenu').classList.toggle('active');document.getElementById('navBurger').classList.toggle('active');}
+</script>
+<div class="container">
+<div class="page-header">
+<h1>📋 เมนูอาหาร Mami's Hero</h1>
+<p>กดเลือกหมวดหมู่เพื่อดูรายการ (กดอีกครั้งเพื่อย่อ)</p>
+</div>
+<div class="categories-grid">
+<div class="category-section active">
+<div class="category-header" onclick="this.parentElement.classList.toggle('active')">
+<div class="category-info"><span class="category-icon">🍼</span><div class="category-text"><h3>อาหารคุณแม่ให้นม</h3><p>อาหารบำรุงน้ำนม อุดมสมบูรณ์ด้วยสารอาหารครบถ้วน</p></div></div>
+<span class="category-toggle">▼</span>
+</div>
+<div class="category-content">
+<div class="menu-grid">
+<div class="menu-item"><h4>🍲 ข้าวต้มปลาแซลมอน</h4><p>ปลาแซลมอนสด ข้าวต้มนุ่ม รสกลมกล่อม โปรตีนสูง ช่วยบำรุงน้ำนม</p><div class="menu-price">฿149</div><button class="add-btn" onclick="addToCart('food','ข้าวต้มปลาแซลมอน',149)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍗 ไก่อบซีอิ๋ว</h4><p>ไก่อ่อนอบซีอิ๋วเข้มข้น รสหอมหวาน กินกับข้าวสวยร้อนๆ อิ่มท้อง</p><div class="menu-price">฿129</div><button class="add-btn" onclick="addToCart('food','ไก่อบซีอิ๋ว',129)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🥘 ซุปเต้าหู้หมูสับ</h4><p>ซุปใสเต้าหู้นุ่ม หมูสับราดเกลือ อุดมคุณค่าโปรตีนและแคลเซียม</p><div class="menu-price">฿99</div><button class="add-btn" onclick="addToCart('food','ซุปเต้าหู้หมูสับ',99)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🐟 ปลานึ่งมะนาว</h4><p>ปลาเนื้อนุ่มนึ่งร้อน ราดซอสมะนาวเปรี้้ยวหวาน สดใหม่จากตลาด</p><div class="menu-price">฿169</div><button class="add-btn" onclick="addToCart('food','ปลานึ่งมะนาว',169)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🥗 สลัดไก่งวง</h4><p>ไก่งวงย่างหั่นฟิลเล็ต ผักสลัดสดๆ ราดซอสงาวานิช อร่อยและเบา</p><div class="menu-price">฿139</div><button class="add-btn" onclick="addToCart('food','สลัดไก่งวง',139)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍳 ไข่ตุ๋นนึ่งซีอิ๋ว</h4><p>ไข่ตุ๋นนุ่มละมุน ราดซอสซีอิ๋วเข้มข้น อุดมด้วยโปรตีนและไขมันดี</p><div class="menu-price">฿89</div><button class="add-btn" onclick="addToCart('food','ไข่ตุ๋นนึ่งซีอิ๋ว',89)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🐔 อกไก่ซอสมะเขือเทศ</h4><p>อกไก่นิ่มนึ่ง ราดซอสมะเขือเทศรสเปรี้้ยวหวาน กินกับข้าวกล้อง</p><div class="menu-price">฿119</div><button class="add-btn" onclick="addToCart('food','อกไก่ซอสมะเขือเทศ',119)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🥩 หมูสับผัดขิง</h4><p>หมูสับนุ่มผัดกับขิงสดหอม รสชาติกลมกล่อม กินกับข้าวสวย</p><div class="menu-price">฿109</div><button class="add-btn" onclick="addToCart('food','หมูสับผัดขิง',109)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍲 ข้าวผัดปลาเค็ม</h4><p>ข้าวผัดร้อนๆ ปลาเค็มหอมๆ โปรตีนเพียงพอสำหรับคุณแม่ให้นม</p><div class="menu-price">฿99</div><button class="add-btn" onclick="addToCart('food','ข้าวผัดปลาเค็ม',99)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🦐 ผัดบรอกโคลีกุ้ง</h4><p>กุ้งสดผัดกับบรอกโคลี วิตามินและโปรตีนครบ อร่อยและดีต่อสุขภาพ</p><div class="menu-price">฿159</div><button class="add-btn" onclick="addToCart('food','ผัดบรอกโคลีกุ้ง',159)">🛒 ใส่รถเข็น</button></div>
+</div>
+</div>
+</div>
+<div class="category-section">
+<div class="category-header" onclick="this.parentElement.classList.toggle('active')">
+<div class="category-info"><span class="category-icon">🥗</span><div class="category-text"><h3>เมนูคลีน</h3><p>ลดน้ำหนักอย่างปลอดภัย กับเมนูสุขภาพที่อร่อยได้ทุกมื้อ</p></div></div>
+<span class="category-toggle">▼</span>
+</div>
+<div class="category-content">
+<div class="menu-grid">
+<div class="menu-item"><h4>🥩 สเต็กอกไก่ย่าง</h4><p>อกไก่ย่างเนื้อนุ่ม ราดซอสพริกไทยดำ กินกับผักนึ่ง คาร์บต่ำ</p><div class="menu-price">฿129</div><button class="add-btn" onclick="addToCart('food','สเต็กอกไก่ย่าง',129)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🥑 บะหมี่ข้าวผัดปูอัด</h4><p>บะหมี่ข้าวผัดปูอัดสด รสชาติกลมกล่อม คาร์บต่ำกว่าบะหมี่ธรรมดา</p><div class="menu-price">฿119</div><button class="add-btn" onclick="addToCart('food','บะหมี่ข้าวผัดปูอัด',119)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🥒 สลัดผักรวมไก่Grill</h4><p>ผักรวมสดๆ ไก่ย่างหั่นเส้น ราดซอสน้ำส้มสำลีกินเพลิน</p><div class="menu-price">฿109</div><button class="add-btn" onclick="addToCart('food','สลัดผักรวมไก่Grill',109)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍚 ข้าวกล้องผัดกุ้ง</h4><p>ข้าวกล้องนึ่งร้อน ผัดกุ้งสดหอมๆ คาร์บดี กินอิ่มท้องไม่อ้วน</p><div class="menu-price">฿99</div><button class="add-btn" onclick="addToCart('food','ข้าวกล้องผัดกุ้ง',99)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🐟 ปลาแซลมอนอบเนยสมุนไพร</h4><p>ปลาแซลมอนสดอบเนยสมุนไพร เนื้อนุ่มละมุน กินกับแครอทนึ่ง</p><div class="menu-price">฿189</div><button class="add-btn" onclick="addToCart('food','ปลาแซลมอนอบเนยสมุนไพร',189)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🥚 โอ๊ตมีลเนื้อควิน</h4><p>โอ๊ตมีลเนื้อควินนุ่ม ราดซอสเห็ด อิ่มท้อง คาร์บต่ำ ดีต่อสุขภาพ</p><div class="menu-price">฿119</div><button class="add-btn" onclick="addToCart('food','โอ๊ตมีลเนื้อควิน',119)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍲 ซุปผักรวมไก่</h4><p>ซุปใสผักรวมไก่สับ อุ่นสบาย กินแทนมื้อเช้าได้ คาร์บต่ำ</p><div class="menu-price">฿89</div><button class="add-btn" onclick="addToCart('food','ซุปผักรวมไก่',89)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🥩 ลาบไก่ไร้มัน</h4><p>ไก่สับลดมันผสมผักสด ราดน้ำมันงา รสชาติจัดจ้าน คาร์บต่ำมาก</p><div class="menu-price">฿99</div><button class="add-btn" onclick="addToCart('food','ลาบไก่ไร้มัน',99)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍜 สปาเก็ตตี้ซอสมะเขือเทศ</h4><p>สปาเก็ตตี้โฮลวีท ราดซอสมะเขือเทศสดใส ใยอาหารสูง</p><div class="menu-price">฿109</div><button class="add-btn" onclick="addToCart('food','สปาเก็ตตี้ซอสมะเขือเทศ',109)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🥗 บาบีฟัตเตะซาลาเปา</h4><p>เนื้อบดย่างบนเตาหินวางซาลาเปา รสหอมหวาน คาร์บปานกลาง</p><div class="menu-price">฿139</div><button class="add-btn" onclick="addToCart('food','บาบีฟัตเตะซาลาเปา',139)">🛒 ใส่รถเข็น</button></div>
+</div>
+</div>
+</div>
+<div class="category-section">
+<div class="category-header" onclick="this.parentElement.classList.toggle('active')">
+<div class="category-info"><span class="category-icon">🍱</span><div class="category-text"><h3>อาหารกล่องพ่อ-ลูก</h3><p>พกไปทำงานหรือทานบนรถ ระหว่างเดินทางก็อร่อย</p></div></div>
+<span class="category-toggle">▼</span>
+</div>
+<div class="category-content">
+<div class="menu-grid">
+<div class="menu-item"><h4>🍱 ข้าวผัดไก่กล่องใหญ่</h4><p>ข้าวผัดไก่หอมๆ หนัก 500 กรัม อิ่มจุกเลย พกไปทำงานได้</p><div class="menu-price">฿89</div><button class="add-btn" onclick="addToCart('food','ข้าวผัดไก่กล่องใหญ่',89)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍱 ข้าวผัดหมูกล่องใหญ่</h4><p>ข้าวผัดหมูหอมๆ หนัก 500 กรัม รสชาติกลมกล่อม อิ่มท้อง</p><div class="menu-price">฿79</div><button class="add-btn" onclick="addToCart('food','ข้าวผัดหมูกล่องใหญ่',79)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍱 ข้าวผัดกุ้งกล่องใหญ่</h4><p>ข้าวผัดกุ้งสด หอมใช้เนย หนัก 500 กรัม อร่อยทั้งร้อนและเย็น</p><div class="menu-price">฿99</div><button class="add-btn" onclick="addToCart('food','ข้าวผัดกุ้งกล่องใหญ่',99)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍱 ข้าวต้มไก่กล่องใหญ่</h4><p>ข้าวต้มไก่น้ำใส ชามใหญ่ อุ่นๆ ร้อนๆ กินสบาย อิ่มเบาๆ</p><div class="menu-price">฿89</div><button class="add-btn" onclick="addToCart('food','ข้าวต้มไก่กล่องใหญ่',89)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍱 ข้าวผัดปลาไข่กล่องใหญ่</h4><p>ข้าวผัดปลาไข่หอมๆ หนัก 500 กรัม อร่อยคลาสสิค</p><div class="menu-price">฿85</div><button class="add-btn" onclick="addToCart('food','ข้าวผัดปลาไข่กล่องใหญ่',85)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍱 ข้าวแกงเขียวหวานไก่</h4><p>ข้าวสวยราดแกงเขียวหวานไก่ รสชาติเข้มข้น หอมเครื่องแกง</p><div class="menu-price">฿95</div><button class="add-btn" onclick="addToCart('food','ข้าวแกงเขียวหวานไก่',95)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍱 ข้าวแกงส้มผักรวม</h4><p>ข้าวสวยราดแกงส้มผักรวม รสชาติจัดจ้าน สีสันสดใส</p><div class="menu-price">฿89</div><button class="add-btn" onclick="addToCart('food','ข้าวแกงส้มผักรวม',89)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍱 ข้าวผัดพริกหยวก</h4><p>ข้าวผัดพริกหยวกหอมๆ หนัก 500 กรัม อร่อยจัดจ้าน</p><div class="menu-price">฿75</div><button class="add-btn" onclick="addToCart('food','ข้าวผัดพริกหยวก',75)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍱 ข้าวหน้าไก่คาราเกะ</h4><p>ข้าวสวยราดไก่คาราเกะซอสเข้ม หอมกลิ่นญี่ปุ่น</p><div class="menu-price">฿109</div><button class="add-btn" onclick="addToCart('food','ข้าวหน้าไก่คาราเกะ',109)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍱 ข้าวผัดทะเลรวม</h4><p>ข้าวผัดกุ้ง หอย ปลา หอมๆ อร่อยครบรสทะเล</p><div class="menu-price">฿129</div><button class="add-btn" onclick="addToCart('food','ข้าวผัดทะเลรวม',129)">🛒 ใส่รถเข็น</button></div>
+</div>
+</div>
+</div>
+<div class="category-section">
+<div class="category-header" onclick="this.parentElement.classList.toggle('active')">
+<div class="category-info"><span class="category-icon">🍣</span><div class="category-text"><h3>ปิ่นโตนานาชาติ</h3><p>สัปดาห์ละ 10 เมนู รับประทานได้ไม่ซ้ำทั้งเดือน</p></div></div>
+<span class="category-toggle">▼</span>
+</div>
+<div class="category-content">
+<div class="menu-grid">
+<div class="menu-item"><h4>🍣 ปิ่นโตญี่ปุ่น</h4><p>ข้าวปิ่นโตห่อสาหร่าย มีปลาแซลมอน ปลาเนื้อเทา กุ้ง ราดซอสถั่วเหลือง</p><div class="menu-price">฿149</div><button class="add-btn" onclick="addToCart('food','ปิ่นโตญี่ปุ่น',149)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🥪 ปิ่นโตแซนวิช</h4><p>ขนมปังโฮลวีท หั่นไส้ไก่งวง ผักสด ชีส ราดซอสมัสตาร์ด</p><div class="menu-price">฿129</div><button class="add-btn" onclick="addToCart('food','ปิ่นโตแซนวิช',129)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🌯 ปิ่นโตบูริโต้</h4><p>แป้งทอริญาญ่า ห่อเนื้อย่าง ถั่ว ข้าวโพด ซอสพิเศษ</p><div class="menu-price">฿139</div><button class="add-btn" onclick="addToCart('food','ปิ่นโตบูริโต้',139)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🥙 ปิ่นโตสลัดโบว์</h4><p>ผักรวมสดๆ ราดน้ำสลัดยูฟ่า หั่นเส้นพาสต้า เมล็ดฟักทอง</p><div class="menu-price">฿119</div><button class="add-btn" onclick="addToCart('food','ปิ่นโตสลัดโบว์',119)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍲 ปิ่นโตคุ้ยตาว</h4><p>ซุปมิโซะใส หนังไก่กรอบ วุ้นเส้น หอมเจียว ต้นหอมซอย</p><div class="menu-price">฿109</div><button class="add-btn" onclick="addToCart('food','ปิ่นโตคุ้ยตาว',109)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🥡 ปิ่นโตฮอตดอก</h4><p>ข้าวผัดหนังปลากรอบ หมูย่าง ผักดอง ราดซอสหวาน</p><div class="menu-price">฿129</div><button class="add-btn" onclick="addToCart('food','ปิ่นโตฮอตดอก',129)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍱 ปิ่นโตปลาเทคโม</h4><p>ข้าวสวยร้อนๆ วางปลาเทคโมราดไข่ป่น หั่นแคบ สะอื้น</p><div class="menu-price">฿139</div><button class="add-btn" onclick="addToCart('food','ปิ่นโตปลาเทคโม',139)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🥟 ปิ่นโตติมซั่ม</h4><p>แป้งติมซั่มห่อไส้กุ้ง ผักกาดขาว ราดซอสจิ้นซ่า</p><div class="menu-price">฿119</div><button class="add-btn" onclick="addToCart('food','ปิ่นโตติมซั่ม',119)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍛 ปิ่นโตคารี</h4><p>ข้าวสวยร้อนๆ ราดแกงคารีเข้มข้น มีเนื้อสัตว์และผัก</p><div class="menu-price">฿129</div><button class="add-btn" onclick="addToCart('food','ปิ่นโตคารี',129)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🌮 ปิ่นโตตักโต้</h4><p>แป้งทอร์ตีญ่าย่าง ราดเนื้อบด ถั่ว ชีส ซอสพิเศษ</p><div class="menu-price">฿139</div><button class="add-btn" onclick="addToCart('food','ปิ่นโตตักโต้',139)">🛒 ใส่รถเข็น</button></div>
+</div>
+</div>
+</div>
+<div class="category-section">
+<div class="category-header" onclick="this.parentElement.classList.toggle('active')">
+<div class="category-info"><span class="category-icon">🍛</span><div class="category-text"><h3>ปิ่นโตไทย</h3><p>กับข้าวปิ่นโตกับข้าวไทย สัปดาห์ละ 10 เมนู</p></div></div>
+<span class="category-toggle">▼</span>
+</div>
+<div class="category-content">
+<div class="menu-grid">
+<div class="menu-item"><h4>🍛 ข้าวผัดไก่</h4><p>ข้าวผัดไก่หอมๆ ไข่ดาวร้อนๆ หอมใช้เนย</p><div class="menu-price">฿79</div><button class="add-btn" onclick="addToCart('food','ข้าวผัดไก่',79)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍛 ข้าวผัดหมู</h4><p>ข้าวผัดหมูหอมๆ ไข่เจียวหวาน รสเด็ด</p><div class="menu-price">฿75</div><button class="add-btn" onclick="addToCart('food','ข้าวผัดหมู',75)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍛 ข้าวผัดกุ้ง</h4><p>ข้าวผัดกุ้งสดใหญ่ หอมใช้เนย รสชาติจัดจ้าน</p><div class="menu-price">฿99</div><button class="add-btn" onclick="addToCart('food','ข้าวผัดกุ้ง',99)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍛 แกงเขียวหวานไก่</h4><p>แกงเขียวหวานเข้มข้น หอมเครื่องแกง กินกับข้าวสวย</p><div class="menu-price">฿89</div><button class="add-btn" onclick="addToCart('food','แกงเขียวหวานไก่',89)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍛 แกงส้มผักรวม</h4><p>แกงส้มรสจัดจ้าน ผักรวมหลากหลาย สีสันสดใส</p><div class="menu-price">฿85</div><button class="add-btn" onclick="addToCart('food','แกงส้มผักรวม',85)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍛 ต้มยำไก่</h4><p>ต้มยำน้ำใสเปรี้้ยวซ่า หอมเครื่องสมุนไพร กินกับข้าว</p><div class="menu-price">฿99</div><button class="add-btn" onclick="addToCart('food','ต้มยำไก่',99)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍛 ผัดกะเพราไก่</h4><p>ผัดกะเพราไก่สับ ร้อนๆ หอมกะเพรา กินกับข้าวไข่เจียว</p><div class="menu-price">฿79</div><button class="add-btn" onclick="addToCart('food','ผัดกะเพราไก่',79)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍛 ผัดพริกหยวกไก่</h4><p>ผัดพริกหยวกไก่หั่นเต๋า รสหอมหวาน กินกับข้าวสวย</p><div class="menu-price">฿79</div><button class="add-btn" onclick="addToCart('food','ผัดพริกหยวกไก่',79)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍛 หมูทอดกระเทียม</h4><p>หมูเต้าหยวกทอดกระเทียม กรอบนอกนุ่มใน ราดข้าว</p><div class="menu-price">฿99</div><button class="add-btn" onclick="addToCart('food','หมูทอดกระเทียม',99)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍛 ปลานึ่งมะนาว</h4><p>ปลากระพงนึ่งมะนาว เนื้อนุ่ม ราดซอสเปรี้้ยวหวาน</p><div class="menu-price">฿129</div><button class="add-btn" onclick="addToCart('food','ปลานึ่งมะนาว',129)">🛒 ใส่รถเข็น</button></div>
+</div>
+</div>
+</div>
+<div class="category-section">
+<div class="category-header" onclick="this.parentElement.classList.toggle('active')">
+<div class="category-info"><span class="category-icon">👴</span><div class="category-text"><h3>อาหารผู้สูงอายุ</h3><p>อาหารเคี้ยวง่าย ดูแลสุขภาพพ่อแม่ที่มาช่วยดูแลเรา</p></div></div>
+<span class="category-toggle">▼</span>
+</div>
+<div class="category-content">
+<div class="menu-grid">
+<div class="menu-item"><h4>🥣 ข้าวต้มไก่น้ำใส</h4><p>ข้าวต้มนุ่มๆ ไก่สับเล็ก ราดน้ำซุปใส อุ่นสบาย เคี้ยวง่าย</p><div class="menu-price">฿79</div><button class="add-btn" onclick="addToCart('food','ข้าวต้มไก่น้ำใส',79)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🥣 ข้าวต้มปลานิล</h4><p>ข้าวต้มปลานิลนุ่ม ปลาเล็กๆ กินง่าย อุดมคุณค่าโปรตีน</p><div class="menu-price">฿89</div><button class="add-btn" onclick="addToCart('food','ข้าวต้มปลานิล',89)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🥣 ซุปเต้าหู้ใส</h4><p>ซุปใสเต้าหู้นุ่มๆ หอมซีอิ๋ว กินกับข้าวสวย ง่ายๆ</p><div class="menu-price">฿69</div><button class="add-btn" onclick="addToCart('food','ซุปเต้าหู้ใส',69)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍳 ไข่ตุ๋นนึ่ง</h4><p>ไข่ตุ๋นนุ่มละมุน เนื้อเนียน กินง่าย อุดมคุณค่า</p><div class="menu-price">฿59</div><button class="add-btn" onclick="addToCart('food','ไข่ตุ๋นนึ่ง',59)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🥩 หมูผัดซีอิ๋วนิ่ม</h4><p>หมูผัดซีอิ๋วเข้มข้น หั่นเล็กนิ่มๆ เคี้ยวง่าย</p><div class="menu-price">฿89</div><button class="add-btn" onclick="addToCart('food','หมูผัดซีอิ๋วนิ่ม',89)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🐟 ปลานึ่งนิ่ม</h4><p>ปลานึ่งนิ่มๆ เนื้อปลานุ่ม ราดซอสจืด กินกับข้าว</p><div class="menu-price">฿99</div><button class="add-btn" onclick="addToCart('food','ปลานึ่งนิ่ม',99)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🥬 ผักนึ่งซีอิ๋ว</h4><p>ผักบรอกโคลี คะน้า แครอทนึ่งนิ่ม ราดซีอิ๋วอู้น</p><div class="menu-price">฿59</div><button class="add-btn" onclick="addToCart('food','ผักนึ่งซีอิ๋ว',59)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍲 ข้าวต้มฟักทอง</h4><p>ข้าวต้มฟักทองหวานนิ่ม กินอุ่นๆ ดีต่อระบบย่อย</p><div class="menu-price">฿69</div><button class="add-btn" onclick="addToCart('food','ข้าวต้มฟักทอง',69)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🥚 ไข่เจียวนิ่ม</h4><p>ไข่เจียวนุ่มๆ ตีไข่แบบนิ่ม กินกับข้าวสวย</p><div class="menu-price">฿49</div><button class="add-btn" onclick="addToCart('food','ไข่เจียวนิ่ม',49)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🐔 ไก่อบนิ่ม</h4><p>ไก่อบซีอิ๋วนิ่มๆ เนื้อนุ่ม กินง่าย อุดมคุณค่า</p><div class="menu-price">฿99</div><button class="add-btn" onclick="addToCart('food','ไก่อบนิ่ม',99)">🛒 ใส่รถเข็น</button></div>
+</div>
+</div>
+</div>
+<div class="category-section">
+<div class="category-header" onclick="this.parentElement.classList.toggle('active')">
+<div class="category-info"><span class="category-icon">🍇</span><div class="category-text"><h3>ผลไม้หั่น-คว้านเม็ด</h3><p>ผลไม้สดใหม่ หั่นพร้อมทาน ราคาตามน้ำหนัก</p></div></div>
+<span class="category-toggle">▼</span>
+</div>
+<div class="category-content">
+<div class="menu-grid">
+<div class="menu-item"><h4>🍇 องุ่นเขียว</h4><p>องุ่นเขียวสด หั่นเป็นชิ้นเล็ก กินสดๆ หวานอมเปรี้้ยว</p><div class="menu-price">น้ำหนัก: 50ก.฿35 | 100ก.฿65 | 150ก.฿90</div><button class="add-btn" onclick="addToCart('food','องุ่นเขียว 100ก.',65)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍓 สตรอว์เบอร์รี่</h4><p>สตรอว์เบอร์รี่สดจากสวน หั่นครึ่ง หวานอมเปรี้้ยว สีแดงสดใส</p><div class="menu-price">น้ำหนัก: 50ก.฿40 | 100ก.฿75 | 150ก.฿105</div><button class="add-btn" onclick="addToCart('food','สตรอว์เบอร์รี่ 100ก.',75)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🥭 มะม่วงอกรอบ</h4><p>มะม่วงอกรอบหั่นเป็นเส้น รสหวานอมเปรี้้ยว สีเหลืองสดใส</p><div class="menu-price">น้ำหนัก: 50ก.฿30 | 100ก.฿55 | 150ก.฿75</div><button class="add-btn" onclick="addToCart('food','มะม่วงอกรอบ 100ก.',55)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍉 แตงโม</h4><p>แตงโมสดกรอบ หั่นเป็นลูกเต๋า หวานเย็น กระปาก</p><div class="menu-price">น้ำหนัก: 50ก.฿25 | 100ก.฿45 | 150ก.฿60</div><button class="add-btn" onclick="addToCart('food','แตงโม 100ก.',45)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍑 พีชสุก</h4><p>พีชสุกนิ่มหั่นเป็นเส้น หวานหอม กลิ่นผลไม้สด</p><div class="menu-price">น้ำหนัก: 50ก.฿45 | 100ก.฿85 | 150ก.฿120</div><button class="add-btn" onclick="addToCart('food','พีชสุก 100ก.',85)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🥝 กีวี่</h4><p>กีวี่สดหั่นแว่น รสหวานอมเปรี้้ยว อุดมวิตามินซี</p><div class="menu-price">น้ำหนัก: 50ก.฿35 | 100ก.฿65 | 150ก.฿90</div><button class="add-btn" onclick="addToCart('food','กีวี่ 100ก.',65)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍍 สับปะรด</h4><p>สับปะรดสดหั่นชิ้น รสหวานอมเปรี้้ยว สีเหลืองสดใส</p><div class="menu-price">น้ำหนัก: 50ก.฿25 | 100ก.฿45 | 150ก.฿60</div><button class="add-btn" onclick="addToCart('food','สับปะรด 100ก.',45)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍈 แครอทผสมแตงโม</h4><p>แครอทผสมแตงโมหั่นเป็นลูกเต๋า รสหวานเย็น ดีต่อสุขภาพ</p><div class="menu-price">น้ำหนัก: 50ก.฿30 | 100ก.฿55 | 150ก.฿75</div><button class="add-btn" onclick="addToCart('food','แครอทผสมแตงโม 100ก.',55)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍌 กล้วยหอม</h4><p>กล้วยหอมสุกหั่นแว่น หวานหอม กลิ่นผลไม้</p><div class="menu-price">น้ำหนัก: 50ก.฿25 | 100ก.฿45 | 150ก.฿60</div><button class="add-btn" onclick="addToCart('food','กล้วยหอม 100ก.',45)">🛒 ใส่รถเข็น</button></div>
+<div class="menu-item"><h4>🍎 แอปเปิ้ลแดง</h4><p>แอปเปิ้ลแดงสดหั่นเป็ปี๋ รสหวานอมเปรี้้ยว กรอบๆ</p><div class="menu-price">น้ำหนัก: 50ก.฿35 | 100ก.฿65 | 150ก.฿90</div><button class="add-btn" onclick="addToCart('food','แอปเปิ้ลแดง 100ก.',65)">🛒 ใส่รถเข็น</button></div>
+</div>
+</div>
+</div>
+<div class="category-section">
+            <div class="category-header" onclick="this.parentElement.classList.toggle('active')">
+                <div class="category-info"><span class="category-icon">🥣</span><div class="category-text"><h3>โฮมเมดโยเกิร์ต กราโนล่า</h3><p>โยเกิร์ต 50g + ทอปปิ้งและผลไม้ ราคาตามน้ำหนัก 10/20/30/40กรัม</p></div></div>
+                <span class="category-toggle">▼</span>
+            </div>
+            <div class="category-content">
+                <div class="menu-grid">
+                    <div class="menu-item" style="background:linear-gradient(135deg,#fff9e6,#fff);border:2px solid #f0d060;"><h4>🥣 โยเกิร์ตกราโนล่า 50ก.</h4><p>โยเกิร์ตพร้อมท็อปปิ้งผลไม้สด กราโนล่าเม็ดมิ้นท์ ราดน้ำผึ้ง</p><div class="menu-price">฿49</div><button class="add-btn" onclick="addToCart('food','โยเกิร์ตกราโนล่า 50ก.',49)">🛒 ใส่รถเข็น</button></div>
+                    <div class="menu-item" style="background:linear-gradient(135deg,#fff9e6,#fff);border:2px solid #f0d060;"><h4>🥣 โยเกิร์ตกราโนล่า 100ก.</h4><p>โยเกิร์ตพร้อมท็อปปิ้งผลไม้สด กราโนล่าเม็ดมิ้นท์ ราดน้ำผึ้ง</p><div class="menu-price">฿79</div><button class="add-btn" onclick="addToCart('food','โยเกิร์ตกราโนล่า 100ก.',79)">🛒 ใส่รถเข็น</button></div>
+                    <div class="menu-item" style="background:linear-gradient(135deg,#fff9e6,#fff);border:2px solid #f0d060;"><h4>🥣 โยเกิร์ตกราโนล่า 150ก.</h4><p>โยเกิร์ตพร้อมท็อปปิ้งผลไม้สด กราโนล่าเม็ดมิ้นท์ ราดน้ำผึ้ง</p><div class="menu-price">฿109</div><button class="add-btn" onclick="addToCart('food','โยเกิร์ตกราโนล่า 150ก.',109)">🛒 ใส่รถเข็น</button></div>
+                    <div class="menu-item" style="background:linear-gradient(135deg,#fff9e6,#fff);border:2px solid #f0d060;"><h4>🥣 โยเกิร์ตผลไม้รวม</h4><p>โยเกิร์ตนมแพะ ท็อปปิ้งสตรอว์เบอร์รี่ กีวี่ องุ่น</p><div class="menu-price">฿59</div><button class="add-btn" onclick="addToCart('food','โยเกิร์ตผลไม้รวม',59)">🛒 ใส่รถเข็น</button></div>
+                    <div class="menu-item" style="background:linear-gradient(135deg,#fff9e6,#fff);border:2px solid #f0d060;"><h4>🥣 โยเกิร์ตน้ำผึ้งวอลนัท</h4><p>โยเกิร์ตนมแพะ ราดน้ำผึ้งจิ๋ม วอลนัทกรอบ</p><div class="menu-price">฿69</div><button class="add-btn" onclick="addToCart('food','โยเกิร์ตน้ำผึ้งวอลนัท',69)">🛒 ใส่รถเข็น</button></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Healthy Snack -->
+        <div class="category-section">
+            <div class="category-header" onclick="this.parentElement.classList.toggle('active')">
+                <div class="category-info"><span class="category-icon">🥕</span><div class="category-text"><h3>Healthy Snack</h3><p>เมนู dipping นานาชาติ ทานกับผักสด เริ่มต้น 49฿</p></div></div>
+                <span class="category-toggle">▼</span>
+            </div>
+            <div class="category-content">
+                <div class="menu-grid">
+                    <div class="menu-item"><h4>🥕 ครั้นเปอร์รี่แครอท</h4><p>แครอทปั่นผสมส้ม รสหวานอมเปรี้้ยว ดีต่อสายตา</p><div class="menu-price">฿49</div><button class="add-btn" onclick="addToCart('food','ครั้นเปอร์รี่แครอท',49)">🛒 ใส่รถเข็น</button></div>
+                    <div class="menu-item"><h4>🍌 สมูทตี้กล้วยโฮลวีท</h4><p>กล้วยสุกโฮลวีทปั่น รสหวานนุ่ม พลังงานเต็ม</p><div class="menu-price">฿59</div><button class="add-btn" onclick="addToCart('food','สมูทตี้กล้วยโฮลวีท',59)">🛒 ใส่รถเข็น</button></div>
+                    <div class="menu-item"><h4>🥒 ครั้นเปอร์รี่แตงกวา</h4><p>แตงกวาปั่นผสมมะนาว สดชื่น คลายร้อน</p><div class="menu-price">฿49</div><button class="add-btn" onclick="addToCart('food','ครั้นเปอร์รี่แตงกวา',49)">🛒 ใส่รถเข็น</button></div>
+                    <div class="menu-item"><h4>🍎 ครั้นเปอร์รี่แอปเปิ้ล</h4><p>แอปเปิ้ลปั่นผสมอบเชย รสหวานหอม</p><div class="menu-price">฿59</div><button class="add-btn" onclick="addToCart('food','ครั้นเปอร์รี่แอปเปิ้ล',59)">🛒 ใส่รถเข็น</button></div>
+                    <div class="menu-item"><h4>🥕 สมูทตี้ผักรวม</h4><p>ผักรวมปั่น วิตามินเพียบ ดีต่อสุขภาพ</p><div class="menu-price">฿69</div><button class="add-btn" onclick="addToCart('food','สมูทตี้ผักรวม',69)">🛒 ใส่รถเข็น</button></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Poke Bowl -->
+        <div class="category-section">
+            <div class="category-header" onclick="this.parentElement.classList.toggle('active')">
+                <div class="category-info"><span class="category-icon">🍣</span><div class="category-text"><h3>Poke Bowl (10 เมนู)</h3><p>เริ่มต้น 129฿</p></div></div>
+                <span class="category-toggle">▼</span>
+            </div>
+            <div class="category-content">
+                <div class="menu-grid">
+                    <div class="menu-item" style="background:linear-gradient(135deg,#e8f5e9,#fff);border:2px solid var(--green);"><h4>🍚 Poke Bowl ปลาแซลมอน</h4><p>ข้าวบาร์ลีย์ วางปลาแซลมอนสด อะโวคาโด พิมเปิ้ล แตงกวา</p><div class="menu-price">฿129</div><button class="add-btn" onclick="addToCart('food','Poke Bowl ปลาแซลมอน',129)">🛒 ใส่รถเข็น</button></div>
+                    <div class="menu-item" style="background:linear-gradient(135deg,#e8f5e9,#fff);border:2px solid var(--green);"><h4>🍚 Poke Bowl กุ้ง</h4><p>ข้าวบาร์ลีย์ วางกุ้งสด อะโวคาโด มะม่วง ผักรวก</p><div class="menu-price">฿129</div><button class="add-btn" onclick="addToCart('food','Poke Bowl กุ้ง',129)">🛒 ใส่รถเข็น</button></div>
+                    <div class="menu-item" style="background:linear-gradient(135deg,#e8f5e9,#fff);border:2px solid var(--green);"><h4>🍚 Poke Bowl หมูย่าง</h4><p>ข้าวบาร์ลีย์ วางหมูย่างซีอิ๋ว ผักดอง พิมเปิ้ล</p><div class="menu-price">฿119</div><button class="add-btn" onclick="addToCart('food','Poke Bowl หมูย่าง',119)">🛒 ใส่รถเข็น</button></div>
+                    <div class="menu-item" style="background:linear-gradient(135deg,#e8f5e9,#fff);border:2px solid var(--green);"><h4>🍚 Poke Bowl ทูน่า</h4><p>ข้าวบาร์ลีย์ วางทูน่าสด ข้าวโพด ถั่วแดง ผักชีซอย</p><div class="menu-price">฿139</div><button class="add-btn" onclick="addToCart('food','Poke Bowl ทูน่า',139)">🛒 ใส่รถเข็น</button></div>
+                    <div class="menu-item" style="background:linear-gradient(135deg,#e8f5e9,#fff);border:2px solid var(--green);"><h4>🥑 Poke Bowl ผักรวม</h4><p>ข้าวบาร์ลีย์ อะโวคาโด พิมเปิ้ล ถั่วงอก ผักชี</p><div class="menu-price">฿99</div><button class="add-btn" onclick="addToCart('food','Poke Bowl ผักรวม',99)">🛒 ใส่รถเข็น</button></div>
+                    <div class="menu-item" style="background:linear-gradient(135deg,#e8f5e9,#fff);border:2px solid var(--green);"><h4>🍚 Poke Bowl ไก่</h4><p>ข้าวบาร์ลีย์ วางไก่ย่าง ผักรวม ซอสพริก</p><div class="menu-price">฿109</div><button class="add-btn" onclick="addToCart('food','Poke Bowl ไก่',109)">🛒 ใส่รถเข็น</button></div>
+                    <div class="menu-item" style="background:linear-gradient(135deg,#e8f5e9,#fff);border:2px solid var(--green);"><h4>🍚 Poke Bowl ปูอัด</h4><p>ข้าวบาร์ลีย์ วางปูอัด มะม่วงสุก ผักชี</p><div class="menu-price">฿129</div><button class="add-btn" onclick="addToCart('food','Poke Bowl ปูอัด',129)">🛒 ใส่รถเข็น</button></div>
+                    <div class="menu-item" style="background:linear-gradient(135deg,#e8f5e9,#fff);border:2px solid var(--green);"><h4>🍚 Poke Bowl สเต็ก</h4><p>ข้าวบาร์ลีย์ วางสเต็กหั่น หัวหอมดอง พิมเปิ้ล</p><div class="menu-price">฿149</div><button class="add-btn" onclick="addToCart('food','Poke Bowl สเต็ก',149)">🛒 ใส่รถเข็น</button></div>
+                    <div class="menu-item" style="background:linear-gradient(135deg,#e8f5e9,#fff);border:2px solid var(--green);"><h4>🍚 Poke Bowl เต้าหู้</h4><p>ข้าวบาร์ลีย์ วางเต้าหู้คริสเพียน ผักรวม ซอสมาโย</p><div class="menu-price">฿99</div><button class="add-btn" onclick="addToCart('food','Poke Bowl เต้าหู้',99)">🛒 ใส่รถเข็น</button></div>
+                    <div class="menu-item" style="background:linear-gradient(135deg,#e8f5e9,#fff);border:2px solid var(--green);"><h4>🍚 Poke Bowl ไส้กรอก</h4><p>ข้าวบาร์ลีย์ วางไส้กรอกอกไก่ ผักดอง มะเขือเทศ</p><div class="menu-price">฿99</div><button class="add-btn" onclick="addToCart('food','Poke Bowl ไส้กรอก',99)">🛒 ใส่รถเข็น</button></div>
+                </div>
+            </div>
+        </div>
+</div>
+<footer><p>© 2026 Mami's Hero - อาหารที่ดีที่สุดสำหรับคุณแม่และครอบครัว</p></footer>
+</div>
+</body>
+</html>

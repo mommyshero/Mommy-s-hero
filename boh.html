@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOH - Mami's Hero</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --yellow: #FFF9C4; --yellow-light: #FFFDE7; --yellow-dark: #F9A825; --blue: #5c9ff7; --blue-light: #e5f0ff; --blue-dark: #2E7D32; --green: #4CAF50; --red: #f44336; --text-dark: #37474F; --text-gray: #546E7A; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Prompt', sans-serif; background: #FFF9C4; min-height: 100vh; color: var(--text-dark); }
+        .login-btn, .tab-btn.active, .btn-primary { background: #283654; }
+        .login-box h1, .header h1, .card h3, .tab-btn.active, .stat-box .num { color: #283654; }
+        .category-section, .card, .checklist-item { border: 2px solid var(--yellow); }
+        th { background: var(--yellow-light); color: #283654; }
+        
+        /* Login Screen */
+        .login-screen { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .login-box { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 40px rgba(249,168,37,0.3); text-align: center; max-width: 400px; width: 100%; }
+        .login-box h1 { color: #283654; margin-bottom: 10px; }
+        .login-box p { color: var(--text-gray); margin-bottom: 30px; }
+        .login-input { width: 100%; padding: 15px; border: 2px solid var(--blue-light); border-radius: 10px; font-size: 1.2rem; text-align: center; margin-bottom: 20px; }
+        .login-input:focus { outline: none; border-color: #283654; }
+        .login-btn { width: 100%; background: #283654; color: white; border: none; padding: 15px; border-radius: 10px; font-size: 1.1rem; font-weight: 600; cursor: pointer; }
+        
+        /* Dashboard */
+        .dashboard { display: none; }
+        .header { background: white; padding: 15px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { color: #283654; font-size: 1.5rem; }
+        .logout-btn { background: var(--red); color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; }
+        
+        /* Tabs */
+        .tabs { display: flex; gap: 10px; padding: 15px 20px; flex-wrap: wrap; background: rgba(255,255,255,0.5); }
+        .tab-btn { padding: 10px 20px; border: 2px solid #283654; background: white; color: #283654; border-radius: 20px; cursor: pointer; font-weight: 600; }
+        .tab-btn.active { background: #283654; color: white; }
+        
+        /* Content */
+        .content { padding: 20px; }
+        .section { display: none; }
+        .section.active { display: block; }
+        
+        /* Cards */
+        .card { background: white; border-radius: 15px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .card h3 { color: #283654; margin-bottom: 15px; border-bottom: 2px solid var(--blue-light); padding-bottom: 10px; }
+        
+        /* Stats Grid */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .stat-box { background: linear-gradient(135deg, var(--yellow-light), white); padding: 15px; border-radius: 12px; text-align: center; border: 2px solid var(--blue-light); }
+        .stat-box .num { font-size: 2rem; font-weight: bold; color: #283654; }
+        .stat-box .label { font-size: 0.9rem; color: var(--text-gray); }
+        
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--blue-light); }
+        th { background: var(--yellow-light); color: #283654; font-weight: 600; }
+        .status-pending { color: #283654; font-weight: 600; }
+        .status-ready { color: var(--green); font-weight: 600; }
+        .status-delivered { color: var(--text-gray); }
+        
+        /* Buttons */
+        .btn { padding: 8px 16px; border: none; border-radius: 15px; cursor: pointer; font-weight: 600; }
+        .btn-primary { background: #283654; color: white; }
+        .btn-success { background: var(--green); color: white; }
+        .btn-danger { background: var(--red); color: white; }
+        
+        /* Forms */
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; color: var(--text-dark); }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 2px solid var(--blue-light); border-radius: 8px; font-size: 1rem; }
+        
+        /* Recipe Cards */
+        .recipe-card { background: var(--yellow-light); border-radius: 10px; padding: 15px; margin-bottom: 10px; }
+        .recipe-card h4 { color: #283654; margin-bottom: 10px; }
+        .recipe-items { display: flex; flex-wrap: wrap; gap: 8px; }
+        .recipe-tag { background: white; padding: 5px 10px; border-radius: 15px; font-size: 0.85rem; border: 1px solid var(--blue-light); }
+        
+        /* Print Styles */
+        .print-area { display: none; }
+        @media print { .print-area { display: block; } }
+        
+        /* Alerts */
+        .alert { padding: 15px; border-radius: 10px; margin-bottom: 15px; }
+        .alert-warning { background: #FFF3E0; border: 2px solid #FF9800; color: #E65100; }
+        .alert-danger { background: #FFEBEE; border: 2px solid #f44336; color: #C62828; }
+        
+        /* Market List */
+        .market-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: var(--yellow-light); border-radius: 8px; margin-bottom: 8px; }
+        .market-item .check { width: 20px; height: 20px; }
+        
+        /* Checklist */
+        .checklist-item { display: flex; align-items: center; gap: 10px; padding: 12px; background: white; border-radius: 8px; margin-bottom: 8px; border: 1px solid var(--blue-light); }
+        .checklist-item input[type="checkbox"] { width: 20px; height: 20px; }
+        .checklist-info { flex: 1; }
+        .checklist-name { font-weight: 600; }
+        .checklist-detail { font-size: 0.85rem; color: var(--text-gray); }
+        
+        /* Sticker Preview */
+        .sticker { background: white; border: 2px dashed #283654; padding: 15px; margin: 10px 0; border-radius: 10px; }
+        .sticker h4 { color: #283654; }
+        
+        /* Route Map */
+        .route-list { list-style: none; }
+        .route-item { display: flex; align-items: center; gap: 10px; padding: 10px; background: white; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #283654; }
+        .route-num { background: #283654; color: white; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        
+        /* Tabs 2 columns */
+        .tabs-2col { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+    </style>
+</head>
+<body>
+    <!-- LOGIN -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-box">
+            <h1>🔐 BOH - Mami's Hero</h1>
+            <p>ระบบบริหารจัดการหลังบ้าน</p>
+            <input type="password" class="login-input" id="passwordInput" placeholder="ใส่รหัสผ่าน (5281)" maxlength="4">
+            <button class="login-btn" onclick="checkLogin()">เข้าสู่ระบบ</button>
+        </div>
+    </div>
+    
+    <!-- DASHBOARD -->
+    <div class="dashboard" id="dashboard">
+        <div class="header">
+            <h1>📊 BOH - Mami's Hero</h1>
+            <button class="logout-btn" onclick="logout()">ออกจากระบบ</button>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showTab('orders')">📋 ออร์เดอร์</button>
+            <button class="tab-btn" onclick="showTab('market')">🛒 จ่ายตลาด</button>
+            <button class="tab-btn" onclick="showTab('prep')">👨‍🍳 เตรียมอาหาร</button>
+            <button class="tab-btn" onclick="showTab('print')">🖨️ ปริ้นท์</button>
+            <button class="tab-btn" onclick="showTab('route')">🗺️ Route</button>
+            <button class="tab-btn" onclick="showTab('recipes')">📖 สูตรอาหาร</button>
+            <button class="tab-btn" onclick="showTab('ingredients')">🥬 Ingredient</button>
+            <button class="tab-btn" onclick="showTab('reports')">📈 รายงาน</button>
+        </div>
+        
+        <div class="content">
+            <!-- Orders Tab -->
+            <div class="section active" id="orders">
+                <div class="stats-grid">
+                    <div class="stat-box"><div class="num" id="totalOrders">12</div><div class="label">ออร์เดอร์วันนี้</div></div>
+                    <div class="stat-box"><div class="num" id="pendingOrders">5</div><div class="label">รอทำ</div></div>
+                    <div class="stat-box"><div class="num" id="readyOrders">7</div><div class="label">พร้อมส่ง</div></div>
+                    <div class="stat-box"><div class="num" id="totalRevenue">3,450</div><div class="label">รายได้ (฿)</div></div>
+                </div>
+                <div class="card">
+                    <h3>📋 รายการออร์เดอร์</h3>
+                    <table>
+                        <thead><tr><th>#</th><th>ลูกค้า</th><th>รายการ</th><th>ราคา</th><th>สถานะ</th></tr></thead>
+                        <tbody id="ordersTable">
+                            <tr><td>1</td><td>คุณแม่พลอย</td><td>ข้าวต้มปลา + ซุปเห็ด</td><td>฿248</td><td class="status-pending">รอทำ</td></tr>
+                            <tr><td>2</td><td>คุณแม่แพร</td><td>สลัดไก่งวง + โยเกิร์ต</td><td>฿218</td><td class="status-ready">พร้อมส่ง</td></tr>
+                            <tr><td>3</td><td>คุณแม่มิ้นท์</td><td>Poke Bowl ปลาแซลมอน</td><td>฿129</td><td class="status-pending">รอทำ</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Market Tab -->
+            <div class="section" id="market">
+                <div class="card">
+                    <h3>🛒 รายการจ่ายตลาดวันนี้ - แยกตาม Supplier</h3>
+                    
+                    <!-- Supplier 1 -->
+                    <div style="margin-bottom:20px;border:2px solid var(--blue-light);border-radius:12px;padding:15px;">
+                        <h4 style="color:#283654;margin-bottom:15px;display:flex;justify-content:space-between;">
+                            <span>🏪 ตลาดประตูเต้า (ปลา + อาหารทะเล)</span>
+                            <span style="background:var(--green);color:white;padding:3px 10px;border-radius:10px;font-size:0.9rem;">฿350</span>
+                        </h4>
+                        <div class="market-item"><input type="checkbox" class="check"><span>ปลาแซลมอน 1kg</span><span>฿500</span></div>
+                        <div class="market-item"><input type="checkbox" class="check"><span>กุ้งสด 500g</span><span>฿200</span></div>
+                        <div class="market-item"><input type="checkbox" class="check"><span>ปลาหมึก 300g</span><span>฿150</span></div>
+                    </div>
+                    
+                    <!-- Supplier 2 -->
+                    <div style="margin-bottom:20px;border:2px solid var(--blue);border-radius:12px;padding:15px;">
+                        <h4 style="color:var(--blue);margin-bottom:15px;display:flex;justify-content:space-between;">
+                            <span>🏪 ตลาดวังหลาน (ไก่ + หมู)</span>
+                            <span style="background:var(--green);color:white;padding:3px 10px;border-radius:10px;font-size:0.9rem;">฿250</span>
+                        </h4>
+                        <div class="market-item"><input type="checkbox" class="check"><span>ไก่อก 2kg</span><span>฿240</span></div>
+                        <div class="market-item"><input type="checkbox" class="check"><span>หมูสับ 500g</span><span>฿60</span></div>
+                    </div>
+                    
+                    <!-- Supplier 3 -->
+                    <div style="margin-bottom:20px;border:2px solid var(--blue);border-radius:12px;padding:15px;">
+                        <h4 style="color:var(--blue);margin-bottom:15px;display:flex;justify-content:space-between;">
+                            <span>🏪 ร้านผักสด (ผัก)</span>
+                            <span style="background:var(--green);color:white;padding:3px 10px;border-radius:10px;font-size:0.9rem;">฿120</span>
+                        </h4>
+                        <div class="market-item"><input type="checkbox" class="check"><span>ผักสลัด 1kg</span><span>฿40</span></div>
+                        <div class="market-item"><input type="checkbox" class="check"><span>บรอกโคลี 500g</span><span>฿35</span></div>
+                        <div class="market-item"><input type="checkbox" class="check"><span>ผักบุ้ง 500g</span><span>฿25</span></div>
+                        <div class="market-item"><input type="checkbox" class="check"><span>ต้นหอม ผักชี</span><span>฿20</span></div>
+                    </div>
+                    
+                    <!-- Supplier 4 -->
+                    <div style="margin-bottom:20px;border:2px solid var(--green);border-radius:12px;padding:15px;">
+                        <h4 style="color:var(--green);margin-bottom:15px;display:flex;justify-content:space-between;">
+                            <span>🏪 BigC / ห้าง (อื่นๆ)</span>
+                            <span style="background:var(--green);color:white;padding:3px 10px;border-radius:10px;font-size:0.9rem;">฿180</span>
+                        </h4>
+                        <div class="market-item"><input type="checkbox" class="check"><span>ไข่ 30 ฟอง</span><span>฿90</span></div>
+                        <div class="market-item"><input type="checkbox" class="check"><span>เต้าหู้ 5 แผ่น</span><span>฿25</span></div>
+                        <div class="market-item"><input type="checkbox" class="check"><span>น้ำมันหอยร้อย 2 ขวด</span><span>฿90</span></div>
+                    </div>
+                    
+                    <!-- รวมทั้งหมด -->
+                    <div style="margin-top:20px;padding:15px;background:var(--yellow-light);border-radius:10px;display:flex;justify-content:space-between;font-size:1.2rem;font-weight:bold;">
+                        <span>💰 รวมทั้งหมด:</span>
+                        <span>฿900</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Prep Tab -->
+            <div class="section" id="prep">
+                <div class="card">
+                    <h3>👨‍🍳 รายการเตรียมอาหาร - แยกตามเมนู</h3>
+                    
+                    <!-- ข้าวต้มปลา -->
+                    <div style="margin-bottom:20px;border:2px solid var(--blue);border-radius:12px;padding:15px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                            <h4 style="color:#283654;">🍲 ข้าวต้มปลาแซลมอน</h4>
+                            <div style="background:var(--blue-light);padding:8px 15px;border-radius:20px;font-size:0.9rem;">
+                                📦 <strong>3 แพค</strong> | ⚖️ <strong>150g/เสิร์ฟ</strong>
+                            </div>
+                        </div>
+                        <div class="checklist-item" style="flex-wrap:wrap;">
+                            <input type="checkbox" style="width:25px;height:25px;">
+                            <div class="checklist-info" style="flex:1;min-width:200px;">
+                                <div class="checklist-name">🐟 ปลาแซลมอน</div>
+                                <div style="font-size:0.75rem;color:var(--text-gray);">per: 155g | total: 464g (+3%)</div>
+                            </div>
+                            <input type="number" placeholder="g" value="464" style="width:80px;padding:8px;border-radius:8px;border:2px solid var(--blue-light);" title="+3% เผื่อ">
+                            <span style="color:var(--text-gray);font-size:0.9rem;">g</span>
+                        </div>
+                        <div class="checklist-item" style="flex-wrap:wrap;">
+                            <input type="checkbox" style="width:25px;height:25px;">
+                            <div class="checklist-info" style="flex:1;min-width:200px;">
+                                <div class="checklist-name">🍚 ข้าว</div>
+                                <div style="font-size:0.75rem;color:var(--text-gray);">per: 103g | total: 309g (+3%)</div>
+                            </div>
+                            <input type="number" placeholder="g" value="309" style="width:80px;padding:8px;border-radius:8px;border:2px solid var(--blue-light);" title="+3% เผื่อ">
+                            <span style="color:var(--text-gray);font-size:0.9rem;">g</span>
+                        </div>
+                        <div class="checklist-item" style="flex-wrap:wrap;">
+                            <input type="checkbox" style="width:25px;height:25px;">
+                            <div class="checklist-info" style="flex:1;min-width:200px;">
+                                <div class="checklist-name">🥬 ผักกาด</div>
+                                <div style="font-size:0.75rem;color:var(--text-gray);">per: 31g | total: 93g (+3%)</div>
+                            </div>
+                            <input type="number" placeholder="g" value="93" style="width:80px;padding:8px;border-radius:8px;border:2px solid var(--blue-light);" title="+3% เผื่อ">
+                            <span style="color:var(--text-gray);font-size:0.9rem;">g</span>
+                        </div>
+                        <div class="checklist-item" style="flex-wrap:wrap;">
+                            <input type="checkbox" style="width:25px;height:25px;">
+                            <div class="checklist-info" style="flex:1;min-width:200px;">
+                                <div class="checklist-name">🧂 ซีอิ๋ว + เกลือ</div>
+                                <div style="font-size:0.75rem;color:var(--text-gray);">per: 10g | total: 30g</div>
+                            </div>
+                            <input type="number" placeholder="g" value="30" style="width:80px;padding:8px;border-radius:8px;border:2px solid var(--blue-light);">
+                            <span style="color:var(--text-gray);font-size:0.9rem;">g</span>
+                        </div>
+                    </div>
+                    
+                    <!-- สลัดไก่งวง -->
+                    <div style="margin-bottom:20px;border:2px solid var(--blue);border-radius:12px;padding:15px;">
+                        <h4 style="color:#283654;margin-bottom:15px;">🥗 สลัดไก่งวง (2 กล่อง)</h4>
+                        <div class="checklist-item" style="flex-wrap:wrap;">
+                            <input type="checkbox" style="width:25px;height:25px;">
+                            <div class="checklist-info" style="flex:1;min-width:200px;">
+                                <div class="checklist-name">🐔 ไก่งวง</div>
+                            </div>
+                            <input type="number" placeholder="g" value="240" style="width:80px;padding:8px;border-radius:8px;border:2px solid var(--blue-light);">
+                            <span style="color:var(--text-gray);font-size:0.9rem;">g</span>
+                        </div>
+                        <div class="checklist-item" style="flex-wrap:wrap;">
+                            <input type="checkbox" style="width:25px;height:25px;">
+                            <div class="checklist-info" style="flex:1;min-width:200px;">
+                                <div class="checklist-name">🥬 ผักสลัด</div>
+                            </div>
+                            <input type="number" placeholder="g" value="160" style="width:80px;padding:8px;border-radius:8px;border:2px solid var(--blue-light);">
+                            <span style="color:var(--text-gray);font-size:0.9rem;">g</span>
+                        </div>
+                        <div class="checklist-item" style="flex-wrap:wrap;">
+                            <input type="checkbox" style="width:25px;height:25px;">
+                            <div class="checklist-info" style="flex:1;min-width:200px;">
+                                <div class="checklist-name">🫒 น้ำมันมะกอก + ซอส</div>
+                            </div>
+                            <input type="number" placeholder="g" value="40" style="width:80px;padding:8px;border-radius:8px;border:2px solid var(--blue-light);">
+                            <span style="color:var(--text-gray);font-size:0.9rem;">g</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Poke Bowl -->
+                    <div style="margin-bottom:20px;border:2px solid var(--blue);border-radius:12px;padding:15px;">
+                        <h4 style="color:#283654;margin-bottom:15px;">🍚 Poke Bowl (5 กล่อง)</h4>
+                        <div class="checklist-item" style="flex-wrap:wrap;">
+                            <input type="checkbox" style="width:25px;height:25px;">
+                            <div class="checklist-info" style="flex:1;min-width:200px;">
+                                <div class="checklist-name">🍚 ข้าวบาร์ลีย์</div>
+                            </div>
+                            <input type="number" placeholder="g" value="750" style="width:80px;padding:8px;border-radius:8px;border:2px solid var(--blue-light);">
+                            <span style="color:var(--text-gray);font-size:0.9rem;">g</span>
+                        </div>
+                        <div class="checklist-item" style="flex-wrap:wrap;">
+                            <input type="checkbox" style="width:25px;height:25px;">
+                            <div class="checklist-info" style="flex:1;min-width:200px;">
+                                <div class="checklist-name">🐟 ปลาแซลมอน</div>
+                            </div>
+                            <input type="number" placeholder="g" value="375" style="width:80px;padding:8px;border-radius:8px;border:2px solid var(--blue-light);">
+                            <span style="color:var(--text-gray);font-size:0.9rem;">g</span>
+                        </div>
+                        <div class="checklist-item" style="flex-wrap:wrap;">
+                            <input type="checkbox" style="width:25px;height:25px;">
+                            <div class="checklist-info" style="flex:1;min-width:200px;">
+                                <div class="checklist-name">🥑 อะโวคาโด</div>
+                            </div>
+                            <input type="number" placeholder="g" value="125" style="width:80px;padding:8px;border-radius:8px;border:2px solid var(--blue-light);">
+                            <span style="color:var(--text-gray);font-size:0.9rem;">g</span>
+                        </div>
+                        <div class="checklist-item" style="flex-wrap:wrap;">
+                            <input type="checkbox" style="width:25px;height:25px;">
+                            <div class="checklist-info" style="flex:1;min-width:200px;">
+                                <div class="checklist-name">🥒 ผักรวม</div>
+                            </div>
+                            <input type="number" placeholder="g" value="200" style="width:80px;padding:8px;border-radius:8px;border:2px solid var(--blue-light);">
+                            <span style="color:var(--text-gray);font-size:0.9rem;">g</span>
+                        </div>
+                    </div>
+                    
+                    <!-- ซุปเห็ด -->
+                    <div style="margin-bottom:20px;border:2px solid var(--blue);border-radius:12px;padding:15px;">
+                        <h4 style="color:#283654;margin-bottom:15px;">🍲 ซุปเห็ด (4 ชาม)</h4>
+                        <div class="checklist-item" style="flex-wrap:wrap;">
+                            <input type="checkbox" style="width:25px;height:25px;">
+                            <div class="checklist-info" style="flex:1;min-width:200px;">
+                                <div class="checklist-name">🍄 เห็ด</div>
+                            </div>
+                            <input type="number" placeholder="g" value="200" style="width:80px;padding:8px;border-radius:8px;border:2px solid var(--blue-light);">
+                            <span style="color:var(--text-gray);font-size:0.9rem;">g</span>
+                        </div>
+                        <div class="checklist-item" style="flex-wrap:wrap;">
+                            <input type="checkbox" style="width:25px;height:25px;">
+                            <div class="checklist-info" style="flex:1;min-width:200px;">
+                                <div class="checklist-name">🐔 ไก่สับ</div>
+                            </div>
+                            <input type="number" placeholder="g" value="160" style="width:80px;padding:8px;border-radius:8px;border:2px solid var(--blue-light);">
+                            <span style="color:var(--text-gray);font-size:0.9rem;">g</span>
+                        </div>
+                        <div class="checklist-item" style="flex-wrap:wrap;">
+                            <input type="checkbox" style="width:25px;height:25px;">
+                            <div class="checklist-info" style="flex:1;min-width:200px;">
+                                <div class="checklist-name">🥚 ไข่</div>
+                            </div>
+                            <input type="number" placeholder="g" value="80" style="width:80px;padding:8px;border-radius:8px;border:2px solid var(--blue-light);">
+                            <span style="color:var(--text-gray);font-size:0.9rem;">g</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Print Tab -->
+            <div class="section" id="print">
+                <div class="card">
+                    <h3>🖨️ ปริ้นท์เช็คลิสต์</h3>
+                    <div class="form-group"><label>เลือกออร์เดอร์</label><select id="orderSelect"><option>คุณแม่พลอย - ข้าวต้มปลา + ซุปเห็ด</option><option>คุณแม่แพร - สลัดไก่งวง</option></select></div>
+                    <button class="btn btn-primary" onclick="printChecklist()">ปริ้นท์เช็คลิสต์</button>
+                </div>
+                <div class="card">
+                    <h3>🏷️ สติ้กเกอร์ปิดกล่อง</h3>
+                    <div class="sticker">
+                        <h4>📦 คุณแม่พลอย</h4>
+                        <p>📍 ถ.พระราม 3 แขวงยานนาวา</p>
+                        <p>📞 089-XXX-XXXX</p>
+                        <p>🍱 ข้าวต้มปลา + ซุปเห็ด</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="printSticker()">ปริ้นท์สติ้กเกอร์</button>
+                </div>
+            </div>
+            
+            <!-- Route Tab -->
+            <div class="section" id="route">
+                <div class="card">
+                    <h3>🗺️ Route การส่งวันนี้</h3>
+                    <ul class="route-list">
+                        <li class="route-item"><span class="route-num">1</span><div><strong>คุณแม่พลอย</strong> - ถ.พระราม 3</div></li>
+                        <li class="route-item"><span class="route-num">2</span><div><strong>คุณแม่แพร</strong> - ซ.สีชมพู</div></li>
+                        <li class="route-item"><span class="route-num">3</span><div><strong>คุณแม่มิ้นท์</strong> - ถ.สุขุมวิท 49</div></li>
+                        <li class="route-item"><span class="route-num">4</span><div><strong>คุณแม่ซาร่า</strong> - ซ.ลาดพร้าว 15</div></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Recipes Tab -->
+            <div class="section" id="recipes">
+                <div class="card">
+                    <h3>📖 เพิ่มสูตรอาหารใหม่</h3>
+                    
+                    <!-- Form -->
+                    <div style="background:var(--yellow-light);padding:20px;border-radius:15px;margin-bottom:20px;">
+                        <div class="form-group">
+                            <label>🏷️ ชื่อเมนู</label>
+                            <select id="recipeName" style="width:100%;padding:12px;border-radius:8px;border:2px solid var(--blue-light);font-size:1rem;margin-bottom:15px;">
+                                <option value="">-- เลือกเมนูจาก Menu --</option>
+                                <option value="ข้าวต้มปลาแซลมอน">🍲 ข้าวต้มปลาแซลมอน</option>
+                                <option value="ไก่อบซีอิ๋ว">🍗 ไก่อบซีอิ๋ว</option>
+                                <option value="ซุปเต้าหู้หมูสับ">🥘 ซุปเต้าหู้หมูสับ</option>
+                                <option value="ปลานึ่งมะนาว">🐟 ปลานึ่งมะนาว</option>
+                                <option value="สลัดไก่งวง">🥗 สลัดไก่งวง</option>
+                                <option value="ไข่ตุ๋นนึ่งซีอิ๋ว">🍳 ไข่ตุ๋นนึ่งซีอิ๋ว</option>
+                                <option value="อกไก่ซอสมะเขือเทศ">🐔 อกไก่ซอสมะเขือเทศ</option>
+                                <option value="หมูสับผัดขิง">🥩 หมูสับผัดขิง</option>
+                                <option value="ข้าวผัดปลาเค็ม">🍲 ข้าวผัดปลาเค็ม</option>
+                                <option value="ผัดบรอกโคลีกุ้ง">🦐 ผัดบรอกโคลีกุ้ง</option>
+                                <option value="สเต็กอกไก่ย่าง">🥩 สเต็กอกไก่ย่าง</option>
+                                <option value="บะหมี่ข้าวผัดปูอัด">🥑 บะหมี่ข้าวผัดปูอัด</option>
+                                <option value="สลัดผักรวมไก่Grill">🥒 สลัดผักรวมไก่Grill</option>
+                                <option value="ข้าวกล้องผัดกุ้ง">🍚 ข้าวกล้องผัดกุ้ง</option>
+                                <option value="ปลาแซลมอนอบ">🐟 ปลาแซลมอนอบเนยสมุนไพร</option>
+                                <option value="โอ๊ตมีลเนื้อควิน">🥚 โอ๊ตมีลเนื้อควิน</option>
+                                <option value="ซุปผักรวมไก่">🍲 ซุปผักรวมไก่</option>
+                                <option value="ลาบไก่ไร้มัน">🥩 ลาบไก่ไร้มัน</option>
+                                <option value="สปาเก็ตตี้ซอสมะเขือเทศ">🍜 สปาเก็ตตี้ซอสมะเขือเทศ</option>
+                                <option value="บาบีฟัตเตะซาลาเปา">🥗 บาบีฟัตเตะซาลาเปา</option>
+                                <option value="ข้าวผัดไก่กล่องใหญ่">🍱 ข้าวผัดไก่กล่องใหญ่</option>
+                                <option value="ข้าวผัดหมูกล่องใหญ่">🍱 ข้าวผัดหมูกล่องใหญ่</option>
+                                <option value="ข้าวผัดกุ้งกล่องใหญ่">🍱 ข้าวผัดกุ้งกล่องใหญ่</option>
+                                <option value="ข้าวต้มไก่กล่องใหญ่">🍱 ข้าวต้มไก่กล่องใหญ่</option>
+                                <option value="ข้าวแกงเขียวหวานไก่">🍱 ข้าวแกงเขียวหวานไก่</option>
+                                <option value="ข้าวแกงส้มผักรวม">🍱 ข้าวแกงส้มผักรวม</option>
+                                <option value="ข้าวหน้าไก่คาราเกะ">🍱 ข้าวหน้าไก่คาราเกะ</option>
+                                <option value="Poke Bowl ปลาแซลมอน">🍚 Poke Bowl ปลาแซลมอน</option>
+                                <option value="Poke Bowl กุ้ง">🍚 Poke Bowl กุ้ง</option>
+                                <option value="Poke Bowl หมูย่าง">🍚 Poke Bowl หมูย่าง</option>
+                                <option value="Poke Bowl ทูน่า">🍚 Poke Bowl ทูน่า</option>
+                                <option value="Poke Bowl ผักรวม">🥑 Poke Bowl ผักรวม</option>
+                                <option value="โยเกิร์ตกราโนล่า">🥣 โยเกิร์ตกราโนล่า</option>
+                                <option value="โยเกิร์ตผลไม้รวม">🥣 โยเกิร์ตผลไม้รวม</option>
+                                <option value="Healthy Snack">🥕 Healthy Snack</option>
+                            </select>
+                        </div>
+                        
+                        <!-- เนื้อสัตว์ -->
+                        <div class="form-group">
+                            <label>🐔 เนื้อสัตว์</label>
+                            <div style="display:flex;gap:10px;">
+                                <select id="meatType" style="flex:1;padding:10px;border-radius:8px;border:2px solid var(--blue-light);">
+                                    <option value="">-- เลือกชนิดเนื้อสัตว์ --</option>
+                                    <option value="ปลาแซลมอน">ปลาแซลมอน</option>
+                                    <option value="ไก่อก">ไก่อก</option>
+                                    <option value="ไก่งวง">ไก่งวง</option>
+                                    <option value="หมูสับ">หมูสับ</option>
+                                    <option value="กุ้ง">กุ้ง</option>
+                                    <option value="ทูน่า">ทูน่า</option>
+                                    <option value="ปูอัด">ปูอัด</option>
+                                </select>
+                                <input type="number" id="meatQty" placeholder="น้ำหนัก (g)" style="width:120px;">
+                            </div>
+                        </div>
+                        
+                        <!-- เครื่องปรุง -->
+                        <div class="form-group">
+                            <label>🧂 เครื่องปรุง (ซอส)</label>
+                            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+                                <div>
+                                    <select id="sauceA" style="width:100%;padding:8px;border-radius:8px;border:2px solid var(--yellow);margin-bottom:5px;">
+                                        <option value="">-- ซอส A --</option>
+                                        <option value="ซีอิ๋ว">ซีอิ๋ว</option>
+                                        <option value="น้ำมันหอยร้อย">น้ำมันหอยร้อย</option>
+                                        <option value="น้ำปลา">น้ำปลา</option>
+                                        <option value="ซอสปลา">ซอสปลา</option>
+                                        <option value="มะแขว่น">มะแขว่น</option>
+                                    </select>
+                                    <input type="number" id="sauceAQty" placeholder="g" style="width:100%;">
+                                </div>
+                                <div>
+                                    <select id="sauceB" style="width:100%;padding:8px;border-radius:8px;border:2px solid var(--yellow);margin-bottom:5px;">
+                                        <option value="">-- ซอส B --</option>
+                                        <option value="น้ำมันมะกอก">น้ำมันมะกอก</option>
+                                        <option value="น้ำมันพืช">น้ำมันพืช</option>
+                                        <option value="น้ำมันงา">น้ำมันงา</option>
+                                        <option value="งาดำ">งาดำ</option>
+                                    </select>
+                                    <input type="number" id="sauceBQty" placeholder="g" style="width:100%;">
+                                </div>
+                                <div>
+                                    <select id="sauceC" style="width:100%;padding:8px;border-radius:8px;border:2px solid var(--yellow);margin-bottom:5px;">
+                                        <option value="">-- ซอส C --</option>
+                                        <option value="มะนาว">มะนาว</option>
+                                        <option value="น้ำส้ม">น้ำส้ม</option>
+                                        <option value="น้ำผึ้ง">น้ำผึ้ง</option>
+                                        <option value="พริกไทย">พริกไทย</option>
+                                        <option value="เกลือ">เกลือ</option>
+                                    </select>
+                                    <input type="number" id="sauceCQty" placeholder="g" style="width:100%;">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- ผัก -->
+                        <div class="form-group">
+                            <label>🥬 ผัก <button type="button" onclick="addVegType()" style="background:var(--green);color:white;border:none;padding:5px 10px;border-radius:10px;font-size:0.8rem;cursor:pointer;">+ เพิ่มชนิด</button></label>
+                            <div style="display:flex;gap:10px;margin-top:5px;">
+                                <select id="vegType" style="flex:1;padding:10px;border-radius:8px;border:2px solid var(--blue-light);">
+                                    <option value="">-- เลือกชนิดผัก --</option>
+                                    <option value="ผักกาด">ผักกาด</option>
+                                    <option value="ผักสลัด">ผักสลัด</option>
+                                    <option value="บรอกโคลี">บรอกโคลี</option>
+                                    <option value="ผักบุ้ง">ผักบุ้ง</option>
+                                    <option value="ต้นหอม">ต้นหอม</option>
+                                </select>
+                                <input type="number" id="vegQty" placeholder="น้ำหนัก (g)" style="width:120px;">
+                            </div>
+                            <div id="extraVegTypes" style="margin-top:10px;"></div>
+                        </div>
+                        
+                        <!-- ค่าใช้จ่าย -->
+                        <div class="form-group">
+                            <label>⚡ ค่าใช้จ่าย (ต้นทุน/ชม. = ค่าสาธารณูปโภค ÷ วันทำงาน ÷ 8 ชม.)</label>
+                            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:5px;">
+                                <div style="display:flex;gap:5px;align-items:center;">
+                                    <span style="font-size:0.9rem;">💧 น้ำ/ไฟ/แก๊ส:</span>
+                                    <input type="number" id="utilCostInput" placeholder="ค่าไฟ+น้ำ+แก๊ส/เดือน" style="width:100px;padding:8px;">
+                                </div>
+                                <div style="display:flex;gap:5px;align-items:center;">
+                                    <span style="font-size:0.9rem;">📅 วันทำงาน:</span>
+                                    <input type="number" id="workDays" value="26" style="width:50px;padding:8px;">
+                                    <span>วัน</span>
+                                </div>
+                                <div style="display:flex;gap:5px;align-items:center;">
+                                    <span style="font-size:0.9rem;">⏰ ชม./วัน:</span>
+                                    <input type="number" id="workHours" value="8" style="width:50px;padding:8px;">
+                                    <span>ชม.</span>
+                                </div>
+                                <div style="display:flex;gap:5px;align-items:center;background:var(--yellow-light);padding:5px;border-radius:8px;">
+                                    <span style="font-size:0.9rem;font-weight:bold;">= ฿/ชม.:</span>
+                                    <span id="utilCostPerHour" style="font-weight:bold;">0</span>
+                                    <input type="hidden" id="utilCost" value="0">
+                                </div>
+                            </div>
+                            <div style="margin-top:5px;font-size:0.8rem;color:var(--text-gray);">
+                                👨‍🍳 ค่าแรง/ชม.: <input type="number" id="laborCost" value="50" style="width:50px;padding:5px;"> ฿
+                            </div>
+                        </div>
+                        
+                        <!-- Hidden Loss -->
+                        <div class="form-group">
+                            <label>📉 Hidden Loss (สูญเสียระหว่างทำ)</label>
+                            <div style="display:flex;gap:10px;align-items:center;margin-top:5px;">
+                                <input type="number" id="hiddenLoss" value="3" style="width:60px;padding:8px;border-radius:8px;border:2px solid var(--blue-light);">
+                                <span>%</span>
+                            </div>
+                        </div>
+                        
+                        <!-- เวลาปรุง -->
+                        <div class="form-group">
+                            <label>⏱️ เวลาปรุง (นาที) / จำนวนเสิร์ฟ</label>
+                            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:5px;">
+                                <div style="display:flex;gap:5px;align-items:center;">
+                                    <input type="number" id="cookTime" value="20" style="width:70px;padding:8px;border-radius:8px;border:2px solid var(--yellow);">
+                                    <span>นาที</span>
+                                </div>
+                                <div style="display:flex;gap:5px;align-items:center;">
+                                    <span style="font-size:0.9rem;">จำนวน:</span>
+                                    <input type="number" id="servings" value="1" style="width:60px;padding:8px;border-radius:8px;border:2px solid var(--yellow);">
+                                    <span>เสิร์ฟ</span>
+                                </div>
+                            </div>
+                            <div id="laborCalc" style="margin-top:10px;padding:10px;background:white;border-radius:8px;font-size:0.9rem;">
+                                👨‍🍳 ค่าแรงต่อเสิร์ฟ: <span id="laborPerServing">฿0</span> <span style="color:var(--text-gray);font-size:0.8rem;">(ต้นทุนแรง/ชม. ÷ 60 × นาที)</span>
+                            </div>
+                        </div>
+                        
+                        <!-- ราคาขาย -->
+                        <div class="form-group">
+                            <label>💰 ราคาขาย</label>
+                            <input type="number" id="sellPrice" placeholder="ราคาขาย (฿)" style="margin-top:5px;">
+                        </div>
+                        
+                        <!-- ปุ่นบันทึก -->
+                        <button class="btn btn-primary" onclick="calculateAndSaveRecipe()" style="width:100%;padding:15px;font-size:1.1rem;">💾 บันทึกสูตร</button>
+                        
+                        <!-- สรุปต้นทุน -->
+                        <div id="costSummary" style="display:none;margin-top:15px;background:white;padding:15px;border-radius:10px;text-align:center;">
+                            <h4 style="color:#283654;">📊 สรุปต้นทุน</h4>
+                            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px;">
+                                <div style="background:var(--yellow-light);padding:10px;border-radius:8px;"><div style="font-size:0.8rem;color:var(--text-gray)">วัตถุดิบ</div><div style="font-size:1.2rem;font-weight:bold;" id="ingredientCost">฿0</div></div>
+                                <div style="background:var(--yellow-light);padding:10px;border-radius:8px;"><div style="font-size:0.8rem;color:var(--text-gray)">ค่าใช้จ่าย</div><div style="font-size:1.2rem;font-weight:bold;" id="expenseCost">฿0</div></div>
+                                <div style="background:var(--green);color:white;padding:10px;border-radius:8px;"><div style="font-size:0.8rem">ต้นทุนรวม</div><div style="font-size:1.2rem;font-weight:bold;" id="totalCost">฿0</div></div>
+                            </div>
+                            <div style="margin-top:10px;display:flex;justify-content:space-between;padding:10px;background:#283654;color:white;border-radius:8px;">
+                                <span>กำไร:</span>
+                                <span id="profit">฿0 (0%)</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- รายการสูตร -->
+                    <h3 style="margin-top:20px;">📚 สูตรอาหารที่บันทึกไว้</h3>
+                    <div class="recipe-card">
+                        <h4>🍲 ข้าวต้มปลาแซลมอน</h4>
+                        <div class="recipe-items">
+                            <span class="recipe-tag">🐟 ปลาแซลมอน 150g</span>
+                            <span class="recipe-tag">🍚 ข้าว 100g</span>
+                            <span class="recipe-tag">🥬 ผักกาด 30g</span>
+                            <span class="recipe-tag">🧂 ซีอิ๋ว 10g</span>
+                        </div>
+                        <p style="margin-top:10px;font-size:0.9rem;">💰 ต้นทุน: ฿45 | 💵 ขาย: ฿149 | กำไร: ฿104 (70%)</p>
+                    </div>
+                    <div class="recipe-card">
+                        <h4>🥗 สลัดไก่งวง</h4>
+                        <div class="recipe-items">
+                            <span class="recipe-tag">🐔 ไก่งวง 120g</span>
+                            <span class="recipe-tag">🥬 ผักสลัด 80g</span>
+                            <span class="recipe-tag">🫒 น้ำมันมะกอก 10ml</span>
+                        </div>
+                        <p style="margin-top:10px;font-size:0.9rem;">💰 ต้นทุน: ฿55 | 💵 ขาย: ฿139 | กำไร: ฿84 (60%)</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ingredients Tab -->
+            <div class="section" id="ingredients">
+                <div class="alert alert-warning">
+                    ⚠️ <strong>แจ้งเตือน:</strong> ราคาน้ำมันหอยร้อยขึ้น +15% กระทบเมนู: ข้าวผัดไก่, ผัดกุ้ง, ไก่อบซีอิ๋ว
+                </div>
+                <div class="card">
+                    <h3>📷 เพิ่ม Inventory จากบิล</h3>
+                    <div style="display:flex;gap:15px;align-items:center;flex-wrap:wrap;">
+                        <label for="billScan" style="background:#283654;color:white;padding:12px 20px;border-radius:20px;cursor:pointer;display:flex;align-items:center;gap:8px;">
+                            📷 สแกนบิล
+                        </label>
+                        <input type="file" id="billScan" accept="image/*" style="display:none" onchange="scanBill(this)">
+                        <span id="scanStatus" style="color:var(--text-gray);">เลือกรูปบิลเพื่อเพิ่มรายการ</span>
+                    </div>
+                    <div id="billPreview" style="margin-top:15px;display:none;">
+                        <img id="billImage" style="max-width:300px;border-radius:10px;border:2px solid var(--blue-light);">
+                        <div id="billItems" style="margin-top:15px;background:var(--yellow-light);padding:15px;border-radius:10px;">
+                            <h4 style="color:#283654;margin-bottom:10px;">📋 รายการที่สแกนได้:</h4>
+                            <div id="detectedItems"></div>
+                            <button class="btn btn-success" onclick="addToInventory()">✅ เพิ่มใน Inventory</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>🥬 Database ราคา Ingredient</h3>
+                    <table>
+                        <thead><tr><th>วัตถุดิบ</th><th>Supplier</th><th>ราคา/หน่วย</th><th>คงเหลือ</th><th>น้ำหนัก (ก่อน→หลัง)</th><th>Yield %</th><th>เปลี่ยนแปลง</th></tr></thead>
+                        <tbody id="ingredientTable">
+                            <tr>
+                                <td>ปลาแซลมอน</td>
+                                <td><select style="padding:5px;border-radius:5px;border:1px solid var(--blue-light);"><option>ตลาดประตูเต้า</option><option>ไทยซีฟู้ด</option><option>CP</option></select></td>
+                                <td>฿500/kg</td>
+                                <td>2.5kg</td>
+                                <td><input type="text" value="1000→750" style="width:80px;padding:5px;font-size:0.8rem;" placeholder="ก่อน→หลัง"></td>
+                                <td><span style="background:var(--green);color:white;padding:3px 8px;border-radius:10px;font-size:0.8rem;">75%</span></td>
+                                <td style="color:green">▼ 5%</td>
+                            </tr>
+                            <tr>
+                                <td>ไก่อก</td>
+                                <td><select style="padding:5px;border-radius:5px;border:1px solid var(--blue-light);"><option>ตลาดวังหลาน</option><option>CP</option><option>Betagro</option></select></td>
+                                <td>฿120/kg</td>
+                                <td>5kg</td>
+                                <td><input type="text" value="2000→1600" style="width:80px;padding:5px;font-size:0.8rem;" placeholder="ก่อน→หลัง"></td>
+                                <td><span style="background:var(--green);color:white;padding:3px 8px;border-radius:10px;font-size:0.8rem;">80%</span></td>
+                                <td style="color:gray">-</td>
+                            </tr>
+                            <tr>
+                                <td>น้ำมันหอยร้อย</td>
+                                <td><select style="padding:5px;border-radius:5px;border:1px solid var(--blue-light);"><option>BigC</option><option>Lotus</option><option>Central</option></select></td>
+                                <td>฿45/ขวด</td>
+                                <td>8 ขวด</td>
+                                <td>-</td>
+                                <td><span style="background:var(--green);color:white;padding:3px 8px;border-radius:10px;font-size:0.8rem;">100%</span></td>
+                                <td style="color:red">▲ 15%</td>
+                            </tr>
+                            <tr>
+                                <td>ซีอิ๋ว</td>
+                                <td><select style="padding:5px;border-radius:5px;border:1px solid var(--blue-light);"><option>ห้างสรรพภัณฑ์</option><option>Makro</option></select></td>
+                                <td>฿30/ขวด</td>
+                                <td>12 ขวด</td>
+                                <td>-</td>
+                                <td><span style="background:var(--green);color:white;padding:3px 8px;border-radius:10px;font-size:0.8rem;">100%</span></td>
+                                <td style="color:gray">-</td>
+                            </tr>
+                            <tr>
+                                <td>ผักสลัด</td>
+                                <td><select style="padding:5px;border-radius:5px;border:1px solid var(--blue-light);"><option>ตลาดย่านตลาด</option><option>ผักสดออนไลน์</option></select></td>
+                                <td>฿40/kg</td>
+                                <td>3kg</td>
+                                <td><input type="text" value="500→400" style="width:80px;padding:5px;font-size:0.8rem;" placeholder="ก่อน→หลัง"></td>
+                                <td><span style="background:#283654;color:white;padding:3px 8px;border-radius:10px;font-size:0.8rem;">80%</span></td>
+                                <td style="color:green">▼ 10%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div style="margin-top:15px;display:flex;gap:10px;flex-wrap:wrap;">
+                        <button class="btn btn-primary" onclick="saveYield()">💾 บันทึก Yield</button>
+                        <button class="btn" style="background:var(--yellow-light);border:1px solid #283654;" onclick="showYieldHistory()">📊 ดูประวัติ Yield (10 ครั้ง)</button>
+                    </div>
+                    <div id="yieldHistory" style="display:none;margin-top:15px;background:var(--yellow-light);padding:15px;border-radius:10px;">
+                        <h4 style="color:#283654;margin-bottom:10px;">📊 ประวัติ Yield (10 ครั้งล่าสุด)</h4>
+                        <table style="font-size:0.9rem;">
+                            <thead><tr><th>วันที่</th><th>วัตถุดิบ</th><th>ก่อน (g)</th><th>หลัง (g)</th><th>Yield %</th><th>Supplier</th></tr></thead>
+                            <tbody>
+                                <tr><td>30/03/26</td><td>ปลาแซลมอน</td><td>1000</td><td>750</td><td>75%</td><td>ตลาดประตูเต้า</td></tr>
+                                <tr><td>29/03/26</td><td>ปลาแซลมอน</td><td>1200</td><td>900</td><td>75%</td><td>ตลาดประตูเต้า</td></tr>
+                                <tr><td>28/03/26</td><td>ไก่อก</td><td>2000</td><td>1600</td><td>80%</td><td>ตลาดวังหลาน</td></tr>
+                                <tr><td>27/03/26</td><td>ไก่อก</td><td>1500</td><td>1200</td><td>80%</td><td>CP</td></tr>
+                                <tr><td>26/03/26</td><td>ผักสลัด</td><td>500</td><td>420</td><td>84%</td><td>ตลาดย่านตลาด</td></tr>
+                            </tbody>
+                        </table>
+                        <div style="margin-top:10px;text-align:center;color:var(--text-gray);font-size:0.9rem;">📈 ค่าเฉลี่ย Yield ปลาแซลมอน: 75% | ไก่อก: 80% | ผักสลัด: 82%</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reports Tab -->
+            <div class="section" id="reports">
+                <div class="stats-grid">
+                    <div class="stat-box"><div class="num">ข้าวต้มปลา</div><div class="label">เมนูขายดี #1 (45 ที่)</div></div>
+                    <div class="stat-box"><div class="num">Poke Bowl</div><div class="label">เมนูขายดี #2 (38 ที่)</div></div>
+                    <div class="stat-box"><div class="num">โยเกิร์ต</div><div class="label">ขายดี #1 (52 ที่)</div></div>
+                    <div class="stat-box"><div class="num">Blackmores</div><div class="label">สินค้าขายดี (25 กล่อง)</div></div>
+                </div>
+                
+                <!-- รายงานรายได้-รายจ่าย -->
+                <div class="card">
+                    <h3>📈 รายงานประจำเดือน (มีนาคม 2026)</h3>
+                    <table style="font-size:0.95rem;">
+                        <thead><tr><th>รายการ</th><th>ราคา</th><th>หมายเหตุ</th></tr></thead>
+                        <tbody>
+                            <tr style="background:#e8f5e9;"><td><strong>💰 รายได้รวม</strong></td><td><strong>฿85,400</strong></td><td>ยอดขายทั้งหมด</td></tr>
+                            <tr><td>📦 ต้นทุนวัตถุดิบ</td><td>฿32,500</td><td>Ingredient ที่ใช้</td></tr>
+                            <tr style="background:#fff3e0;"><td><strong>💵 กำไรขั้นต้น</strong></td><td><strong>฿52,900</strong></td><td>62%</td></tr>
+                            <tr><td>💡 ค่าไฟ/น้ำ/แก๊ส</td><td>฿3,200</td><td>ค่าสาธารณูปโภค</td></tr>
+                            <tr><td>👥 เงินเดือนพนักงาน</td><td>฿15,000</td><td>2 คน x ฿7,500</td></tr>
+                            <tr><td>📦 ค่าขนส่ง/บรรจุภัณฑ์</td><td>฿2,500</td><td>กล่อง ถุง สติ๊กเกอร์</td></tr>
+                            <tr><td>📱 ค่าอินเทอร์เน็ต/โทร</td><td>฿600</td><td>Internet + LINE OA</td></tr>
+                            <tr style="background:#ffebee;"><td><strong>💼 กำไรสุทธิ</strong></td><td><strong>฿31,600</strong></td><td>37%</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- ค่าไฟ -->
+                <div class="card">
+                    <h3>💡 รายงานค่าไฟ/น้ำ/แก๊ส</h3>
+                    <table style="font-size:0.95rem;">
+                        <thead><tr><th>เดือน</th><th>ค่าไฟ (฿)</th><th>ค่าน้ำ (฿)</th><th>ค่าแก๊ส (฿)</th><th>รวม (฿)</th></tr></thead>
+                        <tbody>
+                            <tr><td>มีนาคม 2026</td><td>2,400</td><td>450</td><td>350</td><td>฿3,200</td></tr>
+                            <tr><td>กุมภาพันธ์ 2026</td><td>2,100</td><td>380</td><td>320</td><td>฿2,800</td></tr>
+                            <tr><td>มกราคม 2026</td><td>1,950</td><td>320</td><td>280</td><td>฿2,550</td></tr>
+                        </tbody>
+                    </table>
+                    <div style="margin-top:15px;padding:10px;background:var(--blue-light);border-radius:8px;display:flex;justify-content:space-between;">
+                        <span>📊 เฉลี่ยค่าไฟ/เดือน:</span>
+                        <strong>฿2,850</strong>
+                    </div>
+                </div>
+                
+                <!-- เงินเดือน -->
+                <div class="card">
+                    <h3>👥 รายงานเงินเดือนพนักงาน</h3>
+                    <table style="font-size:0.95rem;">
+                        <thead><tr><th>พนักงาน</th><th>ตำแหน่ง</th><th>เงินเดือน (฿)</th><th>โบนัส (฿)</th><th>รวม (฿)</th></tr></thead>
+                        <tbody>
+                            <tr><td>พนักงาน A</td><td>เชฟ/ครัว</td><td>7,500</td><td>500</td><td>฿8,000</td></tr>
+                            <tr><td>พนักงาน B</td><td>ส่งของ/ช่วยครัว</td><td>7,000</td><td>0</td><td>฿7,000</td></tr>
+                        </tbody>
+                    </table>
+                    <div style="margin-top:15px;padding:10px;background:var(--blue-light);border-radius:8px;display:flex;justify-content:space-between;">
+                        <span>📊 รวมเงินเดือน/เดือน:</span>
+                        <strong>฿15,000</strong>
+                    </div>
+                </div>
+                
+                <!-- รายงานค่าส่ง -->
+                <div class="card">
+                    <h3>🚗 รายงานค่าส่ง (มีนาคม 2026)</h3>
+                    <table style="font-size:0.95rem;">
+                        <thead><tr><th>รายการ</th><th>จำนวน (ครั้ง)</th><th>ราคา/หน่วย</th><th>รวม (฿)</th></tr></thead>
+                        <tbody>
+                            <tr style="background:#e8f5e9;"><td><strong>📦 ค่าส่งที่เก็บได้จากลูกค้า</strong></td><td>85</td><td>฿30</td><td><strong>฿2,550</strong></td></tr>
+                            <tr style="background:#ffebee;"><td><strong>🚗 ค่าส่งที่ใช้จริง (Grab/Lineman)</strong></td><td>85</td><td>฿45</td><td><strong>฿3,825</strong></td></tr>
+                            <tr style="background:#fff3e0;"><td><strong>📊 กำไร/ขาดทุน ค่าส่ง</strong></td><td colspan="2">ค่าส่งที่เก็บ - ค่าส่งที่ใช้</td><td><strong style="color:var(--red);">฿-1,275 (ขาดทุน)</strong></td></tr>
+                        </tbody>
+                    </table>
+                    <div style="margin-top:15px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+                        <div style="background:#e8f5e9;padding:10px;border-radius:8px;text-align:center;">
+                            <div style="font-size:1.5rem;font-weight:bold;">฿2,550</div>
+                            <div style="font-size:0.8rem;color:var(--text-gray);">เก็บได้</div>
+                        </div>
+                        <div style="background:#ffebee;padding:10px;border-radius:8px;text-align:center;">
+                            <div style="font-size:1.5rem;font-weight:bold;color:var(--red);">฿3,825</div>
+                            <div style="font-size:0.8rem;color:var(--text-gray);">ใช้จริง</div>
+                        </div>
+                        <div style="background:#fff3e0;padding:10px;border-radius:8px;text-align:center;">
+                            <div style="font-size:1.5rem;font-weight:bold;color:var(--red);">-฿1,275</div>
+                            <div style="font-size:0.8rem;color:var(--text-gray);">ขาดทุน</div>
+                        </div>
+                    </div>
+                    <div style="margin-top:10px;padding:10px;background:white;border-radius:8px;font-size:0.9rem;">
+                        💡 <strong>แนะนำ:</strong> ปรับค่าส่งเป็น ฿50/ออร์เดอร์ จะได้กำไรเพิ่ม ฿1,700/เดือน
+                    </div>
+                </div>
+                
+                <!-- การเข้างานพนักงาน -->
+                <div class="card">
+                    <h3>📅 รายงานการเข้างานพนักงาน (มีนาคม 2026)</h3>
+                    <table style="font-size:0.95rem;">
+                        <thead><tr><th>พนักงาน</th><th>วันทำงาน</th><th>วันขาด</th><th>วันลา</th><th>สาย</th><th>OT (ชม.)</th><th>หมายเหตุ</th></tr></thead>
+                        <tbody>
+                            <tr><td>พนักงาน A (เชฟ)</td><td>26</td><td>1</td><td>1</td><td>0</td><td>4</td><td style="color:var(--green);">✅ ปกติ</td></tr>
+                            <tr><td>พนักงาน B (ส่งของ)</td><td>25</td><td>2</td><td>1</td><td>1</td><td>2</td><td style="color:#283654;">⚠️ เตือน</td></tr>
+                        </tbody>
+                    </table>
+                    <div style="margin-top:15px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+                        <div style="background:var(--blue-light);padding:10px;border-radius:8px;text-align:center;">
+                            <div style="font-size:1.5rem;font-weight:bold;">51</div>
+                            <div style="font-size:0.8rem;color:var(--text-gray);">วันทำงานทั้งหมด</div>
+                        </div>
+                        <div style="background:#ffebee;padding:10px;border-radius:8px;text-align:center;">
+                            <div style="font-size:1.5rem;font-weight:bold;color:var(--red);">3</div>
+                            <div style="font-size:0.8rem;color:var(--text-gray);">วันขาด</div>
+                        </div>
+                        <div style="background:#fff3e0;padding:10px;border-radius:8px;text-align:center;">
+                            <div style="font-size:1.5rem;font-weight:bold;color:#283654;">2</div>
+                            <div style="font-size:0.8rem;color:var(--text-gray);">วันลา</div>
+                        </div>
+                        <div style="background:#e8f5e9;padding:10px;border-radius:8px;text-align:center;">
+                            <div style="font-size:1.5rem;font-weight:bold;color:var(--green);">6</div>
+                            <div style="font-size:0.8rem;color:var(--text-gray);">ชม. OT</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- PRINT AREA (Hidden) -->
+    <div class="print-area" id="printArea"></div>
+    
+    <script>
+        // Check Login
+        function checkLogin() {
+            console.log('Login function called');
+            const pwd = document.getElementById('passwordInput').value;
+            console.log('Password entered:', pwd);
+            if(pwd === '5281') {
+                console.log('Password correct, hiding login screen');
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+            } else {
+                console.log('Password incorrect');
+                alert('❌ รหัสผ่านไม่ถูกต้อง!');
+            }
+        }
+        
+        // Logout
+        function logout() {
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('passwordInput').value = '';
+        }
+        
+        // Show Tab
+        function showTab(tabId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        // Print Checklist
+        function printChecklist() {
+            window.print();
+        }
+        
+        // Print Sticker
+        function printSticker() {
+            window.print();
+        }
+        
+        // Scan Bill from Image
+        function scanBill(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('billImage').src = e.target.result;
+                    document.getElementById('billPreview').style.display = 'block';
+                    document.getElementById('scanStatus').textContent = '✅ สแกนสำเร็จ! กำลังวิเคราะห์...';
+                    
+                    // Simulate detected items (ในระบบจริงจะใช้ AI OCR)
+                    setTimeout(() => {
+                        const detectedItems = `
+                            <div style="margin-bottom:10px;">
+                                <label style="display:flex;align-items:center;gap:10px;padding:8px;background:white;border-radius:8px;">
+                                    <input type="checkbox" checked> 
+                                    <span style="flex:1">ปลาแซลมอน 1kg</span>
+                                    <input type="number" value="500" style="width:80px;padding:5px;" placeholder="ราคา"> ฿
+                                </label>
+                            </div>
+                            <div style="margin-bottom:10px;">
+                                <label style="display:flex;align-items:center;gap:10px;padding:8px;background:white;border-radius:8px;">
+                                    <input type="checkbox" checked> 
+                                    <span style="flex:1">ไก่อก 2kg</span>
+                                    <input type="number" value="240" style="width:80px;padding:5px;" placeholder="ราคา"> ฿
+                                </label>
+                            </div>
+                            <div style="margin-bottom:10px;">
+                                <label style="display:flex;align-items:center;gap:10px;padding:8px;background:white;border-radius:8px;">
+                                    <input type="checkbox" checked> 
+                                    <span style="flex:1">ผักสลัด 1kg</span>
+                                    <input type="number" value="40" style="width:80px;padding:5px;" placeholder="ราคา"> ฿
+                                </label>
+                            </div>
+                            <div style="margin-bottom:10px;">
+                                <label style="display:flex;align-items:center;gap:10px;padding:8px;background:white;border-radius:8px;">
+                                    <input type="checkbox"> 
+                                    <span style="flex:1">น้ำมันหอยร้อย 2 ขวด</span>
+                                    <input type="number" value="90" style="width:80px;padding:5px;" placeholder="ราคา"> ฿
+                                </label>
+                            </div>
+                        `;
+                        document.getElementById('detectedItems').innerHTML = detectedItems;
+                        document.getElementById('scanStatus').textContent = '✅ พบ 4 รายการ!';
+                    }, 1000);
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+        
+        // Add to Inventory
+        function addToInventory() {
+            alert('✅ เพิ่มรายการใน Inventory สำเร็จ!');
+            document.getElementById('billPreview').style.display = 'none';
+            document.getElementById('scanStatus').textContent = 'เลือกรูปบิลเพื่อเพิ่มรายการ';
+            document.getElementById('billScan').value = '';
+        }
+        
+        // Save Yield
+        function saveYield() {
+            alert('✅ บันทึก Yield สำเร็จ! \n\n📊 จะเก็บข้อมูล 10 ครั้งล่าสุดเพื่อคำนวณค่าเฉลี่ย');
+        }
+        
+        // Show Yield History
+        function showYieldHistory() {
+            const historyDiv = document.getElementById('yieldHistory');
+            if(historyDiv.style.display === 'none') {
+                historyDiv.style.display = 'block';
+            } else {
+                historyDiv.style.display = 'none';
+            }
+        }
+        
+        // Add Vegetable Type
+        function addVegType() {
+            const container = document.getElementById('extraVegTypes');
+            const div = document.createElement('div');
+            div.style.display = 'flex';
+            div.style.gap = '10px';
+            div.style.marginTop = '5px';
+            div.innerHTML = `
+                <select style="flex:1;padding:10px;border-radius:8px;border:2px solid var(--blue-light);">
+                    <option value="">เลือกชนิดผัก</option>
+                    <option value="ผักกาด">ผักกาด</option>
+                    <option value="ผักสลัด">ผักสลัด</option>
+                    <option value="บรอกโคลี">บรอกโคลี</option>
+                    <option value="ผักบุ้ง">ผักบุ้ง</option>
+                </select>
+                <input type="number" placeholder="g" style="width:80px;">
+            `;
+            container.appendChild(div);
+        }
+        
+        // Calculate and Save Recipe
+        function calculateAndSaveRecipe() {
+            const name = document.getElementById('recipeName').value;
+            const meatType = document.getElementById('meatType').value;
+            const meatQty = parseFloat(document.getElementById('meatQty').value) || 0;
+            
+            if(!name) { alert('กรุณาใส่ชื่อเมนู!'); return; }
+            if(!meatType || !meatQty) { alert('กรุณาใส่ข้อมูลเนื้อสัตว์!'); return; }
+            
+            // คำนวณต้นทุนวัตถุดิบ (demo)
+            const baseMeatCost = (meatQty / 1000) * 200; // ปลาแซลมอน ฿500/kg
+            
+            // Hidden Loss 3%
+            const hiddenLoss = parseFloat(document.getElementById('hiddenLoss').value) || 0;
+            const ingredientCost = baseMeatCost * (1 + hiddenLoss/100);
+            const lossAmount = baseMeatCost * (hiddenLoss/100);
+            
+            // เวลาปรุงและจำนวนเสิร์ฟ
+            const cookTime = parseFloat(document.getElementById('cookTime').value) || 20; // นาที
+            const servings = parseFloat(document.getElementById('servings').value) || 1; // จำนวนเสิร์ฟ
+            
+            // ค่าใช้จ่าย: คำนวณจาก (ค่าไฟ+น้ำ+แก๊ส/เดือน) ÷ วันทำงาน ÷ 8 ชม.
+            const utilInput = parseFloat(document.getElementById('utilCostInput').value) || 0;
+            const workDays = parseFloat(document.getElementById('workDays').value) || 26;
+            const workHours = parseFloat(document.getElementById('workHours').value) || 8;
+            const utilCostPerHour = utilInput / workDays / workHours;
+            
+            // ค่าแรงต่อชั่วโมง
+            const laborCost = parseFloat(document.getElementById('laborCost').value) || 0;
+            
+            // ค่าแรงต่อชั่วโมง ÷ 60 × นาที ÷ จำนวนเสิร์ฟ
+            const laborCostPerServing = (laborCost / 60) * cookTime / servings;
+            const totalLaborCost = laborCostPerServing * servings;
+            
+            // ค่าไฟน้ำแก๊สต่อเมนู = ค่า/ชม ÷ 60 × นาที
+            const utilCost = (utilCostPerHour / 60) * cookTime;
+            
+            const totalExpense = utilCost + totalLaborCost;
+            
+            const totalCost = ingredientCost + totalExpense;
+            const sellPrice = parseFloat(document.getElementById('sellPrice').value) || 0;
+            const profit = sellPrice - totalCost;
+            const profitPercent = sellPrice > 0 ? Math.round((profit / sellPrice) * 100) : 0;
+            
+            // อัปเดต UI
+            document.getElementById('laborPerServing').textContent = '฿' + laborCostPerServing.toFixed(2);
+            
+            // แสดงผล
+            document.getElementById('costSummary').style.display = 'block';
+            document.getElementById('ingredientCost').innerHTML = '฿' + ingredientCost.toFixed(0) + '<span style="color:var(--green);font-size:0.8rem;display:block;">📉 Loss: ฿' + lossAmount.toFixed(0) + ' (' + hiddenLoss + '%)</span>';
+            document.getElementById('expenseCost').innerHTML = '฿' + totalExpense.toFixed(0) + '<span style="color:var(--text-gray);font-size:0.8rem;display:block;">👨‍🍳 แรง: ฿' + totalLaborCost.toFixed(0) + ' (' + cookTime + 'นาที ÷ ' + servings + 'เสิร์ฟ)</span>';
+            document.getElementById('totalCost').textContent = '฿' + totalCost.toFixed(0);
+            document.getElementById('profit').textContent = '฿' + profit.toFixed(0) + ' (' + profitPercent + '%)';
+            
+            alert('✅ บันทึกสูตร: ' + name + ' สำเร็จ!\n\n⏱️ เวลาปรุง: ' + cookTime + ' นาที\n🍽️ จำนวน: ' + servings + ' เสิร์ฟ\n👨‍🍳 ค่าแรง/เสิร์ฟ: ฿' + laborCostPerServing.toFixed(2) + '\n💰 ต้นทุน: ฿' + totalCost.toFixed(0) + '\n💵 ขาย: ฿' + sellPrice + '\n📈 กำไร: ฿' + profit.toFixed(0) + ' (' + profitPercent + '%)');
+        }
+    </script>
+</body>
+</html>

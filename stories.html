@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>นิทานมามิจัง - Mami's Hero</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .stories { background: linear-gradient(180deg, #e5f0ff, #ffffff); padding: 60px 0; }
+        .stories-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; margin-top: 30px; }
+        .story-card { background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 5px 20px rgba(0,0,0,0.1); transition: all 0.3s ease; cursor: pointer; border: 2px solid #f8f9fa; }
+        .story-card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.12); border-color: #f75c9a; }
+        .story-card-img { width: 100%; height: 200px; object-fit: cover; }
+        .story-card-content { padding: 20px; }
+        .story-card h3 { font-size: 1.1rem; font-weight: 700; color: #2C3E50; margin-bottom: 10px; }
+        .story-card p { font-size: 0.85rem; color: #7F8C8D; margin-bottom: 15px; line-height: 1.5; }
+        .story-card-meta { display: flex; gap: 15px; padding-top: 15px; border-top: 1px solid #f8f9fa; font-size: 0.8rem; color: #7F8C8D; }
+        .story-card-btn { display: inline-block; background: linear-gradient(135deg, #f75c9a, #ff6b9a); color: white; padding: 10px 20px; border-radius: 50px; font-weight: 600; font-size: 0.85rem; margin-top: 15px; transition: all 0.3s ease; }
+        .story-card:hover .story-card-btn { transform: scale(1.05); }
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 9999; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+        .modal.active { opacity: 1; visibility: visible; }
+        .modal-content { background: white; border-radius: 20px; padding: 40px; max-width: 700px; width: 90%; max-height: 85vh; overflow-y: auto; position: relative; transform: scale(0.9); transition: all 0.3s ease; }
+        .modal.active .modal-content { transform: scale(1); }
+        .modal-close { position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 2rem; cursor: pointer; color: #7F8C8D; transition: all 0.3s ease; }
+        .modal-close:hover { color: #f75c9a; }
+        .story-header { text-align: center; margin-bottom: 30px; }
+        .story-cover-img { width: 100%; max-width: 400px; height: auto; border-radius: 20px; margin-bottom: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); }
+        .story-header h2 { font-size: 2rem; margin-bottom: 15px; color: #2C3E50; }
+        .story-info { display: flex; justify-content: center; gap: 15px; color: #7F8C8D; font-size: 0.95rem; }
+        .story-body { font-size: 1.15rem; line-height: 2; color: #2C3E50; margin-bottom: 30px; white-space: pre-line; background: #f8f9fa; padding: 30px; border-radius: 20px; }
+        .story-moral { background: linear-gradient(135deg, #fff9e6, #ffffff); padding: 25px 30px; border-radius: 20px; font-size: 1.05rem; color: #2C3E50; margin-bottom: 30px; text-align: center; font-style: italic; border-left: 4px solid #f1c40f; }
+        .story-navigation { display: flex; gap: 15px; justify-content: center; }
+        .nav-btn { background: #f8f9fa; border: 2px solid #f8f9fa; padding: 12px 25px; border-radius: 50px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; font-size: 0.95rem; }
+        .nav-btn:hover { border-color: #f75c9a; background: #ffe5e5; }
+        @media (max-width: 768px) { .story-modal .story-content { padding: 25px; } .story-header h2 { font-size: 1.5rem; } .story-body { font-size: 1rem; padding: 20px; } .story-navigation { flex-direction: column; } .nav-btn { width: 100%; } }
+            
+        .login-header { text-align: center; margin-bottom: 30px; }
+        .login-icon { font-size: 4rem; display: block; margin-bottom: 15px; }
+        .login-header h2 { font-size: 1.8rem; color: var(--text-dark); margin-bottom: 10px; }
+        .login-header p { color: var(--text-gray); font-size: 1rem; }
+        .login-form .form-group { margin-bottom: 25px; }
+        .login-form label { display: block; margin-bottom: 10px; font-weight: 600; color: var(--text-dark); }
+        .login-form input[type="tel"] { width: 100%; padding: 15px 20px; border: 2px solid var(--off-white); border-radius: 14px; font-size: 1.1rem; text-align: center; letter-spacing: 2px; }
+        .login-form input[type="tel"]:focus { outline: none; border-color: var(--pink); box-shadow: 0 0 0 4px rgba(247, 92, 154, 0.1); }
+        .login-btn { width: 100%; background: linear-gradient(135deg, #f75c9a, #ff6b9a); color: #fff; border: none; padding: 18px; border-radius: 50px; font-size: 1.1rem; font-weight: 700; cursor: pointer; box-shadow: 0 5px 25px rgba(247, 92, 154, 0.4); }
+        .login-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 35px rgba(247, 92, 154, 0.6); }
+        .login-note { text-align: center; color: var(--text-gray); font-size: 0.85rem; margin-top: 20px; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <a href="index2.html" class="logo">🍱 <span class="logo-pink">Mami's</span> <span class="logo-blue">Hero</span></a>
+                <div class="nav-menu" id="navMenu">
+                    <a href="index2.html">หน้าแรก</a>
+                    <a href="menu.html">เมนู</a>
+                    <a href="articles.html">บทความ</a>
+                    <a href="shop.html">Mami Shop</a>
+                    <a href="baby.html">บันทึกคุณลูก</a>
+                    <a href="mom.html">บันทึกคุณแม่</a>
+                    <a href="stories.html" class="active">นิทานมามิจัง</a>
+                    <a href="contact.html">ติดต่อ</a>
+                </div>
+                
+                <div class="nav-burger" id="navBurger" onclick="toggleNav()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <script>
+    function toggleNav() {
+        document.getElementById('navMenu').classList.toggle('active');
+        document.getElementById('navBurger').classList.toggle('active');
+    }
+    </script>
+    
+    <!-- LOGIN PANEL -->
+    </div>
+
+    <!-- Stories Section -->
+    <section class="section stories">
+        <div class="container">
+            <div class="section-title" style="text-align: left;">
+                <h2>นิทานมามิจัง</h2>
+                <p>นิทานอบอุ่นใจ สำหรับคุณแม่และลูกน้อย</p>
+            </div>
+            <div class="stories-grid" id="storiesGrid"></div>
+        </div>
+    </section>
+
+    <!-- Story Modal -->
+    <div class="modal story-modal" id="storyModal">
+        <div class="modal-content story-content">
+            <button class="modal-close" onclick="closeStory()">&times;</button>
+            <div class="story-header">
+                <img id="storyHeroImage" src="baby-bg.jpg" alt="นิทาน" class="story-cover-img" />
+                <h2 id="storyTitle">ชื่อนิทาน</h2>
+                <div class="story-info">
+                    <span id="storyDuration">⏱️ - นาที</span>
+                    <span>•</span>
+                    <span id="storyImageCount">📖 - ภาพ</span>
+                </div>
+            </div>
+            <div class="story-body" id="storyContent"></div>
+            <div class="story-moral" id="storyMoral"></div>
+            <div class="story-navigation">
+                <button class="nav-btn" onclick="prevStory()">← เรื่องก่อนหน้า</button>
+                <button class="nav-btn" onclick="nextStory()">เรื่องถัดไป →</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="stories.js"></script>
+<script src="shared.js"></script>
+    <script src="cart-system.js"></script>
+    <style>
+        .logo { text-decoration: none; }
+        .nav-login-btn { background: #fff; color: var(--blue); border: 2px solid var(--blue); padding: 8px 20px; border-radius: 50px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .nav-login-btn:hover { background: var(--blue); color: #fff; }
+        .login-panel{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:2000;justify-content:center;align-items:center;}
+        .login-panel.active{display:flex;}
+        .login-panel-content{background:#fff;border-radius:16px;padding:30px;max-width:400px;width:90%;text-align:center;position:relative;}
+        .login-panel-close{position:absolute;top:10px;right:15px;background:none;border:none;font-size:1.5rem;cursor:pointer;}
+        .login-panel input{width:100%;padding:12px;margin:10px 0;border:2px solid #ddd;border-radius:8px;font-size:1rem;}
+        .login-panel button.submit{background:var(--pink);color:#fff;border:none;padding:12px 24px;border-radius:50px;font-size:1rem;cursor:pointer;margin-top:10px;}
+            
+        .login-header { text-align: center; margin-bottom: 30px; }
+        .login-icon { font-size: 4rem; display: block; margin-bottom: 15px; }
+        .login-header h2 { font-size: 1.8rem; color: var(--text-dark); margin-bottom: 10px; }
+        .login-header p { color: var(--text-gray); font-size: 1rem; }
+        .login-form .form-group { margin-bottom: 25px; }
+        .login-form label { display: block; margin-bottom: 10px; font-weight: 600; color: var(--text-dark); }
+        .login-form input[type="tel"] { width: 100%; padding: 15px 20px; border: 2px solid var(--off-white); border-radius: 14px; font-size: 1.1rem; text-align: center; letter-spacing: 2px; }
+        .login-form input[type="tel"]:focus { outline: none; border-color: var(--pink); box-shadow: 0 0 0 4px rgba(247, 92, 154, 0.1); }
+        .login-btn { width: 100%; background: linear-gradient(135deg, #f75c9a, #ff6b9a); color: #fff; border: none; padding: 18px; border-radius: 50px; font-size: 1.1rem; font-weight: 700; cursor: pointer; box-shadow: 0 5px 25px rgba(247, 92, 154, 0.4); }
+        .login-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 35px rgba(247, 92, 154, 0.6); }
+        .login-note { text-align: center; color: var(--text-gray); font-size: 0.85rem; margin-top: 20px; line-height: 1.6; }
+    </style>
+    <script>
+        function toggleLoginPanel(){
+            document.getElementById('loginPanel').classList.toggle('active');
+        }
+        function handleLogin(e){
+            e.preventDefault();
+            const phone = document.getElementById('loginPhone').value;
+            if(phone.length >= 9){
+                localStorage.setItem('mami_hero_logged_in', 'true');
+                localStorage.setItem('mami_hero_phone', phone);
+                toggleLoginPanel();
+                alert('✅ เข้าสู่ระบบสำเร็จ!');
+            }
+        }
+    </script>
+    <!-- login modal removed -->
+</body>
+</html>

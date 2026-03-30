@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>บันทึกคุณลูก - Mami's Hero</title>
+    <style>
+        :root {
+            --pink: #f75c9a;
+            --light-pink: #ffb6d9;
+            --blue: #5c9ff7;
+            --text-dark: #2C3E50;
+            --text-gray: #666;
+            --white: #fff;
+            --peach: #fff5f7;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--peach); color: var(--text-dark); }
+        
+        /* Navbar */
+        .navbar { background: var(--white); padding: 10px 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .nav-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; position: relative; }
+        .logo { font-size: 1rem; font-weight: bold; text-decoration: none; }
+        .logo-pink { color: var(--pink); }
+        .logo-blue { color: var(--blue); }
+        .nav-login-btn { background: none; border: 2px solid var(--pink); color: var(--pink); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-weight: 600; }
+        .login-panel{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:2000;justify-content:center;align-items:center;}
+        .login-panel.active{display:flex;}
+        .login-panel-content{background:#fff;border-radius:16px;padding:30px;max-width:400px;width:90%;text-align:center;position:relative;}
+        .login-panel-close{position:absolute;top:10px;right:15px;background:none;border:none;font-size:1.5rem;cursor:pointer;}
+        .login-panel input{width:100%;padding:12px;margin:10px 0;border:2px solid #ddd;border-radius:8px;font-size:1rem;}
+        .login-panel button.submit{background:var(--pink);color:#fff;border:none;padding:12px 24px;border-radius:50px;font-size:1rem;cursor:pointer;margin-top:10px;}
+        .nav-menu { display: flex; gap: 5px; align-items: center; }
+        .nav-menu a { color: var(--text-dark); text-decoration: none; font-weight: 600; padding: 8px 14px; border-radius: 20px; transition: all 0.3s; font-size: 0.85rem; }
+        .nav-menu a:hover, .nav-menu a.active { background: var(--pink); color: #fff; }
+        
+        /* Burger Menu */
+        .nav-burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 5px; }
+        .nav-burger span { display: block; width: 25px; height: 3px; background: var(--text-dark); border-radius: 2px; transition: all 0.3s; }
+        .nav-burger.active span:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); }
+        .nav-burger.active span:nth-child(2) { opacity: 0; }
+        .nav-burger.active span:nth-child(3) { transform: rotate(-45deg) translate(6px, -6px); }
+        
+        /* Mobile Nav */
+        @media (max-width: 768px) {
+            .nav-burger { display: flex; }
+            .nav-menu { display: none; position: absolute; top: 100%; left: 0; width: 100%; background: #fff; flex-direction: column; padding: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+            .nav-menu.active { display: flex; }
+            .nav-menu a { width: 100%; text-align: center; padding: 12px; }
+        }
+        
+        /* Baby Hero Section */
+        .baby-hero-section {
+            max-width: 1200px;
+            margin: 15px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 0.4fr 1fr 0.4fr;
+            gap: 20px;
+            align-items: center;
+        }
+        .hero-left h1 { font-size: 2rem; color: var(--pink); margin-bottom: 8px; }
+        .hero-left h2 { font-size: 0.6rem; color: var(--text-gray); font-weight: normal; }
+        
+        .hero-middle { text-align: center; }
+        .baby-add-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--pink), #ff8ab5);
+            color: var(--white);
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(247,92,154,0.3);
+        }
+        .baby-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        .baby-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--pink), var(--light-pink));
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            cursor: pointer;
+            position: relative;
+        }
+        .baby-avatar:hover:after {
+            content: '📷';
+            position: absolute;
+            font-size: 1.2rem;
+            bottom: 0;
+            right: 0;
+            background: var(--white);
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .baby-name { font-size: 1.2rem; font-weight: bold; color: var(--text-dark); margin-bottom: 5px; }
+        .baby-age { font-size: 1rem; color: var(--text-gray); margin-bottom: 10px; }
+        .baby-stats {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        .stat-item { text-align: center; }
+        .stat-icon { font-size: 0.9rem; display: block; margin-bottom: 2px; }
+        .stat-value { font-size: 0.6rem; font-weight: bold; color: var(--pink); }
+        .stat-label { font-size: 0.45rem; color: var(--text-gray); }
+        .growth-btn {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, var(--blue), #8fc5ff);
+            color: var(--white);
+            padding: 6px;
+            border: none;
+            border-radius: 25px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(92,159,247,0.3);
+        }
+        
+        .hero-right { text-align: center; }
+        .hero-right img {
+            width: 100%;
+            max-height: 900px;
+            object-fit: cover;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        
+        /* Features Section */
+        .features-section {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .feature-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+        }
+        .feature-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .feature-icon { font-size: 1.8rem; }
+        .feature-header h3 { font-size: 1.1rem; color: var(--text-dark); }
+        .timer-display {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--blue);
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+        .feature-actions { display: flex; gap: 10px; margin-bottom: 15px; }
+        .action-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .action-btn.start { background: var(--blue); color: var(--white); }
+        .action-btn.stop { background: var(--pink); color: var(--white); }
+        .action-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .last-record {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+            text-align: center;
+        }
+        
+        /* Feeding inputs */
+        .feeding-input-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        .feeding-input-group input {
+            width: 80px;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            text-align: center;
+        }
+        .feeding-input-group span { color: var(--text-gray); }
+        .quick-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .quick-btn {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: var(--white);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .quick-btn:hover { border-color: var(--pink); background: #fff5f8; }
+        
+        /* Diaper buttons */
+        .diaper-buttons { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-bottom: 15px; }
+        .diaper-btn {
+            padding: 8px 4px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+        .diaper-btn.urine-yellow { background: #fff9c4; color: #f57f17; }
+        .diaper-btn.urine-green { background: #e8f5e9; color: #2e7d32; }
+        .diaper-btn.stool-yellow { background: #fff8e1; color: #f9a825; }
+        .diaper-btn.stool-green { background: #e0f2f1; color: #00695c; }
+        .diaper-btn.stool-black { background: #eceff1; color: #37474f; }
+        
+        /* Medicine */
+        .medicine-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+        .medicine-note {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+            text-align: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        /* Stats Card */
+        .stats-card {}
+        .stats-display { margin-bottom: 12px; }
+        .stat-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 8px;
+        }
+        .stat-row .stat-icon { font-size: 1.2rem; }
+        .stat-row .stat-value { font-size: 1rem; font-weight: bold; color: var(--pink); }
+        
+        /* Tummy Time */
+        .tummy-time-display {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--pink);
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, #fff5f8, #ffe4ec);
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+        .tummy-actions { display: flex; gap: 10px; margin-bottom: 15px; }
+        .tummy-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .tummy-btn.start { background: var(--pink); color: var(--white); }
+        .tummy-btn.stop { background: var(--blue); color: var(--white); }
+        .tummy-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        
+        /* Vaccine */
+        .vaccine-record-btn, .vaccine-table-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 12px;
+            transition: all 0.3s;
+        }
+        .vaccine-record-btn { background: linear-gradient(135deg, var(--blue), #8fc5ff); color: var(--white); }
+        .vaccine-table-btn { background: #f0f0f0; color: var(--text-dark); }
+        .vaccine-record-btn:hover, .vaccine-table-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .vaccine-info { margin-bottom: 12px; }
+        .vaccine-next, .vaccine-last {
+            font-size: 0.8rem;
+            color: var(--text-gray);
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 6px;
+        }
+        .vaccine-next span, .vaccine-last span { color: var(--blue); font-weight: 600; }
+        
+        /* Timeline */
+        .timeline-empty {
+            font-size: 0.85rem;
+            color: var(--text-gray);
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 12px;
+        }
+        .timeline-filter { display: flex; gap: 8px; margin-bottom: 12px; }
+        .filter-btn {
+            flex: 1;
+            padding: 8px;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            background: var(--white);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .filter-btn.active, .filter-btn:hover { border-color: var(--pink); background: #fff5f8; color: var(--pink); }
+        .timeline-share-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(135deg, #00b900, #00d500);
+            color: var(--white);
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .timeline-share-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,185,0,0.3); }
+        
+        @media (max-width: 768px) {
+            .baby-hero-section { grid-template-columns: 1fr; text-align: center; }
+            .features-section { grid-template-columns: 1fr; }
+            .hero-left h1 { font-size: 1.6rem; }
+            .baby-stats { gap: 20px; }
+        }
+            
+        .login-header { text-align: center; margin-bottom: 30px; }
+        .login-icon { font-size: 4rem; display: block; margin-bottom: 15px; }
+        .login-header h2 { font-size: 1.8rem; color: var(--text-dark); margin-bottom: 10px; }
+        .login-header p { color: var(--text-gray); font-size: 1rem; }
+        .login-form .form-group { margin-bottom: 25px; }
+        .login-form label { display: block; margin-bottom: 10px; font-weight: 600; color: var(--text-dark); }
+        .login-form input[type="tel"] { width: 100%; padding: 15px 20px; border: 2px solid var(--off-white); border-radius: 14px; font-size: 1.1rem; text-align: center; letter-spacing: 2px; }
+        .login-form input[type="tel"]:focus { outline: none; border-color: var(--pink); box-shadow: 0 0 0 4px rgba(247, 92, 154, 0.1); }
+        .login-btn { width: 100%; background: linear-gradient(135deg, #f75c9a, #ff6b9a); color: #fff; border: none; padding: 18px; border-radius: 50px; font-size: 1.1rem; font-weight: 700; cursor: pointer; box-shadow: 0 5px 25px rgba(247, 92, 154, 0.4); }
+        .login-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 35px rgba(247, 92, 154, 0.6); }
+        .login-note { text-align: center; color: var(--text-gray); font-size: 0.85rem; margin-top: 20px; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="index.html" class="logo">🍱 <span class="logo-pink">Mami's</span> <span class="logo-blue">Hero</span></a>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html">หน้าแรก</a>
+                <a href="menu.html">เมนู</a>
+                <a href="articles.html">บทความ</a>
+                <a href="shop.html">Mami Shop</a>
+                <a href="baby.html" class="active">บันทึกคุณลูก</a>
+                <a href="mom.html">บันทึกคุณแม่</a>
+                <a href="contact.html">ติดต่อ</a>
+                <a href="#" id="navLoginLink" onclick="openLogin(); return false;" style="background:var(--pink);color:#fff;padding:4px 10px;border-radius:20px;font-size:0.7rem;font-weight:600;">🔑 ล้อคอิน</a>
+                <a href="#" id="navCartLink" onclick="openCart(); return false;" style="display:none;background:var(--blue);color:#fff;padding:4px 10px;border-radius:20px;font-size:0.7rem;font-weight:600;">🛒 <span id="cartBadge" style="background:#fff;color:var(--blue);border-radius:50%;padding:1px 5px;font-size:0.65rem;">0</span></a>
+            </div>
+            
+            <div class="nav-burger" id="navBurger" onclick="toggleNav()">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+    
+    <script>
+    function toggleNav() {
+        document.getElementById('navMenu').classList.toggle('active');
+        document.getElementById('navBurger').classList.toggle('active');
+    }
+    </script>
+    
+    <!-- LOGIN PANEL -->
+    </div>
+    
+    <!-- Baby Hero Section -->
+    <section class="baby-hero-section">
+        <!-- Left -->
+        <div class="hero-left">
+            <h1>บันทึกคุณลูก</h1>
+            <h2>ติดตามพัฒนาการลูกน้อยอย่างใกล้ชิด</h2>
+        </div>
+        
+        <!-- Middle -->
+        <div class="hero-middle">
+            <a href="#" class="baby-add-btn">➕ เพิ่มลูก</a>
+            <div class="baby-card">
+                <div class="baby-avatar" onclick="document.getElementById('babyPhotoInput').click()">👶</div>
+                <input type="file" id="babyPhotoInput" accept="image/*" style="display:none" onchange="handlePhotoUpload(event)">
+                <div class="baby-name">ลูกคนแรก</div>
+                <div class="baby-age">อายุ: -</div>
+            </div>
+        </div>
+        
+        <!-- Right -->
+        <div class="hero-right">
+            <img src="baby-hero.jpg" alt="บันทึกคุณลูก">
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="features-section">
+        <!-- Diaper -->
+        <div class="feature-card diaper">
+            <div class="feature-header">
+                <span class="feature-icon" style="font-size:2rem;">🍼</span>
+                <h3>ผ้าอ้อม</h3>
+            </div>
+            <div class="diaper-buttons">
+                <button class="diaper-btn urine-yellow" onclick="recordDiaper('ฉี่ (เหลือง 💛)')">💛 ฉี่ (เหลือง)</button>
+                <button class="diaper-btn urine-green" onclick="recordDiaper('ฉี่ (เขียว 💚)')">💚 ฉี่ (เขียว)</button>
+                <button class="diaper-btn stool-yellow" onclick="recordDiaper('อึ (เหลือง 💛)')">💛 อึ (เหลือง)</button>
+                <button class="diaper-btn stool-green" onclick="recordDiaper('อึ (เขียว 💚)')">💚 อึ (เขียว)</button>
+                <button class="diaper-btn stool-black" onclick="recordDiaper('อึ (ดำ 🖤)')">🖤 อึ (ดำ)</button>
+            </div>
+            <div class="last-record" id="lastDiaper">เปลี่ยนล่าสุด: -</div>
+        </div>
+        
+        <!-- Sleep -->
+        <div class="feature-card sleep">
+            <div class="feature-header">
+                <span class="feature-icon">😴</span>
+                <h3>การนอน</h3>
+            </div>
+            <div class="timer-display" id="sleepTimer">00:00:00</div>
+            <div class="feature-actions">
+                <button class="action-btn start" onclick="startSleep()">🌙 เริ่มนอน</button>
+                <button class="action-btn stop" onclick="stopSleep()">☀️ ตื่นนอน</button>
+            </div>
+            <div class="last-record" id="lastSleep">นอนล่าสุด: -</div>
+        </div>
+        
+        <!-- Tummy Time -->
+        <div class="feature-card tummy">
+            <div class="feature-header">
+                <span class="feature-icon">🧸</span>
+                <h3>Tummy Time</h3>
+            </div>
+            <div class="tummy-time-display" id="tummyTimer">00:00:00</div>
+            <div class="tummy-actions">
+                <button class="tummy-btn start" onclick="startTummy()">▶️ เริ่ม</button>
+                <button class="tummy-btn stop" onclick="stopTummy()">⏹️ เลิก</button>
+            </div>
+            <div class="last-record" id="lastTummy">ครั้งล่าสุด: -</div>
+        </div>
+        
+        <!-- Stats Card -->
+        <div class="feature-card stats-card">
+            <div class="feature-header">
+                <span class="feature-icon">👶</span>
+                <h3>น้ำหนัก/ส่วนสูง</h3>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+                <div>
+                    <label style="font-size:0.8rem;color:#666;">น้ำหนัก (kg)</label>
+                    <input type="number" id="weightInput" placeholder="0.0" step="0.1" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:8px;margin-top:3px;">
+                </div>
+                <div>
+                    <label style="font-size:0.8rem;color:#666;">ส่วนสูง (cm)</label>
+                    <input type="number" id="heightInput" placeholder="0.0" step="0.1" style="width:100%;padding:8px;border:1px solid #ddd;border-radius:8px;margin-top:3px;">
+                </div>
+            </div>
+            <button onclick="saveWeightHeight()" style="width:100%;background:var(--pink);color:#fff;border:none;padding:10px;border-radius:20px;font-weight:600;cursor:pointer;margin-bottom:10px;">💾 บันทึก</button>
+            <div class="stats-display">
+                <div class="stat-row">
+                    <span class="stat-icon">⚖️</span>
+                    <span class="stat-value" id="displayWeight">- kg</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-icon">📏</span>
+                    <span class="stat-value" id="displayHeight">- cm</span>
+                </div>
+            </div>
+            <div style="margin-top:10px;max-height:100px;overflow-y:auto;font-size:0.75rem;color:#666;">
+                <strong>ประวัติ:</strong>
+                <div id="weightHeightHistory"></div>
+            </div>
+            <button class="growth-btn">📊 กราฟเจริญเติบโต</button>
+        </div>
+        
+        <!-- Timeline -->
+        <div class="feature-card timeline">
+            <div class="feature-header">
+                <span class="feature-icon">📅</span>
+                <h3>ไทม์ไลน์</h3>
+            </div>
+            <div class="timeline-empty">ยังไม่มีบันทึกในช่วงนี้</div>
+            <div class="timeline-filter">
+                <button class="filter-btn active" onclick="filterTimeline(7)">7 วัน</button>
+                <button class="filter-btn" onclick="filterTimeline(15)">15 วัน</button>
+                <button class="filter-btn" onclick="filterTimeline(30)">30 วัน</button>
+            </div>
+            <div id="timelineContainer"></div>
+            <button class="timeline-share-btn" onclick="shareToDoctor()">📤 ส่งให้หมอ (LINE)</button>
+        </div>
+        
+        <!-- Feeding -->
+        <div class="feature-card feeding">
+            <div class="feature-header">
+                <span class="feature-icon">🍼</span>
+                <h3>การกิน</h3>
+            </div>
+            <div class="feeding-input-group">
+                <input type="number" id="feedingAmount" placeholder="0" style="width:60px;">
+                <span>ออนส์</span>
+            </div>
+            <div class="quick-buttons">
+                <button class="quick-btn" onclick="recordFeeding('นมแม่', 'ซ้าย')">🤱 ซ้าย</button>
+                <button class="quick-btn" onclick="recordFeeding('นมแม่', 'ขวา')">🤱 ขวา</button>
+                <button class="quick-btn" onclick="recordFeeding('นมปั๊ม', '')">💧 ปั๊ม</button>
+                <button class="quick-btn" onclick="recordFeeding('นมผง', '')">🍼 ผง</button>
+            </div>
+            <div class="last-record" id="lastFeeding">กินล่าสุด: -</div>
+        </div>
+        
+        <!-- Vaccine -->
+        <div class="feature-card vaccine">
+            <div class="feature-header">
+                <span class="feature-icon">💉</span>
+                <h3>วัคซีน</h3>
+            </div>
+            <button class="vaccine-record-btn" onclick="openVaccineModal()">📋 บันทึกวัคซีน</button>
+            <div class="vaccine-info">
+                <div class="vaccine-next">ครั้งต่อไป: <span id="nextVaccine">-</span></div>
+                <div class="vaccine-last">วัคซีนล่าสุด: <span id="lastVaccine">-</span></div>
+            </div>
+            <button class="vaccine-table-btn" onclick="openVaccineTable()">📅 ตารางวัคซีน</button>
+        </div>
+    </section>
+    
+    <script>
+        // Sleep Timer
+        let sleepInterval;
+        let sleepStart;
+        
+        function startSleep() {
+            sleepStart = new Date();
+            document.getElementById('sleepTimer').style.color = 'var(--blue)';
+            sleepInterval = setInterval(updateSleepTimer, 1000);
+        }
+        
+        function stopSleep() {
+            clearInterval(sleepInterval);
+            sleepInterval = null;
+            const duration = document.getElementById('sleepTimer').textContent;
+            document.getElementById('lastSleep').textContent = 'นอนล่าสุด: ' + duration;
+            document.getElementById('sleepTimer').textContent = '00:00:00';
+            addToTimeline('sleep', duration);
+        }
+        
+        function updateSleepTimer() {
+            const now = new Date();
+            const diff = Math.floor((now - sleepStart) / 1000);
+            const hours = String(Math.floor(diff / 3600)).padStart(2, '0');
+            const mins = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
+            const secs = String(diff % 60).padStart(2, '0');
+            document.getElementById('sleepTimer').textContent = hours + ':' + mins + ':' + secs;
+        }
+        
+        // Feeding
+        function recordFeeding(type, side) {
+            const amount = document.getElementById('feedingAmount').value || '-';
+            const text = side ? type + ' (' + side + ')' : type;
+            document.getElementById('lastFeeding').textContent = 'กินล่าสุด: ' + text + ' ' + amount + ' ออนส์';
+            document.getElementById('feedingAmount').value = '';
+            addToTimeline('feeding', text + ' ' + amount);
+        }
+        
+        // Diaper
+        function recordDiaper(type) {
+            document.getElementById('lastDiaper').textContent = 'เปลี่ยนล่าสุด: ' + type;
+            addToTimeline('diaper', type);
+        }
+        
+        // Tummy Time
+        let tummyInterval;
+        let tummyStart;
+        
+        function startTummy() {
+            tummyStart = new Date();
+            document.getElementById('tummyTimer').style.color = 'var(--pink)';
+            tummyInterval = setInterval(updateTummyTimer, 1000);
+        }
+        
+        function stopTummy() {
+            clearInterval(tummyInterval);
+            tummyInterval = null;
+            const duration = document.getElementById('tummyTimer').textContent;
+            document.getElementById('lastTummy').textContent = 'ครั้งล่าสุด: ' + duration;
+            document.getElementById('tummyTimer').textContent = '00:00:00';
+            addToTimeline('tummy', duration);
+        }
+        
+        function updateTummyTimer() {
+            const now = new Date();
+            const diff = Math.floor((now - tummyStart) / 1000);
+            const hours = String(Math.floor(diff / 3600)).padStart(2, '0');
+            const mins = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
+            const secs = String(diff % 60).padStart(2, '0');
+            document.getElementById('tummyTimer').textContent = hours + ':' + mins + ':' + secs;
+        }
+        
+        // Vaccine
+        function openVaccineModal() {
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:3000;display:flex;justify-content:center;align-items:center;';
+            modal.innerHTML = `
+                <div style="background:#fff;padding:20px;border-radius:16px;max-width:400px;width:90%;max-height:80vh;overflow-y:auto;">
+                    <h3 style="margin-bottom:15px;color:var(--pink);">💉 บันทึกวัคซีน</h3>
+                    <label style="display:block;margin-bottom:5px;font-weight:600;">เลือกวัคซีน:</label>
+                    <select id="vaccineSelect" style="width:100%;padding:10px;border:2px solid #ddd;border-radius:8px;margin-bottom:10px;">
+                        <option value="">-- เลือกวัคซีน --</option>
+                        <option value="BCG">BCG (วัณโรค)</option>
+                        <option value="HBV1">HBV 1 (ตับอักเสบบี)</option>
+                        <option value="OPV1">OPV 1 (โปลิโอ)</option>
+                        <option value="DTP1">DTP 1 (คอตีบ/บาดทะยัก/ไอกรน)</option>
+                        <option value="PCV1">PCV 1 (ปอดบวม)</option>
+                        <option value="RV1">RV 1 (ท้องเสียจากโรตา)</option>
+                        <option value="DTP2">DTP 2</option>
+                        <option value="OPV2">OPV 2</option>
+                        <option value="PCV2">PCV 2</option>
+                        <option value="RV2">RV 2</option>
+                        <option value="DTP3">DTP 3</option>
+                        <option value="OPV3">OPV 3</option>
+                        <option value="PCV3">PCV 3</option>
+                        <option value="MR1">MR 1 (หวัด คางทูม หัด)</option>
+                        <option value="JE">JE (ไข้สมองอักเสบ)</option>
+                    </select>
+                    <label style="display:block;margin-bottom:5px;font-weight:600;">วันที่ฉีด:</label>
+                    <input type="date" id="vaccineDate" style="width:100%;padding:10px;border:2px solid #ddd;border-radius:8px;margin-bottom:10px;">
+                    <label style="display:block;margin-bottom:5px;font-weight:600;">วันนัดครั้งต่อไป:</label>
+                    <input type="date" id="vaccineNext" style="width:100%;padding:10px;border:2px solid #ddd;border-radius:8px;margin-bottom:15px;">
+                    <div style="display:flex;gap:10px;">
+                        <button onclick="saveVaccine()" style="flex:1;background:var(--pink);color:#fff;border:none;padding:12px;border-radius:20px;font-weight:600;cursor:pointer;">💾 บันทึก</button>
+                        <button onclick="this.closest('div[style*=\\'position:fixed\\']').remove()" style="flex:1;background:#ccc;border:none;padding:12px;border-radius:20px;font-weight:600;cursor:pointer;">ยกเลิก</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+        }
+        
+        function saveVaccine() {
+            const vaccine = document.getElementById('vaccineSelect').value;
+            const date = document.getElementById('vaccineDate').value;
+            const next = document.getElementById('vaccineNext').value;
+            
+            if(!vaccine || !date) { alert('กรุณาเลือกวัคซีนและวันที่!'); return; }
+            
+            let vaccines = JSON.parse(localStorage.getItem('baby_vaccines') || '[]');
+            vaccines.push({ vaccine, date, next, created: new Date().toISOString() });
+            localStorage.setItem('baby_vaccines', JSON.stringify(vaccines));
+            
+            alert('✅ บันทึกวัคซีน ' + vaccine + ' สำเร็จ!');
+            document.querySelector('[style*="position:fixed"][style*="z-index:3000"]').remove();
+            updateVaccineDisplay();
+        }
+        
+        function updateVaccineDisplay() {
+            let vaccines = JSON.parse(localStorage.getItem('baby_vaccines') || '[]');
+            if(vaccines.length > 0) {
+                const last = vaccines[vaccines.length - 1];
+                document.getElementById('lastVaccine').textContent = last.vaccine + ' (' + last.date + ')';
+                
+                const next = vaccines.find(v => v.next && new Date(v.next) >= new Date());
+                if(next) {
+                    document.getElementById('nextVaccine').textContent = next.vaccine + ' (' + next.next + ')';
+                    const daysUntil = Math.ceil((new Date(next.next) - new Date()) / (1000*60*60*24));
+                    if(daysUntil <= 7 && daysUntil >= 0) alert('🔔 เตือนวัคซีน ' + next.vaccine + ' อีก ' + daysUntil + ' วัน!');
+                }
+            }
+        }
+        
+        function saveWeightHeight() {
+            const weight = document.getElementById('weightInput').value;
+            const height = document.getElementById('heightInput').value;
+            
+            if(!weight && !height) { alert('กรุณาใส่น้ำหนักหรือส่วนสูง!'); return; }
+            
+            if(weight) document.getElementById('displayWeight').textContent = weight + ' kg';
+            if(height) document.getElementById('displayHeight').textContent = height + ' cm';
+            
+            let history = JSON.parse(localStorage.getItem('baby_weight_height') || '[]');
+            history.push({ weight, height, date: new Date().toISOString() });
+            localStorage.setItem('baby_weight_height', JSON.stringify(history));
+            
+            let historyHTML = history.slice(-5).reverse().map(h => {
+                const d = new Date(h.date).toLocaleDateString('th');
+                return '<div>' + d + ': ' + (h.weight||'-') + 'kg / ' + (h.height||'-') + 'cm</div>';
+            }).join('');
+            document.getElementById('weightHeightHistory').innerHTML = historyHTML;
+            
+            alert('✅ บันทึกสำเร็จ!');
+        }
+        
+        updateVaccineDisplay();
+        
+        // Timeline
+        function filterTimeline(days) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            loadTimeline(days);
+        }
+        
+        function addToTimeline(type, duration) {
+            let timeline = JSON.parse(localStorage.getItem('baby_timeline') || '[]');
+            timeline.unshift({
+                type: type,
+                duration: duration,
+                date: new Date().toISOString()
+            });
+            if (timeline.length > 100) timeline = timeline.slice(0, 100);
+            localStorage.setItem('baby_timeline', JSON.stringify(timeline));
+            loadTimeline(7);
+        }
+        
+        function loadTimeline(days) {
+            const timeline = JSON.parse(localStorage.getItem('baby_timeline') || '[]');
+            const container = document.getElementById('timelineContainer');
+            const emptyMsg = document.querySelector('.timeline-empty');
+            const now = new Date();
+            const cutoff = new Date(now - days * 24 * 60 * 60 * 1000);
+            
+            const filtered = timeline.filter(item => new Date(item.date) >= cutoff);
+            
+            if (filtered.length === 0) {
+                container.innerHTML = '';
+                if (emptyMsg) emptyMsg.style.display = 'block';
+                return;
+            }
+            
+            if (emptyMsg) emptyMsg.style.display = 'none';
+            
+            const icons = { sleep: '😴', feeding: '🍼', diaper: '🧷', tummy: '🏋️', medicine: '💊' };
+            const labels = { sleep: 'นอน', feeding: 'กินนม', diaper: 'ผ้าอ้อม', tummy: 'ท้อง', medicine: 'ยา' };
+            
+            container.innerHTML = filtered.slice(0, 20).map(item => {
+                const date = new Date(item.date);
+                const dateStr = date.toLocaleDateString('th-TH', { day: 'numeric', month: 'short' });
+                const timeStr = date.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+                return `
+                    <div class="timeline-item" style="display:flex;align-items:center;gap:12px;padding:12px;background:#fff;border-radius:12px;margin-bottom:8px;box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+                        <span style="font-size:1.5rem;">${icons[item.type] || '📝'}</span>
+                        <div style="flex:1;">
+                            <div style="font-weight:600;color:var(--text-dark);">${labels[item.type] || item.type}</div>
+                            <div style="font-size:0.8rem;color:#888;">${dateStr} - ${timeStr} ${item.duration ? '(' + item.duration + ')' : ''}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // Initialize timeline on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTimeline(7);
+        });
+        
+        function shareToDoctor() {
+            const timeline = JSON.parse(localStorage.getItem('baby_timeline') || '[]');
+            if (timeline.length === 0) {
+                alert('ยังไม่มีข้อมูลในไทม์ไลน์');
+                return;
+            }
+            
+            const icons = { sleep: '😴', feeding: '🍼', diaper: '🧷', tummy: '🏋️', medicine: '💊' };
+            const labels = { sleep: 'นอน', feeding: 'กินนม', diaper: 'ผ้าอ้อม', tummy: 'ท้อง', medicine: 'ยา' };
+            
+            let message = '📋 สรุปการดูแลลูก\n\n';
+            timeline.slice(0, 10).forEach(item => {
+                const date = new Date(item.date);
+                const dateStr = date.toLocaleDateString('th-TH', { day: 'numeric', month: 'short' });
+                const timeStr = date.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+                message += `${icons[item.type] || '📝'} ${labels[item.type] || item.type}: ${item.duration || ''}\n`;
+                message += `   ${dateStr} ${timeStr}\n\n`;
+            });
+            
+            const encoded = encodeURIComponent(message);
+            window.open('https://line.me/R/msg/text/?' + encoded, '_blank');
+        }
+        
+        // Photo Upload
+        function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const avatar = document.querySelector('.baby-avatar');
+                    avatar.innerHTML = '<img src="' + e.target.result + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">';
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function toggleCart() {
+            const cart = document.getElementById('cartPanel');
+            if(cart) cart.classList.toggle('active');
+        }
+        function toggleLoginPanel(){
+            document.getElementById('loginPanel').classList.toggle('active');
+        }
+        function openLogin(){ toggleLoginPanel(); }
+        function openCart(){ alert('🛒 เปิดรถเข็น'); }
+        function handleLogin(e){
+            e.preventDefault();
+            const phone = document.getElementById('loginPhone').value;
+            if(phone.length >= 9){
+                localStorage.setItem('mami_hero_logged_in', 'true');
+                localStorage.setItem('mami_hero_phone', phone);
+                toggleLoginPanel();
+                alert('✅ เข้าสู่ระบบสำเร็จ!');
+            }
+        }
+    </script>
+    <script src="shared.js"></script>
+    <!-- login modal removed -->
+</body>
+</html>
